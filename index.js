@@ -1,6 +1,7 @@
 /**
  * @format
  */
+import '@thirdweb-dev/react-native-compat';
 
 import {AppRegistry} from 'react-native';
 import App from './App';

@@ -1,0 +1,39 @@
+{
+
+  "show_collectibles_publicly": "Show collectibles publicly",
+  "notifications": "Notifications",
+  "privacy": "Privacy",
+  "support": "Support",
+  "clear_local_data": "Clear local data",
+  "disconnect_wallet": "Disconnect wallet",
+  "connect_existing_wallet": "Connect existing wallet",
+  "create_new_wallet": "Create new wallet",
+  "you": "You",
+
+  "youve_got_no_messages": "You’ve got no messages",
+  "start_a_conversation_to_get_going": "Start a conversation to get going!",
+  "filter_conversations": "Filter conversations",
+  "all_messages": "All Messages",
+  "message_requests": "Message requests",
+  "message_requests_count": "%{count} Message requests",
+  "this_address_has_never_sent_you":
+    "This address has never sent you a message before. Do you want to allow them to message you?",
+  "no": "No",
+  "yes": "Yes",
+
+  "xmtp_app_directory": "XMTP App Directory",
+
+  "recents": "Recents",
+  "contacts": "Contacts",
+
+  "your_interoperable_web3_inbox": "Your interoperable web3 inbox",
+  "youre_just_a_few_steps_away_from_secure_wallet_to_wallet_messaging":
+    "You're just a few steps away from secure, wallet-to-wallet messaging",
+  "connect_your_wallet": "Connect your wallet",
+
+  "step_1_of_2": "Step 1 of 2",
+  "create_your_xmtp_identity": "Create your XMTP identity",
+  "now_that_your_wallet_is_connected": "Now that your wallet is connected, we’re going to create your XMTP identity on our network with a wallet signature.",
+  "create_xmtp_identity": "Create XMTP identity",
+  "step_2_of_2": "Step 2 of 2"
+}

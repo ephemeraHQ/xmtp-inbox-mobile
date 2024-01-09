@@ -1,118 +1,76 @@
+import '@thirdweb-dev/react-native-compat';
+
 /**
  * Sample React Native App
  * https://github.com/facebook/react-native
  *
  * @format
  */
-
+import {Ethereum} from '@thirdweb-dev/chains';
+import {
+  ThirdwebProvider,
+  coinbaseWallet,
+  localWallet,
+  metamaskWallet,
+  walletConnect,
+} from '@thirdweb-dev/react-native';
+import {NativeBaseProvider, extendTheme} from 'native-base';
 import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+import {Config} from 'react-native-config';
+import {AuthProvider} from './src/context/AuthContext';
+import {ClientProvider} from './src/context/ClientContext';
+import {AppNavigation} from './src/navigation/AppNavigation';
+import {colors} from './src/theme/colors';
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  const newColorTheme = {
+    primary: {
+      900: colors.actionPrimary,
+      800: colors.actionPrimary,
+      700: colors.actionPrimary,
+      600: colors.actionPrimary,
+      500: colors.actionPrimary,
+      400: colors.actionPrimary,
+      300: colors.actionPrimary,
+    },
+    brand: {
+      900: colors.actionPrimary,
+      800: colors.actionPrimary,
+      700: colors.actionPrimary,
+      600: colors.actionPrimary,
+      500: colors.actionPrimary,
+      400: colors.actionPrimary,
+      300: colors.actionPrimary,
+    },
   };
-
+  const theme = extendTheme({colors: newColorTheme});
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <ThirdwebProvider
+      activeChain={Ethereum}
+      clientId={Config.THRID_WEB_CLIENT_ID}
+      dAppMeta={{
+        name: 'XMTP Example',
+        description:
+          'This basic messaging app has an intentionally unopinionated UI to help make it easier for you to build with.',
+        logoUrl:
+          'https://pbs.twimg.com/profile_images/1668323456935510016/2c_Ue8dF_400x400.jpg',
+        url: 'https://xmtp.org',
+      }}
+      supportedWallets={[
+        localWallet(),
+        metamaskWallet(),
+        coinbaseWallet(),
+        walletConnect({recommended: true}),
+      ]}>
+      <AuthProvider>
+        <NativeBaseProvider theme={theme}>
+          <ClientProvider>
+            <AppNavigation />
+          </ClientProvider>
+        </NativeBaseProvider>
+      </AuthProvider>
+    </ThirdwebProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;
