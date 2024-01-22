@@ -1,62 +1,34 @@
 import {useIsFocused} from '@react-navigation/native';
-import {useENS} from '@thirdweb-dev/react-native';
+import {useAddress, useENS} from '@thirdweb-dev/react-native';
 import {DecodedMessage} from '@xmtp/react-native-sdk';
-import {Avatar, Box, Center, Fab, FlatList, HStack, VStack} from 'native-base';
+import {Box, Center, Fab, FlatList, HStack, VStack} from 'native-base';
 import React, {FC, useCallback, useEffect, useState} from 'react';
 import {ListRenderItem, Pressable} from 'react-native';
-import EmptyBackgrund from '../../assets/images/Bg_asset';
+import {AvatarWithFallback} from '../components/AvatarWithFallback';
 import {Button} from '../components/common/Button';
 import {Drawer} from '../components/common/Drawer';
 import {Icon} from '../components/common/Icon';
 import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
 import {useClient} from '../hooks/useClient';
+import {useContactInfo} from '../hooks/useContactInfo';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
 import {ScreenNames} from '../navigation/ScreenNames';
+import {saveConsent} from '../services/mmkvStorage';
 import {colors} from '../theme/colors';
+import {getMessageTimeDisplay} from '../utils/getMessageTimeDisplay';
+
+const EmptyBackground = require('../../assets/images/Bg_asset.svg').default;
 
 interface Conversation {
   isRequest: boolean;
   lastMessage: string;
   lastMessageTime: number;
-  name: string;
   timeDisplay: string;
   topic: string;
+  address: `0x${string}`;
 }
-
-const getMessageTimeDisplay = (time: number): string => {
-  const date = new Date(time);
-  // If today, show time
-  // If yesterday, show yesterday
-  // If this year, show month and day
-  // Otherwise, show year
-  if (date.getFullYear() === new Date().getFullYear()) {
-    if (date.getMonth() === new Date().getMonth()) {
-      if (date.getDate() === new Date().getDate()) {
-        return date.toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit',
-        });
-      } else if (date.getDate() === new Date().getDate() - 1) {
-        return 'Yesterday';
-      } else {
-        return date.toLocaleDateString([], {
-          month: 'short',
-          day: 'numeric',
-        });
-      }
-    } else {
-      return date.toLocaleDateString([], {
-        month: 'short',
-        day: 'numeric',
-      });
-    }
-  }
-  return date.toLocaleDateString([], {
-    year: 'numeric',
-  });
-};
 
 const useData = () => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -65,68 +37,87 @@ const useData = () => {
 
   useEffect(() => {
     const getAllMessages = async () => {
-      if (client) {
-        client.conversations.streamAllMessages(
-          async (message: DecodedMessage<unknown>) => {
-            const {topic} = message;
-            const convo = conversations.find(c => c.topic === topic);
-            if (convo) {
-              const newConvo: Conversation = {
-                ...convo,
-                lastMessage: message.content() as string,
-                lastMessageTime: message.sent,
-                timeDisplay: getMessageTimeDisplay(message.sent),
-              };
-              setConversations(prev => [
-                newConvo,
-                ...prev.filter(c => c.topic !== topic),
-              ]);
-            } else {
-              const [convos] = await Promise.all([client.conversations.list()]);
-              const newConvo = convos.find(c => c.topic === topic);
-              if (!newConvo) {
-                return;
-              }
-              const consent = await newConvo?.consentState();
-              const newConversation: Conversation = {
-                topic,
-                name: newConvo?.peerAddress,
-                lastMessage: message.content() as string,
-                lastMessageTime: message.sent,
-                timeDisplay: getMessageTimeDisplay(message.sent),
-                isRequest: consent !== 'allowed',
-              };
-              setConversations(prev => [newConversation, ...prev]);
-            }
-          },
-        );
-        client.conversations.list().then(async convos => {
-          const allMessages = await Promise.all(
-            convos.map(async conversation => {
-              const [messages, consent] = await Promise.all([
-                conversation.messages(1),
-                conversation.consentState(),
-              ]);
-              return {
-                topic: conversation.topic,
-                // TODO: ENS name lookup
-                name: conversation.peerAddress,
-                lastMessage: messages[0].content() as string,
-                lastMessageTime: messages[0].sent,
-                timeDisplay: getMessageTimeDisplay(messages[0].sent),
-                isRequest: consent !== 'allowed',
-              };
-            }),
-          );
-          const sorted = allMessages.sort((a, b) => {
-            return b.lastMessageTime - a.lastMessageTime;
-          });
-          setConversations(sorted.filter(convo => !convo.isRequest));
-          setRequests(sorted.filter(convo => convo.isRequest));
-        });
+      if (!client) {
+        return;
       }
+      const consentList = await client.contacts.refreshConsentList();
+      consentList.forEach(async item => {
+        saveConsent(
+          client.address,
+          item.value,
+          item.permissionType === 'allowed',
+        );
+      });
+      client.conversations.list().then(async convos => {
+        const allMessages = await Promise.all(
+          convos.map(async conversation => {
+            const [messages, consent] = await Promise.all([
+              conversation.messages(1),
+              conversation.consentState(),
+            ]);
+            return {
+              topic: conversation.topic,
+              lastMessage: messages[0].content() as string,
+              lastMessageTime: messages[0].sent,
+              timeDisplay: getMessageTimeDisplay(messages[0].sent),
+              isRequest: consent !== 'allowed',
+              address: conversation.peerAddress as `0x${string}`,
+            };
+          }),
+        );
+        const sorted = allMessages.sort((a, b) => {
+          return b.lastMessageTime - a.lastMessageTime;
+        });
+        setConversations(sorted.filter(convo => !convo.isRequest));
+        setRequests(sorted.filter(convo => convo.isRequest));
+      });
     };
     getAllMessages();
+  }, [client]);
+
+  useEffect(() => {
+    const startStream = () => {
+      if (!client) {
+        return;
+      }
+      client.conversations.streamAllMessages(
+        async (message: DecodedMessage<unknown>) => {
+          const {topic} = message;
+          const convo = conversations.find(c => c.topic === topic);
+          if (convo) {
+            const newConvo: Conversation = {
+              ...convo,
+              lastMessage: message.content() as string,
+              lastMessageTime: message.sent,
+              timeDisplay: getMessageTimeDisplay(message.sent),
+            };
+            setConversations(prev => [
+              newConvo,
+              ...prev.filter(c => c.topic !== topic),
+            ]);
+          } else {
+            const [convos] = await Promise.all([client.conversations.list()]);
+            const newConvo = convos.find(c => c.topic === topic);
+            if (!newConvo) {
+              return;
+            }
+            const consent = await newConvo?.consentState();
+            const newConversation: Conversation = {
+              topic,
+              lastMessage: message.content() as string,
+              lastMessageTime: message.sent,
+              timeDisplay: getMessageTimeDisplay(message.sent),
+              isRequest: consent !== 'allowed',
+              address: newConvo?.peerAddress as `0x${string}`,
+            };
+            setConversations(prev => [newConversation, ...prev]);
+          }
+        },
+      );
+    };
+
+    startStream();
+
     return () => {
       client?.conversations.cancelStreamAllMessages();
     };
@@ -151,6 +142,7 @@ const ListHeader: FC<ListHeaderProps> = ({
   onShowMessageRequests,
 }) => {
   const {navigate} = useTypedNavigation();
+  const address = useAddress();
   const {data} = useENS();
   const {avatarUrl} = data ?? {};
 
@@ -170,10 +162,10 @@ const ListHeader: FC<ListHeaderProps> = ({
         paddingX={'16px'}
         paddingBottom={'8px'}>
         <Pressable onPress={handleAccountPress}>
-          <Avatar
-            width={'40px'}
-            height={'40px'}
-            source={avatarUrl ? {uri: avatarUrl} : undefined}
+          <AvatarWithFallback
+            address={address ?? ''}
+            avatarUri={avatarUrl}
+            size={40}
           />
         </Pressable>
         <Box
@@ -265,6 +257,45 @@ const ListHeader: FC<ListHeaderProps> = ({
   );
 };
 
+const ListItem: FC<{item: Conversation}> = ({item}) => {
+  const {navigate} = useTypedNavigation();
+  const {displayName, avatarUrl} = useContactInfo(item.address);
+
+  return (
+    <Pressable
+      onPress={() =>
+        navigate(ScreenNames.Conversation, {
+          topic: item.topic,
+        })
+      }>
+      <HStack space={[2, 3]} alignItems={'center'} w={'100%'} padding={'16px'}>
+        <AvatarWithFallback
+          avatarUri={avatarUrl}
+          size={48}
+          style={{marginRight: 16}}
+          address={item.address}
+        />
+        <VStack flex={1} style={{justifyContent: 'flex-end'}}>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="middle"
+            typography="text-base/bold">
+            {displayName}
+          </Text>
+          <Text numberOfLines={1} typography="text-sm/regular">
+            {item.lastMessage}
+          </Text>
+        </VStack>
+        <Text
+          typography="text-xs/regular"
+          style={{alignSelf: 'flex-start', textAlignVertical: 'top'}}>
+          {item.timeDisplay}
+        </Text>
+      </HStack>
+    </Pressable>
+  );
+};
+
 export const ConversationListScreen = () => {
   const [list, setList] = useState<'ALL_MESSAGES' | 'MESSAGE_REQUESTS'>(
     'ALL_MESSAGES',
@@ -280,7 +311,7 @@ export const ConversationListScreen = () => {
   };
 
   const handleNewMessagePress = useCallback(() => {
-    navigate(ScreenNames.NewMessage);
+    navigate(ScreenNames.Search);
   }, [navigate]);
 
   const handleFilterPress = useCallback(
@@ -291,45 +322,9 @@ export const ConversationListScreen = () => {
     [],
   );
 
-  const renderItem: ListRenderItem<Conversation> = ({item}) => {
-    return (
-      <Pressable
-        onPress={() =>
-          navigate(ScreenNames.Conversation, {
-            topic: item.topic,
-          })
-        }>
-        <HStack
-          space={[2, 3]}
-          alignItems={'center'}
-          w={'100%'}
-          padding={'16px'}>
-          <Avatar
-            source={{uri: 'https://i.pravatar.cc/300'}}
-            marginRight={'16px'}
-            width={'48px'}
-            height={'48px'}
-          />
-          <VStack flex={1} style={{justifyContent: 'flex-end'}}>
-            <Text
-              numberOfLines={1}
-              ellipsizeMode="middle"
-              typography="text-base/bold">
-              {item.name}
-            </Text>
-            <Text numberOfLines={1} typography="text-sm/regular">
-              {item.lastMessage}
-            </Text>
-          </VStack>
-          <Text
-            typography="text-xs/regular"
-            style={{alignSelf: 'flex-start', textAlignVertical: 'top'}}>
-            {item.timeDisplay}
-          </Text>
-        </HStack>
-      </Pressable>
-    );
-  };
+  const renderItem: ListRenderItem<Conversation> = useCallback(({item}) => {
+    return <ListItem item={item} />;
+  }, []);
 
   return (
     <>
@@ -337,6 +332,7 @@ export const ConversationListScreen = () => {
         <FlatList
           w={'100%'}
           h={'100%'}
+          keyExtractor={item => item.topic}
           data={list === 'ALL_MESSAGES' ? messages : messageRequests}
           ListHeaderComponent={
             <ListHeader
@@ -353,7 +349,7 @@ export const ConversationListScreen = () => {
                 alignItems={'center'}
                 height={'100%'}>
                 <Center paddingBottom={'32px'} alignSelf={'center'}>
-                  <EmptyBackgrund />
+                  <EmptyBackground />
                 </Center>
                 <Text
                   paddingBottom={'6px'}

@@ -1,4 +1,4 @@
-import {useConnectionStatus} from '@thirdweb-dev/react-native';
+import {useAddress} from '@thirdweb-dev/react-native';
 import React, {
   FC,
   PropsWithChildren,
@@ -7,6 +7,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
+import {getClientKeys} from '../services/encryptedStorage';
 
 type AuthedStatus = 'LOADING' | 'AUTHED' | 'UNAUTHED';
 
@@ -24,18 +25,25 @@ export const AuthContext = createContext<AuthContextValue>({
 
 export const AuthProvider: FC<PropsWithChildren> = ({children}) => {
   const [authStatus, setAuthStatus] = useState<AuthedStatus>('LOADING');
-  const connectionStatus = useConnectionStatus();
+  const address = useAddress();
 
   useEffect(() => {
-    if (connectionStatus === 'connected') {
-      setAuthStatus('AUTHED');
-    } else if (connectionStatus === 'disconnected') {
-      setAuthStatus('UNAUTHED');
+    if (!address) {
+      return setAuthStatus('UNAUTHED');
     }
-  }, [connectionStatus]);
+    getClientKeys(address as `0x${string}`)
+      .then(keys => {
+        if (!keys) {
+          return setAuthStatus('UNAUTHED');
+        }
+      })
+      .catch(() => {
+        return setAuthStatus('UNAUTHED');
+      });
+  }, [address]);
 
   const callback = useCallback(() => {
-    // setAuthStatus('AUTHED');
+    setAuthStatus('AUTHED');
   }, []);
 
   return (

@@ -1,36 +1,83 @@
+import {useDisconnect, useSigner} from '@thirdweb-dev/react-native';
+import {Client} from '@xmtp/react-native-sdk';
 import {VStack} from 'native-base';
 import React, {useCallback, useEffect, useState} from 'react';
-import {Image} from 'react-native';
+import {DeviceEventEmitter, Image} from 'react-native';
 import {Button} from '../components/common/Button';
 import {Icon} from '../components/common/Icon';
 import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
+import {EventEmitterEvents} from '../consts/EventEmitters';
+import {useClientContext} from '../context/ClientContext';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
 import {ScreenNames} from '../navigation/ScreenNames';
+import {saveClientKeys} from '../services/encryptedStorage';
 import {colors} from '../theme/colors';
 
 type Step = 'CREATE_IDENTITY' | 'ENABLE_IDENTITY';
 
+const createIdentityPromise = async () =>
+  await new Promise<void>(resolve => {
+    const sub = DeviceEventEmitter.addListener(
+      EventEmitterEvents.CREATE_IDENTITY,
+      () => {
+        sub?.remove();
+        resolve();
+      },
+    );
+  });
+
+const enableIdentityPromise = async () =>
+  await new Promise<void>(resolve => {
+    const sub = DeviceEventEmitter.addListener(
+      EventEmitterEvents.ENABLE_IDENTITY,
+      () => {
+        sub?.remove();
+        resolve();
+      },
+    );
+  });
+
 export const OnboardingEnableIdentityScreen = () => {
   const [step, setStep] = useState<Step>('CREATE_IDENTITY');
   const {navigate} = useTypedNavigation();
+  const disconnect = useDisconnect();
+  const signer = useSigner();
+  const {setClient} = useClientContext();
+
   useEffect(() => {
-    // TODO: Check if identity exists
-    // setStep('ENABLE_IDENTITY');
-  }, []);
+    const startClientCreation = async () => {
+      if (!signer) {
+        return;
+      }
+      try {
+        const client = await Client.create(signer, {
+          preEnableIdentityCallback: enableIdentityPromise,
+          preCreateIdentityCallback: createIdentityPromise,
+        });
+        const keys = await client.exportKeyBundle();
+        const address = await signer.getAddress();
+        saveClientKeys(address as `0x${string}`, keys);
+        setClient(client);
+      } catch (e) {}
+    };
+    startClientCreation();
+  }, [setClient, signer]);
+
   const handleCreateIdentity = useCallback(() => {
+    DeviceEventEmitter.emit(EventEmitterEvents.CREATE_IDENTITY);
     setStep('ENABLE_IDENTITY');
   }, []);
 
   const handleEnableIdentity = useCallback(() => {
-    // return callback();
+    DeviceEventEmitter.emit(EventEmitterEvents.ENABLE_IDENTITY);
   }, []);
 
-  const handleDisconnectWallet = useCallback(() => {
-    // TODO: Disconnect wallet
+  const handleDisconnectWallet = useCallback(async () => {
+    await disconnect();
     navigate(ScreenNames.OnboardingConnectWallet);
-  }, [navigate]);
+  }, [navigate, disconnect]);
 
   return (
     <Screen>

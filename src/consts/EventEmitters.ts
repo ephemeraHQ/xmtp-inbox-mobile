@@ -1,0 +1,4 @@
+export enum EventEmitterEvents {
+  CREATE_IDENTITY = 'CREATE_IDENTITY',
+  ENABLE_IDENTITY = 'ENABLE_IDENTITY',
+}

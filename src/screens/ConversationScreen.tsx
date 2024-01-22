@@ -1,9 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {BlurView} from '@react-native-community/blur';
 import {useRoute} from '@react-navigation/native';
 import {DecodedMessage} from '@xmtp/react-native-sdk';
 import {
-  Avatar,
   Box,
   Container,
   FlatList,
@@ -13,23 +10,27 @@ import {
   VStack,
 } from 'native-base';
 import React, {useCallback, useEffect, useState} from 'react';
-import {ListRenderItem, Platform, StyleSheet, TextInput} from 'react-native';
+import {ListRenderItem, Platform} from 'react-native';
+import {ConversationHeader} from '../components/ConversationHeader';
+import {ConversationInput} from '../components/ConversationInput';
+import {Button} from '../components/common/Button';
+import {Drawer} from '../components/common/Drawer';
 import {Icon} from '../components/common/Icon';
+import {Modal} from '../components/common/Modal';
+import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
 import {useClient} from '../hooks/useClient';
+import {useContactInfo} from '../hooks/useContactInfo';
 import {useConversation} from '../hooks/useConversation';
 import {useConversationMessages} from '../hooks/useConversationMessages';
-import {useTypedNavigation} from '../hooks/useTypedNavigation';
-import {colors} from '../theme/colors';
-import {formatAddress} from '../utils/formatAddress';
-// import {Lookui} from '@thirdweb-dev/react-native';
+import {translate} from '../i18n';
 import {
-  getChainProvider,
-  shortenAddress,
-  useSupportedChains,
-  useWalletContext,
-} from '@thirdweb-dev/react-native';
-import {ethers} from 'ethers';
+  getConsent,
+  getTopicAddresses,
+  saveConsent,
+  saveTopicAddresses,
+} from '../services/mmkvStorage';
+import {colors} from '../theme/colors';
 
 const getTimestamp = (timestamp: number) => {
   // If today, return hours and minutes if not return date
@@ -45,244 +46,222 @@ const getTimestamp = (timestamp: number) => {
   return date.toLocaleDateString();
 };
 
-const useEnsInfo = (address: string) => {
-  const [info, setInfo] = useState<{
-    ens?: string | null;
-    avatarUrl?: string | null;
-  }>({
-    ens: null,
-    avatarUrl: null,
-  });
-
-  const supportedChains = useSupportedChains();
-  const {clientId} = useWalletContext();
-
-  useEffect(() => {
-    const fetchInfo = async () => {
-      const ethereum = supportedChains.find(chain => chain.chainId === 1);
-      const provider = getChainProvider(1, {
-        clientId,
-        supportedChains: ethereum
-          ? [
-              {
-                chainId: 1,
-                rpc: [...ethereum.rpc],
-                nativeCurrency: ethereum.nativeCurrency,
-                slug: ethereum.slug,
-              },
-            ]
-          : undefined,
-      });
-      if (provider instanceof ethers.providers.JsonRpcProvider) {
-        console.log('here1117');
-        const [ens, avatarUrl] = await Promise.all([
-          provider.lookupAddress(address),
-          provider.getAvatar(address),
-        ]);
-        console.log('here1117 ens', address, avatarUrl);
-        setInfo({
-          ens,
-          avatarUrl,
-        });
-      } else {
-        console.log('here1116');
-        const ens = await provider.lookupAddress(address);
-        console.log('here1116 ens', ens);
-        setInfo({
-          ens,
-          avatarUrl: null,
-        });
-      }
-    };
-    if (address && clientId) {
-      fetchInfo();
-    }
-  }, [address, clientId, supportedChains]);
-
-  return info;
-};
-
 const useData = (topic: string) => {
   const {messages} = useConversationMessages(topic);
   const {client} = useClient();
   const {conversation} = useConversation(topic);
-  const {ens, avatarUrl} = useEnsInfo(conversation?.peerAddress || '');
+  const cachedPeerAddress = getTopicAddresses(topic)?.[0];
+  const {displayName, avatarUrl} = useContactInfo(
+    conversation?.peerAddress || '',
+  );
+
+  useEffect(() => {
+    if (topic && conversation?.peerAddress) {
+      saveTopicAddresses(topic, [conversation?.peerAddress]);
+    }
+  }, [conversation?.peerAddress, topic]);
 
   return {
     profileImage: avatarUrl,
-    name: ens ?? shortenAddress(conversation?.peerAddress || ''),
-    address: conversation?.peerAddress,
+    name: displayName,
+    address: conversation?.peerAddress ?? cachedPeerAddress,
     myAddress: client?.address,
     messages,
     conversation,
+    client,
   };
+};
+
+const getInitialConsentState = (address: string, peerAddress: string) => {
+  const cachedConsent = getConsent(address, peerAddress);
+  console.log('cachedConsent', {cachedConsent, address, peerAddress});
+  if (cachedConsent === undefined) {
+    return 'unknown';
+  }
+  if (cachedConsent) {
+    return 'allowed';
+  }
+  return 'denied';
 };
 
 export const ConversationScreen = () => {
   const {params} = useRoute();
   const {topic} = params as {topic: string};
-  const {profileImage, name, myAddress, messages, address, conversation} =
+  const {name, myAddress, messages, address, conversation, client} =
     useData(topic);
-  const {goBack} = useTypedNavigation();
-
-  const [text, setText] = useState('');
-
-  useEffect(() => {
-    AsyncStorage.getItem(`CONVERSATION_TEXT_${topic}`).then(draft => {
-      if (draft) {
-        setText(draft);
-      }
-    });
-  }, [topic]);
-
-  const updateText = useCallback(
-    (newText: string) => {
-      AsyncStorage.setItem(`CONVERSATION_TEXT_${topic}`, newText);
-      setText(newText);
-    },
-    [topic],
+  const [showReply, setShowReply] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [consent, setConsent] = useState<'allowed' | 'denied' | 'unknown'>(
+    getInitialConsentState(myAddress ?? '', address ?? ''),
   );
 
-  const sendMessage = useCallback(() => {
-    if (text) {
-      updateText('');
-      conversation?.send(text);
+  useEffect(() => {
+    if (!conversation) {
+      return;
     }
-  }, [text, updateText, conversation]);
+    conversation.consentState().then(currentConsent => {
+      setConsent(currentConsent);
+    });
+  }, [conversation]);
+
+  const sendMessage = useCallback(
+    (payload: {text?: string}) => {
+      conversation?.send(payload.text);
+    },
+    [conversation],
+  );
 
   const renderItem: ListRenderItem<DecodedMessage<unknown>> = ({item}) => {
     const isMe = item.senderAddress === myAddress;
+    const textContent = typeof item.content() === 'string';
+    // TODO: Handle other content types
+    if (!textContent) {
+      return null;
+    }
     return (
-      <Box marginLeft={6} marginRight={6} marginY={2} flexShrink={1}>
-        <VStack>
-          <Container
-            backgroundColor={
-              isMe ? colors.actionPrimary : colors.backgroundSecondary
-            }
-            alignSelf={isMe ? 'flex-end' : 'flex-start'}
-            borderRadius={'16px'}
-            borderBottomRightRadius={isMe ? 0 : '16px'}
-            borderTopLeftRadius={isMe ? '16px' : 0}
-            paddingY={3}
-            paddingX={5}>
+      <Pressable>
+        <Box marginLeft={6} marginRight={6} marginY={2} flexShrink={1}>
+          <VStack>
+            <Container
+              backgroundColor={
+                isMe ? colors.actionPrimary : colors.backgroundSecondary
+              }
+              alignSelf={isMe ? 'flex-end' : 'flex-start'}
+              borderRadius={'16px'}
+              borderBottomRightRadius={isMe ? 0 : '16px'}
+              borderTopLeftRadius={isMe ? '16px' : 0}
+              paddingY={3}
+              paddingX={5}>
+              <Text
+                typography="text-base/medium"
+                color={isMe ? colors.actionPrimaryText : colors.textPrimary}>
+                {item.content() as string}
+              </Text>
+            </Container>
             <Text
-              typography="text-base/medium"
-              // flexShrink={1}
-              color={isMe ? colors.actionPrimaryText : colors.textPrimary}>
-              {item.content() as string}
+              flexShrink={1}
+              color={colors.primaryN200}
+              typography="text-xs/semi-bold"
+              alignSelf={isMe ? 'flex-end' : 'flex-start'}>
+              {getTimestamp(item.sent)}
             </Text>
-          </Container>
-          <Text
-            flexShrink={1}
-            color={colors.primaryN200}
-            typography="text-xs/semi-bold"
-            alignSelf={isMe ? 'flex-end' : 'flex-start'}>
-            {getTimestamp(item.sent)}
-          </Text>
-        </VStack>
-      </Box>
+          </VStack>
+        </Box>
+      </Pressable>
     );
   };
 
-  return (
-    <Box backgroundColor={colors.backgroundPrimary}>
-      <BlurView style={styles.blur} blurType="light" blurAmount={5}>
-        <Box width="100%">
-          <HStack
-            w={'100%'}
-            alignItems={'center'}
-            paddingLeft={3}
-            paddingRight={4}>
-            <Pressable onPress={goBack}>
-              <Icon name="chevron-left-thick" size={24} />
-            </Pressable>
+  const onConsent = useCallback(() => {
+    if (address) {
+      client?.contacts.allow([address]);
+    }
+    setConsent('allowed');
+    saveConsent(myAddress ?? '', address ?? '', true);
+  }, [address, client?.contacts, myAddress]);
 
-            <VStack flex={1} paddingLeft={2}>
-              <Text typography="text-lg/heavy">{name}</Text>
-              <HStack alignItems={'center'}>
-                <Icon name="ethereum" size={16} />
-                <Text
-                  typography="text-xs/mono medium"
-                  color={colors.textSecondary}>
-                  {address ? formatAddress(address) : ''}
-                </Text>
-              </HStack>
-            </VStack>
-            <Avatar
-              source={profileImage ? {uri: profileImage} : undefined}
-              marginLeft={2}
-              size={'40px'}
-            />
-          </HStack>
-        </Box>
-      </BlurView>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        height={'100%'}
-        w="100%">
-        <Box height={'90%'}>
-          <FlatList
-            inverted
+  const onBlock = useCallback(() => {
+    if (address) {
+      client?.contacts.deny([address]);
+    }
+    setConsent('denied');
+    saveConsent(myAddress ?? '', address ?? '', false);
+  }, [address, client?.contacts, myAddress]);
+
+  return (
+    <>
+      <Screen
+        includeTopPadding={false}
+        containerStlye={{
+          alignItems: undefined,
+        }}>
+        <Box backgroundColor={colors.backgroundPrimary} paddingBottom={10}>
+          <ConversationHeader
+            peerAddress={address}
+            onAvatarPress={() => setShowProfileModal(true)}
+          />
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             height={'100%'}
-            data={messages}
-            renderItem={renderItem}
-            ListFooterComponent={<Box height={'120px'} />}
-          />
-        </Box>
-        <HStack
-          marginBottom={'60px'}
-          borderColor={colors.actionPrimary}
-          borderWidth={2}
-          paddingLeft={4}
-          marginX={2}
-          paddingY={2}
-          bottom={0}
-          borderRadius={24}
-          borderBottomRightRadius={0}>
-          <TextInput
-            value={text}
-            style={styles.input}
-            onChangeText={updateText}
-          />
-          <Pressable onPress={sendMessage}>
-            <Box
-              marginRight={2}
-              backgroundColor={colors.actionPrimary}
-              borderRadius={32}
-              height={'30px'}
-              width={'30px'}
-              justifyContent={'center'}
-              alignItems={'center'}
-              borderBottomRightRadius={0}>
-              <Icon
-                name="arrow-small-up-thick"
-                size={24}
-                color={colors.actionPrimaryText}
+            paddingBottom={'10px'}
+            w="100%">
+            <Box flex={1}>
+              <FlatList
+                keyExtractor={item => item.id}
+                inverted
+                data={messages}
+                renderItem={renderItem}
+                ListFooterComponent={<Box height={'100px'} />}
               />
             </Box>
-          </Pressable>
-        </HStack>
-      </KeyboardAvoidingView>
-    </Box>
+            {consent !== 'unknown' ? (
+              <ConversationInput
+                sendMessage={sendMessage}
+                currentAddress={myAddress}
+                topic={topic}
+              />
+            ) : (
+              <HStack justifyContent={'space-around'} marginX={'40px'}>
+                <Button onPress={onConsent}>
+                  <Text
+                    typography="text-base/medium"
+                    color={colors.backgroundPrimary}>
+                    {translate('allow')}
+                  </Text>
+                </Button>
+                <Button onPress={onBlock}>
+                  <Text
+                    typography="text-base/medium"
+                    color={colors.backgroundPrimary}>
+                    {translate('block')}
+                  </Text>
+                </Button>
+              </HStack>
+            )}
+          </KeyboardAvoidingView>
+        </Box>
+      </Screen>
+
+      <Drawer
+        title="Test"
+        isOpen={showReply}
+        onBackgroundPress={() => setShowReply(false)}>
+        <VStack w={'100%'} alignItems={'flex-start'}>
+          <Box
+            backgroundColor={'white'}
+            paddingX={'4px'}
+            paddingY={'6px'}
+            marginRight={'12px'}>
+            <Text>Test</Text>
+          </Box>
+        </VStack>
+      </Drawer>
+      <Modal
+        onBackgroundPress={() => setShowProfileModal(false)}
+        isOpen={showProfileModal}>
+        <VStack alignItems={'center'} justifyContent={'center'}>
+          <Text typography="text-xl/bold" textAlign={'center'}>
+            {name}
+          </Text>
+          <Text typography="text-sm/bold">{translate('domain_origin')}</Text>
+
+          <Button
+            variant={'ghost'}
+            rightIcon={
+              <Icon
+                name={'arrow-right'}
+                type={'mini'}
+                color={colors.actionPrimary}
+              />
+            }>
+            <Text
+              typography="text-base/bold"
+              color={colors.actionPrimary}
+              textAlign={'center'}>
+              {'lenster.xyz'}
+            </Text>
+          </Button>
+        </VStack>
+      </Modal>
+    </>
   );
 };
-
-const styles = StyleSheet.create({
-  input: {
-    fontFamily: 'SF Pro Rounded',
-    fontSize: 17,
-    fontStyle: 'normal',
-    fontWeight: '400',
-    lineHeight: 23,
-    letterSpacing: 0.5,
-    flex: 1,
-  },
-  blur: {
-    position: 'absolute',
-    width: '100%',
-    zIndex: 10,
-    elevation: 200,
-    paddingTop: Platform.OS === 'ios' ? 60 : 0,
-    paddingBottom: 8,
-  },
-});

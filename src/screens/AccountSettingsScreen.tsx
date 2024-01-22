@@ -3,34 +3,31 @@ import {
   useDisconnect,
   useENS,
   useWallet,
-  useWallets,
 } from '@thirdweb-dev/react-native';
 import {} from 'ethers';
-import {
-  Avatar,
-  Box,
-  FlatList,
-  HStack,
-  SectionList,
-  Switch,
-  VStack,
-} from 'native-base';
+import {Box, FlatList, HStack, SectionList, Switch, VStack} from 'native-base';
 import React, {useCallback, useMemo, useState} from 'react';
 import {
   Linking,
   ListRenderItem,
+  Platform,
   Pressable,
   SectionListRenderItem,
 } from 'react-native';
+import {AvatarWithFallback} from '../components/AvatarWithFallback';
 import {Button} from '../components/common/Button';
 import {Drawer} from '../components/common/Drawer';
 import {Icon, IconName} from '../components/common/Icon';
 import {Pill} from '../components/common/Pill';
 import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
+import {AppConfig} from '../consts/AppConfig';
+import {useClientContext} from '../context/ClientContext';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
 import {ScreenNames} from '../navigation/ScreenNames';
+import {clearClientKeys} from '../services/encryptedStorage';
+import {clearAll} from '../services/mmkvStorage';
 import {blues, colors, greens, reds} from '../theme/colors';
 import {formatAddress} from '../utils/formatAddress';
 
@@ -48,35 +45,32 @@ interface Wallet {
 
 const useData = () => {
   const address = useAddress();
-  const walletsssd = useWallets();
   const wallet = useWallet();
   const {data} = useENS();
-  // const;
   const {ens, avatarUrl} = data ?? {};
-  console.log('here1116 walletsssd', walletsssd);
   if (!wallet) {
     throw new Error('Wallet not found');
   }
-
-  console.log('here111 meta', wallet.getMeta());
-  console.log('here111 meta', wallet.getSigner());
-  // console.log('here111 meta', wallet.());
-  console.log('here111 meta', wallet.getMeta());
 
   const addresses: Address[] = [
     {
       display: address ? formatAddress(address) : '',
       type: 'ETH',
     },
-    {
+  ];
+  if (ens) {
+    addresses.push({
       display: ens ?? '',
       type: 'ENS',
-    },
-    {
-      display: 'matt.galligan.lens',
+    });
+  }
+
+  if (AppConfig.LENS_ENABLED) {
+    addresses.push({
+      display: 'lens.eth',
       type: 'LENS',
-    },
-  ];
+    });
+  }
 
   const wallets: Wallet[] = [
     {
@@ -121,12 +115,11 @@ type Section = 'TOGGLE' | 'CONTACT' | 'DELETE';
 
 export const AccountSettingsScreen = () => {
   const {navigate, goBack} = useTypedNavigation();
+  const {setClient} = useClientContext();
   const {avatarUrl, addresses, wallets, name} = useData();
   const [walletsShown, setWalletsShown] = useState(false);
   const disconnect = useDisconnect();
-  const walletInstance = useWallet();
-
-  console.log('here1116 walletInstance', walletInstance);
+  const address = useAddress();
 
   const toggleShowCollectibles = useCallback(() => {
     return null;
@@ -175,25 +168,33 @@ export const AccountSettingsScreen = () => {
         data: [
           {
             text: translate('clear_local_data'),
-            onPress: () => handleLink('https://www.google.com'),
+            onPress: () => {
+              clearAll();
+            },
           },
           {
             text: translate('disconnect_wallet'),
-            onPress: () => {
+            onPress: async () => {
+              if (!address) return;
+              await clearClientKeys(address as `0x${string}`);
+              setClient(null);
               // handleLink('https://www.google.com')
               disconnect()
-                .then(() => {
-                  console.log('here1116 disconnected');
-                })
-                .catch(err => {
-                  console.log('here1116 err', err);
-                });
+                .then(() => {})
+                .catch();
             },
           },
         ],
       },
     ];
-  }, [toggleShowCollectibles, toggleNotifications, handleLink, disconnect]);
+  }, [
+    toggleShowCollectibles,
+    toggleNotifications,
+    handleLink,
+    disconnect,
+    address,
+    setClient,
+  ]);
 
   const renderItem: SectionListRenderItem<ListItem, {section: Section}> = ({
     section,
@@ -250,18 +251,18 @@ export const AccountSettingsScreen = () => {
     const handleWalletChange = () => {};
 
     return (
-      <Pressable onPress={handleWalletChange}>
+      <Pressable onPress={handleWalletChange} key={item.address}>
         <HStack
           alignItems={'center'}
           flex={1}
           paddingY={'8px'}
           marginX={'16px'}
           space={[2, 3]}>
-          <Avatar
-            marginRight={'16px'}
-            width={'32px'}
-            height={'32px'}
-            source={{uri: item.image}}
+          <AvatarWithFallback
+            style={{marginRight: 16}}
+            size={32}
+            address={item.address}
+            avatarUri={item.image}
           />
           <VStack flex={1} style={{justifyContent: 'flex-start'}}>
             <Text typography="text-base/bold">{item.name}</Text>
@@ -286,6 +287,7 @@ export const AccountSettingsScreen = () => {
   return (
     <>
       <Screen
+        includeTopPadding={Platform.OS === 'android'}
         title={
           <Text typography="text-lg/heavy" textAlign={'center'}>
             {translate('you')}
@@ -301,10 +303,10 @@ export const AccountSettingsScreen = () => {
             <Icon name="x-circle" />
           </Pressable>
         }>
-        <Avatar
-          width={'80px'}
-          height={'80px'}
-          source={avatarUrl ? {uri: avatarUrl} : undefined}
+        <AvatarWithFallback
+          size={80}
+          avatarUri={avatarUrl}
+          address={address ?? ''}
         />
         <Button
           onPress={() => setWalletsShown(true)}
@@ -330,6 +332,7 @@ export const AccountSettingsScreen = () => {
         </HStack>
         <SectionList
           w={'100%'}
+          keyExtractor={item => item.text}
           bounces={false}
           sections={listItems}
           renderItem={renderItem}
@@ -344,6 +347,7 @@ export const AccountSettingsScreen = () => {
           w={'100%'}
           bounces={false}
           data={wallets}
+          keyExtractor={item => item.address}
           ListFooterComponent={
             <VStack w={'100%'} alignItems={'flex-start'}>
               <Pressable>
