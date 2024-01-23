@@ -5,7 +5,6 @@ import {StyleSheet, TouchableOpacity} from 'react-native';
 import {colors} from '../../theme/colors';
 
 interface ModalProps {
-  title: string;
   isOpen: boolean;
   onBackgroundPress: () => void;
 }

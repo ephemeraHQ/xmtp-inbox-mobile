@@ -15,21 +15,21 @@ PODS:
   - DoubleConversion (1.1.6)
   - EXApplication (5.4.0):
     - ExpoModulesCore
-  - EXConstants (15.4.2):
+  - EXConstants (15.4.5):
     - ExpoModulesCore
-  - EXFont (11.10.0):
+  - EXFont (11.10.2):
     - ExpoModulesCore
-  - Expo (50.0.0-preview.7):
+  - Expo (50.0.1):
     - ExpoModulesCore
   - ExpoClipboard (4.5.0):
     - ExpoModulesCore
   - ExpoDocumentPicker (11.7.0):
     - ExpoModulesCore
-  - ExpoFileSystem (16.0.2):
+  - ExpoFileSystem (16.0.4):
     - ExpoModulesCore
-  - ExpoKeepAwake (12.8.0):
+  - ExpoKeepAwake (12.8.2):
     - ExpoModulesCore
-  - ExpoModulesCore (1.11.4):
+  - ExpoModulesCore (1.11.7):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
@@ -987,13 +987,23 @@ PODS:
   - React-Mapbuffer (0.73.0):
     - glog
     - React-debug
-  - react-native-blur (4.3.2):
+  - react-native-blob-util (0.19.6):
+    - React-Core
+  - react-native-blur (4.4.0):
+    - glog
+    - RCT-Folly (= 2022.05.16.00)
     - React-Core
   - react-native-config (1.5.1):
     - react-native-config/App (= 1.5.1)
   - react-native-config/App (1.5.1):
     - React-Core
+  - react-native-encrypted-storage (4.0.3):
+    - React-Core
   - react-native-get-random-values (1.10.0):
+    - React-Core
+  - react-native-image-picker (7.1.0):
+    - glog
+    - RCT-Folly (= 2022.05.16.00)
     - React-Core
   - react-native-mmkv (2.11.0):
     - MMKV (>= 1.2.13)
@@ -1177,9 +1187,11 @@ PODS:
     - React-perflogger (= 0.73.0)
   - RNCAsyncStorage (1.21.0):
     - React-Core
+  - RNCClipboard (1.13.2):
+    - React-Core
   - RNDeviceInfo (10.12.0):
     - React-Core
-  - RNLocalize (3.0.4):
+  - RNLocalize (3.0.6):
     - React-Core
   - RNReanimated (3.6.1):
     - glog
@@ -1193,23 +1205,27 @@ PODS:
   - RNSVG (13.14.0):
     - React-Core
   - secp256k1.swift (0.1.4)
+  - simdjson (3.1.0-wmelon1)
   - SocketRocket (0.6.1)
   - SwiftProtobuf (1.20.3)
+  - WatermelonDB (0.27.1):
+    - React
+    - simdjson
   - web3.swift (1.6.0):
     - BigInt (~> 5.0.0)
     - GenericJSON (~> 2.0)
     - Logging (~> 1.0.0)
     - secp256k1.swift (~> 0.1)
-  - XMTP (0.7.4-alpha0):
+  - XMTP (0.7.5-alpha0):
     - Connect-Swift (= 0.3.0)
     - GzipSwift
     - web3.swift
     - XMTPRust (= 0.3.7-beta0)
-  - XMTPReactNative (1.23.3):
+  - XMTPReactNative (1.24.0):
     - ExpoModulesCore
     - MessagePacker
     - secp256k1.swift
-    - XMTP (= 0.7.4-alpha0)
+    - XMTP (= 0.7.5-alpha0)
   - XMTPRust (0.3.7-beta0)
   - Yoga (1.14.0)
 
@@ -1278,9 +1294,12 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector-modern`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
+  - react-native-blob-util (from `../node_modules/react-native-blob-util`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - react-native-config (from `../node_modules/react-native-config`)
+  - react-native-encrypted-storage (from `../node_modules/react-native-encrypted-storage`)
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
+  - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-mmkv (from `../node_modules/react-native-mmkv`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-randombytes (from `../node_modules/react-native-randombytes`)
@@ -1306,12 +1325,15 @@ DEPENDENCIES:
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
+  - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNLocalize (from `../node_modules/react-native-localize`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - secp256k1.swift
+  - "simdjson (from `../node_modules/@nozbe/simdjson`)"
+  - "WatermelonDB (from `../node_modules/@nozbe/watermelondb`)"
   - "XMTPReactNative (from `../node_modules/@xmtp/react-native-sdk/ios`)"
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -1425,12 +1447,18 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   React-Mapbuffer:
     :path: "../node_modules/react-native/ReactCommon"
+  react-native-blob-util:
+    :path: "../node_modules/react-native-blob-util"
   react-native-blur:
     :path: "../node_modules/@react-native-community/blur"
   react-native-config:
     :path: "../node_modules/react-native-config"
+  react-native-encrypted-storage:
+    :path: "../node_modules/react-native-encrypted-storage"
   react-native-get-random-values:
     :path: "../node_modules/react-native-get-random-values"
+  react-native-image-picker:
+    :path: "../node_modules/react-native-image-picker"
   react-native-mmkv:
     :path: "../node_modules/react-native-mmkv"
   react-native-netinfo:
@@ -1481,6 +1509,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
+  RNCClipboard:
+    :path: "../node_modules/@react-native-clipboard/clipboard"
   RNDeviceInfo:
     :path: "../node_modules/react-native-device-info"
   RNLocalize:
@@ -1491,6 +1521,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-screens"
   RNSVG:
     :path: "../node_modules/react-native-svg"
+  simdjson:
+    :path: "../node_modules/@nozbe/simdjson"
+  WatermelonDB:
+    :path: "../node_modules/@nozbe/watermelondb"
   XMTPReactNative:
     :path: "../node_modules/@xmtp/react-native-sdk/ios"
   Yoga:
@@ -1506,14 +1540,14 @@ SPEC CHECKSUMS:
   Connect-Swift: d38eedc1907d440314f8d26d5a038a00cbb0f6f1
   DoubleConversion: fea03f2699887d960129cc54bba7e52542b6f953
   EXApplication: 2a0d9abd4feace9c6faedfe541c1dec02e3702cd
-  EXConstants: e77cccf9afb245a6fb2ea917fe5f45f0e1d8b841
-  EXFont: 9ae7e8e2e4825cef04a45dca74512a3f711e2fe9
-  Expo: cd2dc043dd1cc3d9e8e4e035fb9a41b421e8f13f
+  EXConstants: 988aa430ca0f76b43cd46b66e7fae3287f9cc2fc
+  EXFont: 21b9c760abd593ce8f0d5386b558ced76018506f
+  Expo: 08cf73d1f27103bdcdfba181c81469ac4b15ac5a
   ExpoClipboard: d2f0e44d50e5ba07b02f5fb7bd280178b420e24e
   ExpoDocumentPicker: d3b6b0ed2dbbc2f05158e0294dd3f4673f386e5f
-  ExpoFileSystem: fb4c94cc5ec5c50cb2663d2f6d503a1960b95a1d
-  ExpoKeepAwake: ed71bfe0e6ecd38e337586ba6e1ba27a56eb373b
-  ExpoModulesCore: 01c0abfa6cd9c41c4bd76d8a1a079e6b591db10f
+  ExpoFileSystem: 39e454b8e7f2358ae2c8f8ec255fede4c3039493
+  ExpoKeepAwake: 0f5cad99603a3268e50af9a6eb8b76d0d9ac956c
+  ExpoModulesCore: f103ff1346136b2926e1654f32b3f45ab0b74830
   ExpoSecureStore: 5372610a4bbcf5e50fafbe6f38f8d9c22edf8253
   FBLazyVector: 39ba45baf4e398618f8b3a4bb6ba8fcdb7fc2133
   FBReactNativeSpec: 20cfca68498e27879514790359289d1df2b52c56
@@ -1557,9 +1591,12 @@ SPEC CHECKSUMS:
   React-jsinspector: 9f6fb9ed9f03a0fb961ab8dc2e0e0ee0dc729e77
   React-logger: 008caec0d6a587abc1e71be21bfac5ba1662fe6a
   React-Mapbuffer: 58fe558faf52ecde6705376700f848d0293d1cef
-  react-native-blur: cfdad7b3c01d725ab62a8a729f42ea463998afa2
+  react-native-blob-util: d8fa1a7f726867907a8e43163fdd8b441d4489ea
+  react-native-blur: 27113acc008facbc8accae5fb3a78b8424f64cfd
   react-native-config: 86038147314e2e6d10ea9972022aa171e6b1d4d8
+  react-native-encrypted-storage: db300a3f2f0aba1e818417c1c0a6be549038deb7
   react-native-get-random-values: 384787fd76976f5aec9465aff6fa9e9129af1e74
+  react-native-image-picker: 6c51359eca7a7df9f07e297218c25696eb9da976
   react-native-mmkv: e97c0c79403fb94577e5d902ab1ebd42b0715b43
   react-native-netinfo: 8a7fd3f7130ef4ad2fb4276d5c9f8d3f28d2df3d
   react-native-randombytes: 421f1c7d48c0af8dbcd471b0324393ebf8fe7846
@@ -1585,20 +1622,23 @@ SPEC CHECKSUMS:
   React-utils: 42708ea436853045ef1eaff29996813d9fbbe209
   ReactCommon: 851280fb976399ca1aabc74cc2c3612069ea70a2
   RNCAsyncStorage: 618d03a5f52fbccb3d7010076bc54712844c18ef
+  RNCClipboard: 60fed4b71560d7bfe40e9d35dea9762b024da86d
   RNDeviceInfo: db5c64a060e66e5db3102d041ebe3ef307a85120
-  RNLocalize: 1ce4263770515f53d3de442ce7657b3661b16a37
+  RNLocalize: 4222a3756cdbe2dc9a5bdf445765a4d2572107cb
   RNReanimated: 57f436e7aa3d277fbfed05e003230b43428157c0
   RNScreens: b582cb834dc4133307562e930e8fa914b8c04ef2
   RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396
   secp256k1.swift: a7e7a214f6db6ce5db32cc6b2b45e5c4dd633634
+  simdjson: e6bfae9ce4bcdc80452d388d593816f1ca2106f3
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   SwiftProtobuf: b02b5075dcf60c9f5f403000b3b0c202a11b6ae1
+  WatermelonDB: 842d22ba555425aa9f3ce551239a001200c539bc
   web3.swift: 2263d1e12e121b2c42ffb63a5a7beb1acaf33959
-  XMTP: 9ba94e797211aa4f7cbed9ed2a2f4c44d32c8d06
-  XMTPReactNative: 43f7fe6a0087df22e6b9d0384165f5786d5c4052
+  XMTP: aa137f3c8ac7b61ecfb3de0973f2dc2e672a9ec1
+  XMTPReactNative: 9ef84fbfbbf78ed83d0ef905714e6464395ccc08
   XMTPRust: 8848a2ba761b2c961d666632f2ad27d1082faa93
   Yoga: 20d6a900dcc8d61d5e3b799bbf627cc34474a8c4
 
-PODFILE CHECKSUM: 3b39088fc1d0f3fcd9a880a2c0a8d496c115dda0
+PODFILE CHECKSUM: c765268d8eab018a5f4619e1d00ca4dab437bc4f
 
 COCOAPODS: 1.14.3

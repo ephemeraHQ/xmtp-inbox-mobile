@@ -35,5 +35,16 @@
   "create_your_xmtp_identity": "Create your XMTP identity",
   "now_that_your_wallet_is_connected": "Now that your wallet is connected, we’re going to create your XMTP identity on our network with a wallet signature.",
   "create_xmtp_identity": "Create XMTP identity",
-  "step_2_of_2": "Step 2 of 2"
+  "step_2_of_2": "Step 2 of 2",
+
+  "domain_origin": "Domain origin",
+
+  "copy_your_code": "Copy your code",
+
+  "allow": "Allow",
+  "block": "Block",
+
+  "yesterday": "Yesterday",
+
+  "conversation_image_alt": "Attached Image"
 }

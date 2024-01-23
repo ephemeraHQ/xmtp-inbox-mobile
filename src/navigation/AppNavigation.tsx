@@ -1,16 +1,17 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import * as React from 'react';
-import {useAuthed} from '../hooks/useAuthed';
+import {useClientContext} from '../context/ClientContext';
 import {AccountSettingsScreen} from '../screens/AccountSettingsScreen';
 import {ConversationListScreen} from '../screens/ConversationListScreen';
 import {ConversationScreen} from '../screens/ConversationScreen';
 import {DiscoverScreen} from '../screens/DiscoverScreen';
 import {LoadingScreen} from '../screens/LoadingScreen';
-import {NewMessageScreen} from '../screens/NewMessageScreen';
+import {NewConversationScreen} from '../screens/NewConversationScreen';
 import {OnboardingConnectWalletScreen} from '../screens/OnboardingConnectWalletScreen';
 import {OnboardingEnableIdentityScreen} from '../screens/OnboardingEnableIdentityScreen';
 import {QrCodeScreen} from '../screens/QrCodeScreen';
+import {SearchScreen} from '../screens/SearchScreen';
 import {UserProfilesScreen} from '../screens/UserProfilesScreen';
 import {ScreenNames} from './ScreenNames';
 import {
@@ -28,10 +29,10 @@ const AuthenticatedStack =
 const OnboardingStack = createNativeStackNavigator<OnboardingStackParams>();
 
 export const AppNavigation = () => {
-  const {status} = useAuthed();
+  const {client, loading} = useClientContext();
   return (
     <NavigationContainer linking={linkingDefinition}>
-      {status === 'LOADING' && (
+      {loading && (
         <LoadingStack.Navigator screenOptions={{headerShown: false}}>
           <LoadingStack.Screen
             name={ScreenNames.Loading}
@@ -39,7 +40,7 @@ export const AppNavigation = () => {
           />
         </LoadingStack.Navigator>
       )}
-      {status === 'UNAUTHED' && (
+      {!client && (
         <OnboardingStack.Navigator screenOptions={{headerShown: false}}>
           <OnboardingStack.Screen
             name={ScreenNames.OnboardingConnectWallet}
@@ -51,7 +52,7 @@ export const AppNavigation = () => {
           />
         </OnboardingStack.Navigator>
       )}
-      {status === 'AUTHED' && (
+      {!!client && (
         <AuthenticatedStack.Navigator
           initialRouteName={ScreenNames.ConversationList}
           screenOptions={{headerShown: false}}>
@@ -75,8 +76,12 @@ export const AppNavigation = () => {
             component={DiscoverScreen}
           />
           <AuthenticatedStack.Screen
-            name={ScreenNames.NewMessage}
-            component={NewMessageScreen}
+            name={ScreenNames.NewConversation}
+            component={NewConversationScreen}
+          />
+          <AuthenticatedStack.Screen
+            name={ScreenNames.Search}
+            component={SearchScreen}
             options={{
               presentation: 'modal',
             }}

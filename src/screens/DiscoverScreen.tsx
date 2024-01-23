@@ -186,6 +186,7 @@ interface DiscoverListProps {
 const DiscoverList: FC<DiscoverListProps> = ({items}) => {
   return (
     <FlatList
+      keyExtractor={(item, index) => `${item.header}-${index}`}
       paddingX={'16px'}
       paddingTop={'32px'}
       ListHeaderComponent={

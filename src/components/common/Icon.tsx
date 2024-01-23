@@ -308,7 +308,8 @@ export type IconName =
   | 'wrench'
   | 'wrench-screwdriver'
   | 'x-circle'
-  | 'x-mark';
+  | 'x-mark'
+  | 'xmtp-logo';
 
 type IconType = 'mini' | 'outline' | 'solid';
 
@@ -621,6 +622,7 @@ const iconSet = new Set<IconName>([
   'wrench-screwdriver',
   'x-circle',
   'x-mark',
+  'xmtp-logo',
 ]);
 
 const getIcon = (name: IconName, type: IconType) => {
@@ -3503,6 +3505,9 @@ const getIcon = (name: IconName, type: IconType) => {
       } else {
         return require('../../../assets/icons/solid-x-mark.svg').default;
       }
+
+    // case 'xmtp-logo':
+    //   return require('../../../assets/icons/xmtp-logo.svg').default;
 
     default:
       return null;

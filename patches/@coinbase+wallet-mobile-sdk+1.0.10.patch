@@ -1,0 +1,747 @@
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build.gradle b/node_modules/@coinbase/wallet-mobile-sdk/android/build.gradle
+index 6d7909d..c0bd102 100644
+--- a/node_modules/@coinbase/wallet-mobile-sdk/android/build.gradle
++++ b/node_modules/@coinbase/wallet-mobile-sdk/android/build.gradle
+@@ -53,13 +53,16 @@ afterEvaluate {
+ android {
+   compileSdkVersion safeExtGet("compileSdkVersion", 33)
+ 
+-  compileOptions {
+-    sourceCompatibility JavaVersion.VERSION_11
+-    targetCompatibility JavaVersion.VERSION_11
+-  }
++  def agpVersion = com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION
++  if (agpVersion.tokenize('.')[0].toInteger() < 8) {
++    compileOptions {
++      sourceCompatibility JavaVersion.VERSION_11
++      targetCompatibility JavaVersion.VERSION_11
++    }
+ 
+-  kotlinOptions {
+-    jvmTarget = JavaVersion.VERSION_11.majorVersion
++    kotlinOptions {
++      jvmTarget = JavaVersion.VERSION_11.majorVersion
++    }
+   }
+ 
+   namespace "expo.modules.coinbasewalletsdkexpo"
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/generated/source/buildConfig/debug/expo/modules/coinbasewalletsdkexpo/BuildConfig.java b/node_modules/@coinbase/wallet-mobile-sdk/android/build/generated/source/buildConfig/debug/expo/modules/coinbasewalletsdkexpo/BuildConfig.java
+new file mode 100644
+index 0000000..32009a6
+--- /dev/null
++++ b/node_modules/@coinbase/wallet-mobile-sdk/android/build/generated/source/buildConfig/debug/expo/modules/coinbasewalletsdkexpo/BuildConfig.java
+@@ -0,0 +1,10 @@
++/**
++ * Automatically generated file. DO NOT MODIFY
++ */
++package expo.modules.coinbasewalletsdkexpo;
++
++public final class BuildConfig {
++  public static final boolean DEBUG = Boolean.parseBoolean("true");
++  public static final String LIBRARY_PACKAGE_NAME = "expo.modules.coinbasewalletsdkexpo";
++  public static final String BUILD_TYPE = "debug";
++}
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/aapt_friendly_merged_manifests/debug/aapt/AndroidManifest.xml b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/aapt_friendly_merged_manifests/debug/aapt/AndroidManifest.xml
+new file mode 100644
+index 0000000..8e02136
+--- /dev/null
++++ b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/aapt_friendly_merged_manifests/debug/aapt/AndroidManifest.xml
+@@ -0,0 +1,12 @@
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    package="expo.modules.coinbasewalletsdkexpo" >
++
++    <uses-sdk android:minSdkVersion="23" />
++
++    <queries>
++        <package android:name="org.toshi" />
++        <package android:name="org.toshi.alpha" />
++    </queries>
++
++</manifest>
+\ No newline at end of file
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/aapt_friendly_merged_manifests/debug/aapt/output-metadata.json b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/aapt_friendly_merged_manifests/debug/aapt/output-metadata.json
+new file mode 100644
+index 0000000..a00d9c7
+--- /dev/null
++++ b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/aapt_friendly_merged_manifests/debug/aapt/output-metadata.json
+@@ -0,0 +1,18 @@
++{
++  "version": 3,
++  "artifactType": {
++    "type": "AAPT_FRIENDLY_MERGED_MANIFESTS",
++    "kind": "Directory"
++  },
++  "applicationId": "expo.modules.coinbasewalletsdkexpo",
++  "variantName": "debug",
++  "elements": [
++    {
++      "type": "SINGLE",
++      "filters": [],
++      "attributes": [],
++      "outputFile": "AndroidManifest.xml"
++    }
++  ],
++  "elementType": "File"
++}
+\ No newline at end of file
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/aar_metadata/debug/aar-metadata.properties b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/aar_metadata/debug/aar-metadata.properties
+new file mode 100644
+index 0000000..776557e
+--- /dev/null
++++ b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/aar_metadata/debug/aar-metadata.properties
+@@ -0,0 +1,5 @@
++aarFormatVersion=1.0
++aarMetadataVersion=1.0
++minCompileSdk=1
++minCompileSdkExtension=0
++minAndroidGradlePluginVersion=1.0.0
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/annotation_processor_list/debug/annotationProcessors.json b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/annotation_processor_list/debug/annotationProcessors.json
+new file mode 100644
+index 0000000..9e26dfe
+--- /dev/null
++++ b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/annotation_processor_list/debug/annotationProcessors.json
+@@ -0,0 +1 @@
++{}
+\ No newline at end of file
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/compile_r_class_jar/debug/R.jar b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/compile_r_class_jar/debug/R.jar
+new file mode 100644
+index 0000000..71a4cb4
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/compile_r_class_jar/debug/R.jar differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/compile_symbol_list/debug/R.txt b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/compile_symbol_list/debug/R.txt
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties
+new file mode 100644
+index 0000000..d4dd3aa
+--- /dev/null
++++ b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties
+@@ -0,0 +1 @@
++#Thu Jan 18 09:43:18 MST 2024
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/incremental/debug/packageDebugResources/merger.xml b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/incremental/debug/packageDebugResources/merger.xml
+new file mode 100644
+index 0000000..2da52fa
+--- /dev/null
++++ b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/incremental/debug/packageDebugResources/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main" generated-set="main$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/debug/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug" generated-set="debug$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/debug/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="generated$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/build/generated/res/resValues/debug"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="generated" generated-set="generated$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/build/generated/res/resValues/debug"/></dataSet><mergedItems/></merger>
+\ No newline at end of file
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml
+new file mode 100644
+index 0000000..8044516
+--- /dev/null
++++ b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/jniLibs"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/debug/jniLibs"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/incremental/mergeDebugShaders/merger.xml b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/incremental/mergeDebugShaders/merger.xml
+new file mode 100644
+index 0000000..c11e90e
+--- /dev/null
++++ b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/incremental/mergeDebugShaders/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/shaders"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/debug/shaders"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/incremental/packageDebugAssets/merger.xml b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/incremental/packageDebugAssets/merger.xml
+new file mode 100644
+index 0000000..d01a1cb
+--- /dev/null
++++ b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/incremental/packageDebugAssets/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/assets"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/debug/assets"/></dataSet><dataSet config="generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/shader_assets/debug/out"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/local_only_symbol_list/debug/R-def.txt b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/local_only_symbol_list/debug/R-def.txt
+new file mode 100644
+index 0000000..78ac5b8
+--- /dev/null
++++ b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/local_only_symbol_list/debug/R-def.txt
+@@ -0,0 +1,2 @@
++R_DEF: Internal format may change without notice
++local
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/manifest_merge_blame_file/debug/manifest-merger-blame-debug-report.txt b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/manifest_merge_blame_file/debug/manifest-merger-blame-debug-report.txt
+new file mode 100644
+index 0000000..abaea82
+--- /dev/null
++++ b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/manifest_merge_blame_file/debug/manifest-merger-blame-debug-report.txt
+@@ -0,0 +1,17 @@
++1<?xml version="1.0" encoding="utf-8"?>
++2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++3    package="expo.modules.coinbasewalletsdkexpo" >
++4
++5    <uses-sdk android:minSdkVersion="23" />
++6
++7    <queries>
++7-->/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:4:5-7:15
++8        <package android:name="org.toshi" />
++8-->/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:5:9-45
++8-->/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:5:18-42
++9        <package android:name="org.toshi.alpha" />
++9-->/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:6:9-51
++9-->/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:6:18-48
++10    </queries>
++11
++12</manifest>
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml
+new file mode 100644
+index 0000000..8e02136
+--- /dev/null
++++ b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml
+@@ -0,0 +1,12 @@
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    package="expo.modules.coinbasewalletsdkexpo" >
++
++    <uses-sdk android:minSdkVersion="23" />
++
++    <queries>
++        <package android:name="org.toshi" />
++        <package android:name="org.toshi.alpha" />
++    </queries>
++
++</manifest>
+\ No newline at end of file
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/navigation_json/debug/navigation.json b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/navigation_json/debug/navigation.json
+new file mode 100644
+index 0000000..0637a08
+--- /dev/null
++++ b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/navigation_json/debug/navigation.json
+@@ -0,0 +1 @@
++[]
+\ No newline at end of file
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/symbol_list_with_package_name/debug/package-aware-r.txt b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/symbol_list_with_package_name/debug/package-aware-r.txt
+new file mode 100644
+index 0000000..cf0c706
+--- /dev/null
++++ b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/symbol_list_with_package_name/debug/package-aware-r.txt
+@@ -0,0 +1 @@
++expo.modules.coinbasewalletsdkexpo
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab
+new file mode 100644
+index 0000000..9ff8208
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.keystream b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.keystream
+new file mode 100644
+index 0000000..0e80e84
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.keystream differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.keystream.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.keystream.len
+new file mode 100644
+index 0000000..9f1d990
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.keystream.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.len
+new file mode 100644
+index 0000000..eb0b8a0
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.values.at b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.values.at
+new file mode 100644
+index 0000000..81eb3f6
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.values.at differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab_i b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab_i
+new file mode 100644
+index 0000000..e7cd7df
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab_i differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab_i.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab_i.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab
+new file mode 100644
+index 0000000..292ff5e
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.keystream b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.keystream
+new file mode 100644
+index 0000000..d62a992
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.keystream differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.keystream.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.keystream.len
+new file mode 100644
+index 0000000..ce737f4
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.keystream.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.len
+new file mode 100644
+index 0000000..fd5292d
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.values.at b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.values.at
+new file mode 100644
+index 0000000..9e593fa
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.values.at differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab_i b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab_i
+new file mode 100644
+index 0000000..dde30ab
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab_i differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab_i.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab_i.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab
+new file mode 100644
+index 0000000..37f2883
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.keystream b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.keystream
+new file mode 100644
+index 0000000..d62a992
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.keystream differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.keystream.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.keystream.len
+new file mode 100644
+index 0000000..ce737f4
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.keystream.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.len
+new file mode 100644
+index 0000000..fd5292d
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.values.at b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.values.at
+new file mode 100644
+index 0000000..351e62e
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.values.at differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab_i b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab_i
+new file mode 100644
+index 0000000..dde30ab
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab_i differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab_i.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab_i.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab
+new file mode 100644
+index 0000000..f5636a4
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.keystream b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.keystream
+new file mode 100644
+index 0000000..aed2dd3
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.keystream differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.keystream.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.keystream.len
+new file mode 100644
+index 0000000..7fbeb33
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.keystream.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.len
+new file mode 100644
+index 0000000..1b7c1f8
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.values.at b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.values.at
+new file mode 100644
+index 0000000..df754c1
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.values.at differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab_i b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab_i
+new file mode 100644
+index 0000000..49463c4
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab_i differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab_i.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab_i.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab
+new file mode 100644
+index 0000000..4faf32a
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab.keystream b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab.keystream
+new file mode 100644
+index 0000000..a2e6b35
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab.keystream differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab.keystream.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab.keystream.len
+new file mode 100644
+index 0000000..f85708a
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab.keystream.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab.len
+new file mode 100644
+index 0000000..a9f80ae
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab.values.at b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab.values.at
+new file mode 100644
+index 0000000..33c7d6c
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab.values.at differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab_i b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab_i
+new file mode 100644
+index 0000000..49adc4b
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab_i differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab_i.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab_i.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab
+new file mode 100644
+index 0000000..fbdc91a
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.keystream b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.keystream
+new file mode 100644
+index 0000000..fa42964
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.keystream differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.keystream.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.keystream.len
+new file mode 100644
+index 0000000..f3591c6
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.keystream.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.len
+new file mode 100644
+index 0000000..003bc0e
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.values.at b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.values.at
+new file mode 100644
+index 0000000..3d74edf
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.values.at differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab_i b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab_i
+new file mode 100644
+index 0000000..ea52acd
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab_i differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab_i.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab_i.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab
+new file mode 100644
+index 0000000..a2dee30
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.keystream b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.keystream
+new file mode 100644
+index 0000000..d66d618
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.keystream differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.keystream.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.keystream.len
+new file mode 100644
+index 0000000..9f1d990
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.keystream.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.len
+new file mode 100644
+index 0000000..eb0b8a0
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.values.at b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.values.at
+new file mode 100644
+index 0000000..67f338c
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.values.at differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab_i b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab_i
+new file mode 100644
+index 0000000..92cc3d7
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab_i differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab_i.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab_i.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab
+new file mode 100644
+index 0000000..7ba2c3c
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.keystream b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.keystream
+new file mode 100644
+index 0000000..f08d751
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.keystream differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.keystream.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.keystream.len
+new file mode 100644
+index 0000000..46778b0
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.keystream.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.len
+new file mode 100644
+index 0000000..93a595b
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.values.at b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.values.at
+new file mode 100644
+index 0000000..6fdfa37
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.values.at differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab_i b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab_i
+new file mode 100644
+index 0000000..8148454
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab_i differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab_i.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab_i.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab
+new file mode 100644
+index 0000000..2e7df30
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.keystream b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.keystream
+new file mode 100644
+index 0000000..4b1b240
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.keystream differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.keystream.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.keystream.len
+new file mode 100644
+index 0000000..43a67c2
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.keystream.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.len
+new file mode 100644
+index 0000000..eb0b8a0
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.values.at b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.values.at
+new file mode 100644
+index 0000000..2ea9769
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.values.at differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab_i b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab_i
+new file mode 100644
+index 0000000..0f5daea
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab_i differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab_i.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab_i.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/counters.tab b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/counters.tab
+new file mode 100644
+index 0000000..9202d67
+--- /dev/null
++++ b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/counters.tab
+@@ -0,0 +1,2 @@
++9
++0
+\ No newline at end of file
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab
+new file mode 100644
+index 0000000..e462da9
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.keystream b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.keystream
+new file mode 100644
+index 0000000..d66d618
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.keystream differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.keystream.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.keystream.len
+new file mode 100644
+index 0000000..9f1d990
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.keystream.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.len
+new file mode 100644
+index 0000000..eb0b8a0
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.values.at b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.values.at
+new file mode 100644
+index 0000000..a30ec1a
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.values.at differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab_i b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab_i
+new file mode 100644
+index 0000000..b5c3b28
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab_i differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab_i.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab_i.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab
+new file mode 100644
+index 0000000..8bd6292
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.keystream b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.keystream
+new file mode 100644
+index 0000000..afd1b6e
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.keystream differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.keystream.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.keystream.len
+new file mode 100644
+index 0000000..9a6f654
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.keystream.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.len
+new file mode 100644
+index 0000000..eb0b8a0
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.values.at b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.values.at
+new file mode 100644
+index 0000000..31eabec
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.values.at differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab_i b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab_i
+new file mode 100644
+index 0000000..cdf4c62
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab_i differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab_i.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab_i.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab
+new file mode 100644
+index 0000000..d5b0267
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.keystream b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.keystream
+new file mode 100644
+index 0000000..131cabf
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.keystream differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.keystream.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.keystream.len
+new file mode 100644
+index 0000000..3b4c872
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.keystream.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.len
+new file mode 100644
+index 0000000..deec743
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.values.at b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.values.at
+new file mode 100644
+index 0000000..30cd0f7
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.values.at differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab_i b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab_i
+new file mode 100644
+index 0000000..48c32a5
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab_i differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab_i.len b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab_i.len differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/last-build.bin b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/last-build.bin
+new file mode 100644
+index 0000000..40bdd92
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/cacheable/last-build.bin differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/local-state/build-history.bin b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/local-state/build-history.bin
+new file mode 100644
+index 0000000..3835ba0
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/kotlin/compileDebugKotlin/local-state/build-history.bin differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/outputs/logs/manifest-merger-debug-report.txt b/node_modules/@coinbase/wallet-mobile-sdk/android/build/outputs/logs/manifest-merger-debug-report.txt
+new file mode 100644
+index 0000000..108f4fe
+--- /dev/null
++++ b/node_modules/@coinbase/wallet-mobile-sdk/android/build/outputs/logs/manifest-merger-debug-report.txt
+@@ -0,0 +1,27 @@
++-- Merging decision tree log ---
++manifest
++ADDED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:1:1-8:12
++INJECTED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:1:1-8:12
++	package
++		ADDED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:2:5-49
++		INJECTED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml
++	xmlns:android
++		ADDED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:1:11-69
++queries
++ADDED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:4:5-7:15
++package#org.toshi
++ADDED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:5:9-45
++	android:name
++		ADDED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:5:18-42
++package#org.toshi.alpha
++ADDED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:6:9-51
++	android:name
++		ADDED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:6:18-48
++uses-sdk
++INJECTED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml reason: use-sdk injection requested
++INJECTED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml
++INJECTED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml
++	android:targetSdkVersion
++		INJECTED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml
++	android:minSdkVersion
++		INJECTED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/META-INF/coinbase-wallet-mobile-sdk_debug.kotlin_module b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/META-INF/coinbase-wallet-mobile-sdk_debug.kotlin_module
+new file mode 100644
+index 0000000..7f0eaf0
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/META-INF/coinbase-wallet-mobile-sdk_debug.kotlin_module differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/ActivityLifecycleListener.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/ActivityLifecycleListener.class
+new file mode 100644
+index 0000000..1f978e5
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/ActivityLifecycleListener.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$1$1$1.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$1$1$1.class
+new file mode 100644
+index 0000000..f8dca03
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$1$1$1.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$1$1$2.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$1$1$2.class
+new file mode 100644
+index 0000000..1429593
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$1$1$2.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$1$2$1.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$1$2$1.class
+new file mode 100644
+index 0000000..f6034fa
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$1$2$1.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$1$3$1.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$1$3$1.class
+new file mode 100644
+index 0000000..1a1d50e
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$1$3$1.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$1.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$1.class
+new file mode 100644
+index 0000000..b40f9da
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$1.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$10.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$10.class
+new file mode 100644
+index 0000000..dc17bc9
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$10.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$2.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$2.class
+new file mode 100644
+index 0000000..193e1e6
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$2.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$3.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$3.class
+new file mode 100644
+index 0000000..1644e81
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$3.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$4.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$4.class
+new file mode 100644
+index 0000000..c5a4c9a
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$4.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$5.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$5.class
+new file mode 100644
+index 0000000..229a407
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$5.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$6.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$6.class
+new file mode 100644
+index 0000000..db23a4f
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$6.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$7.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$7.class
+new file mode 100644
+index 0000000..8e4c1da
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$7.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$8.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$8.class
+new file mode 100644
+index 0000000..307595f
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$8.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$9.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$9.class
+new file mode 100644
+index 0000000..6df4ee3
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$AsyncFunction$9.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$Function$1.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$Function$1.class
+new file mode 100644
+index 0000000..5ba252d
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$Function$1.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$Function$2.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$Function$2.class
+new file mode 100644
+index 0000000..1db433d
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$Function$2.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$Function$3.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$Function$3.class
+new file mode 100644
+index 0000000..6405845
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$Function$3.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$Function$4.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$Function$4.class
+new file mode 100644
+index 0000000..73952ca
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$Function$4.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$FunctionWithoutArgs$1.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$FunctionWithoutArgs$1.class
+new file mode 100644
+index 0000000..5a7fc29
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$FunctionWithoutArgs$1.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$FunctionWithoutArgs$2.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$FunctionWithoutArgs$2.class
+new file mode 100644
+index 0000000..39d27b0
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$FunctionWithoutArgs$2.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$FunctionWithoutArgs$3.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$FunctionWithoutArgs$3.class
+new file mode 100644
+index 0000000..8475fef
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule$definition$lambda$11$$inlined$FunctionWithoutArgs$3.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule.class
+new file mode 100644
+index 0000000..6257917
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKModule.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKPackage.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKPackage.class
+new file mode 100644
+index 0000000..98e2007
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/CoinbaseWalletSDKPackage.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/IntentLauncher.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/IntentLauncher.class
+new file mode 100644
+index 0000000..606e6ea
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/IntentLauncher.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/AccountRecord.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/AccountRecord.class
+new file mode 100644
+index 0000000..e1830eb
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/AccountRecord.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/AccountRecordKt.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/AccountRecordKt.class
+new file mode 100644
+index 0000000..d054358
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/AccountRecordKt.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/ActionRecord.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/ActionRecord.class
+new file mode 100644
+index 0000000..f3e1d4b
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/ActionRecord.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/ActionRecordKt.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/ActionRecordKt.class
+new file mode 100644
+index 0000000..05ae3be
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/ActionRecordKt.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/ActionResultRecord.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/ActionResultRecord.class
+new file mode 100644
+index 0000000..494b551
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/ActionResultRecord.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/ActionResultRecordKt.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/ActionResultRecordKt.class
+new file mode 100644
+index 0000000..71aea2c
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/ActionResultRecordKt.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/ConfigParamsRecord.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/ConfigParamsRecord.class
+new file mode 100644
+index 0000000..197d410
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/ConfigParamsRecord.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/HandshakeParamsRecord.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/HandshakeParamsRecord.class
+new file mode 100644
+index 0000000..5e030ad
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/HandshakeParamsRecord.class differ
+diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/RequestParamsRecord.class b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/RequestParamsRecord.class
+new file mode 100644
+index 0000000..dad2a5c
+Binary files /dev/null and b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/expo/modules/coinbasewalletsdkexpo/records/RequestParamsRecord.class differ

@@ -10,6 +10,8 @@ interface ScreenProps {
   right?: React.ReactNode;
   title?: React.ReactNode;
   containerStlye?: ViewStyle;
+  includeTopPadding?: boolean;
+  includeBackground?: boolean;
 }
 
 export const Screen: FC<ScreenProps> = ({
@@ -18,13 +20,15 @@ export const Screen: FC<ScreenProps> = ({
   right,
   title,
   containerStlye,
+  includeTopPadding = true,
+  includeBackground = true,
 }) => {
   const showHeader = left || right || title;
   return (
     <Box
       flex={1}
-      backgroundColor={colors.backgroundPrimary}
-      paddingTop={Constants.statusBarHeight}>
+      backgroundColor={includeBackground ? colors.backgroundPrimary : undefined}
+      paddingTop={includeTopPadding ? Constants.statusBarHeight : 0}>
       {showHeader && (
         <HStack
           justifyContent="space-between"
