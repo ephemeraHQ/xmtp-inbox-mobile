@@ -104,13 +104,8 @@ export const Blockie: FC<BlockieProps> = ({address, size: propSize}) => {
   }, [size]);
 
   const radius = (size * scale) / 2;
-
   return (
-    <Svg
-      removeClippedSubviews={true}
-      height={size * scale}
-      width={size * scale}
-      fill={bgcolor}>
+    <Svg height={size * scale} width={size * scale} fill={bgcolor}>
       <Defs>
         <ClipPath id="clip">
           <Circle r={radius} cx={radius} cy={radius} />

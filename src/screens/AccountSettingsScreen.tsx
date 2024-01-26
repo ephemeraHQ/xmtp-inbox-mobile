@@ -120,7 +120,6 @@ export const AccountSettingsScreen = () => {
   const [walletsShown, setWalletsShown] = useState(false);
   const disconnect = useDisconnect();
   const address = useAddress();
-
   const toggleShowCollectibles = useCallback(() => {
     return null;
   }, []);

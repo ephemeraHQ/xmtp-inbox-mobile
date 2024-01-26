@@ -1,6 +1,7 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import * as React from 'react';
+import {Platform} from 'react-native';
 import {useClientContext} from '../context/ClientContext';
 import {AccountSettingsScreen} from '../screens/AccountSettingsScreen';
 import {ConversationListScreen} from '../screens/ConversationListScreen';
@@ -55,7 +56,11 @@ export const AppNavigation = () => {
       {!!client && (
         <AuthenticatedStack.Navigator
           initialRouteName={ScreenNames.ConversationList}
-          screenOptions={{headerShown: false}}>
+          screenOptions={{
+            headerShown: false,
+            // https://github.com/Kureev/react-native-blur/issues/595
+            animation: Platform.OS === 'android' ? 'none' : 'default',
+          }}>
           <AuthenticatedStack.Screen
             name={ScreenNames.Account}
             component={AccountSettingsScreen}

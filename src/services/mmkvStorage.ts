@@ -17,6 +17,7 @@ enum MMKVKeys {
 
   // Conversations
   TOPIC_ADDRESSES = 'TOPIC_ADDRESSES',
+  IMAGE_CACHE = 'IMAGE_CACHE',
 }
 
 const storage = new MMKV();
@@ -170,3 +171,21 @@ export const clearAll = () => {
 };
 
 //#endregion Clear All
+
+// #region Image cache
+export const getImageCacheKey = (uri: string) => {
+  return `${MMKVKeys.IMAGE_CACHE}_${uri}`;
+};
+
+export const saveImageCache = (uri: string, decryptedPath: string) => {
+  return storage.set(getImageCacheKey(uri), decryptedPath);
+};
+
+export const getImageCache = (uri: string) => {
+  return storage.getString(getImageCacheKey(uri));
+};
+
+export const clearImageCache = (uri: string) => {
+  return storage.delete(getImageCacheKey(uri));
+};
+// #endregion
