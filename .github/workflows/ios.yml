@@ -1,0 +1,15 @@
+name: iOS Tests
+on:
+  pull_request:
+    paths:
+      - 'ios/**'
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+      - run: yarn
+      - run: yarn ios

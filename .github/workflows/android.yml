@@ -1,8 +1,10 @@
-name: Jest Unit Tests
+name: Android Tests
 on:
   pull_request:
+    paths:
+      - 'android/**'
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -10,4 +12,4 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v3
       - run: yarn
-      - run: yarn test
+      - run: yarn android
