@@ -15,6 +15,9 @@ import {ConversationHeader} from '../components/ConversationHeader';
 import {ConversationInput} from '../components/ConversationInput';
 import {ConversationMessageContent} from '../components/ConversationMessageContent';
 import {Button} from '../components/common/Button';
+import {Drawer} from '../components/common/Drawer';
+import {Icon} from '../components/common/Icon';
+import {Modal} from '../components/common/Modal';
 import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
 import {useClient} from '../hooks/useClient';
@@ -245,7 +248,7 @@ export const ConversationScreen = () => {
         </Box>
       </Screen>
 
-      {/* <Drawer
+      <Drawer
         title="Test"
         isOpen={showReply}
         onBackgroundPress={() => setShowReply(false)}>
@@ -285,7 +288,7 @@ export const ConversationScreen = () => {
             </Text>
           </Button>
         </VStack>
-      </Modal> */}
+      </Modal>
     </>
   );
 };

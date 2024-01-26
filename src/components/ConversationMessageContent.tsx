@@ -40,4 +40,7 @@ export const ConversationMessageContent: FC<
       <ImageMessage content={message.content() as RemoteAttachmentContent} />
     );
   }
+
+  // TODO: Add support for other content types
+  return null;
 };
