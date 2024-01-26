@@ -1,6 +1,7 @@
 import {useRoute} from '@react-navigation/native';
 import {Box} from 'native-base';
 import React, {useCallback} from 'react';
+import {Asset} from 'react-native-image-picker';
 import {ConversationHeader} from '../components/ConversationHeader';
 import {ConversationInput} from '../components/ConversationInput';
 import {Screen} from '../components/common/Screen';
@@ -15,7 +16,8 @@ export const NewConversationScreen = () => {
   const {client} = useClient();
 
   const onSend = useCallback(
-    (message: {text: string}) => {
+    (message: {text?: string; asset?: Asset}) => {
+      // TODO: Error Handling
       client?.conversations?.newConversation(address).then(conversation => {
         conversation.send(message);
         replace(ScreenNames.Conversation, {topic: conversation.topic});

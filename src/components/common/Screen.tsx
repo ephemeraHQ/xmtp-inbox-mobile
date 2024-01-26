@@ -1,7 +1,7 @@
 import Constants from 'expo-constants';
 import {Box, HStack} from 'native-base';
 import React, {FC} from 'react';
-import {ViewStyle} from 'react-native';
+import {Platform, ViewStyle} from 'react-native';
 import {colors} from '../../theme/colors';
 
 interface ScreenProps {
@@ -28,7 +28,13 @@ export const Screen: FC<ScreenProps> = ({
     <Box
       flex={1}
       backgroundColor={includeBackground ? colors.backgroundPrimary : undefined}
-      paddingTop={includeTopPadding ? Constants.statusBarHeight : 0}>
+      paddingTop={
+        includeTopPadding
+          ? Platform.OS === 'ios'
+            ? Constants.statusBarHeight
+            : 10
+          : 0
+      }>
       {showHeader && (
         <HStack
           justifyContent="space-between"

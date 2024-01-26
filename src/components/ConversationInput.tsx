@@ -1,21 +1,24 @@
 import {Box, HStack, Image, Pressable, VStack} from 'native-base';
 import React, {FC, useCallback, useEffect, useState} from 'react';
 import {StyleSheet, TextInput} from 'react-native';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {
+  Asset,
+  launchCamera,
+  launchImageLibrary,
+} from 'react-native-image-picker';
 import {Icon} from '../components/common/Icon';
 import {translate} from '../i18n';
 import {
-  clearDraftImage,
+  // clearDraftImage,
   clearDraftText,
-  getDraftImage,
   getDraftText,
-  saveDraftImage,
+  // saveDraftImage,
   saveDraftText,
 } from '../services/mmkvStorage';
 import {colors} from '../theme/colors';
 
 interface ConversationInputProps {
-  sendMessage: (payload: {text: string}) => void;
+  sendMessage: (payload: {text?: string; asset?: Asset}) => void;
   currentAddress?: string;
   topic?: string;
 }
@@ -29,11 +32,10 @@ export const ConversationInput: FC<ConversationInputProps> = ({
   const [text, setText] = useState<string>(
     currentAddress && topic ? getDraftText(currentAddress, topic) ?? '' : '',
   );
-  const [assetUri, setAssetUri] = useState<string | null>(
-    currentAddress && topic
-      ? getDraftImage(currentAddress, topic) ?? null
-      : null,
-  );
+  const [asset, setAssetUri] = useState<Asset | null>();
+  // currentAddress && topic
+  //   ? getDraftImage(currentAddress, topic) ?? null
+  //   : null,
 
   useEffect(() => {
     if (text && currentAddress && topic) {
@@ -44,14 +46,14 @@ export const ConversationInput: FC<ConversationInputProps> = ({
     }
   }, [currentAddress, text, topic]);
 
-  useEffect(() => {
-    if (assetUri && currentAddress && topic) {
-      saveDraftImage(currentAddress, topic, assetUri);
-    }
-    if (!assetUri && currentAddress && topic) {
-      clearDraftImage(currentAddress, topic);
-    }
-  }, [currentAddress, assetUri, topic]);
+  // useEffect(() => {
+  //   if (asset && currentAddress && topic) {
+  //     // saveDraftImage(currentAddress, topic, assetUri);
+  //   }
+  //   if (!asset && currentAddress && topic) {
+  //     // clearDraftImage(currentAddress, topic);
+  //   }
+  // }, [currentAddress, assetUri, topic]);
 
   const handleImageUploadPress = useCallback(() => {
     launchImageLibrary(
@@ -62,7 +64,7 @@ export const ConversationInput: FC<ConversationInputProps> = ({
       response => {
         response.assets?.forEach(asset => {
           if (asset.uri) {
-            setAssetUri(asset.uri);
+            setAssetUri(asset);
           }
         });
       },
@@ -77,31 +79,34 @@ export const ConversationInput: FC<ConversationInputProps> = ({
       response => {
         response.assets?.forEach(asset => {
           if (asset.uri) {
-            setAssetUri(asset.uri);
+            setAssetUri(asset);
           }
         });
       },
     );
   }, []);
 
+  const canSend = text.length > 0 || asset;
+
   const handleSend = useCallback(() => {
-    sendMessage({text});
+    if (!canSend) {
+      return;
+    }
+    sendMessage({text, asset: asset ?? undefined});
     setText('');
     setAssetUri(null);
-  }, [sendMessage, text]);
-
-  const canSend = text.length > 0 || assetUri;
+  }, [sendMessage, text, asset, canSend]);
 
   return (
     <VStack flexShrink={1}>
-      <HStack alignItems={'flex-end'}>
+      <HStack alignItems={'flex-end'} backgroundColor={'transparent'}>
         <Pressable onPress={handleImageUploadPress}>
           <Icon name="photo" size={40} color={colors.actionPrimary} />
         </Pressable>
         <Pressable onPress={handleCameraPress}>
           <Icon name="camera" size={40} color={colors.actionPrimary} />
         </Pressable>
-        {assetUri ? (
+        {asset ? (
           <Box>
             <Box position={'absolute'} zIndex={10} right={0}>
               <Pressable onPress={() => setAssetUri(null)}>
@@ -109,7 +114,7 @@ export const ConversationInput: FC<ConversationInputProps> = ({
               </Pressable>
             </Box>
             <Image
-              source={{uri: assetUri}}
+              source={{uri: asset.uri}}
               height={'80px'}
               width={'80px'}
               borderRadius={10}

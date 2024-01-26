@@ -1,5 +1,5 @@
 import {useAddress} from '@thirdweb-dev/react-native';
-import {Client} from '@xmtp/react-native-sdk';
+import {Client, RemoteAttachmentCodec} from '@xmtp/react-native-sdk';
 import React, {
   FC,
   PropsWithChildren,
@@ -37,7 +37,9 @@ export const ClientProvider: FC<PropsWithChildren> = ({children}) => {
         if (!keys) {
           return setLoading(false);
         }
-        Client.createFromKeyBundle(keys)
+        Client.createFromKeyBundle(keys, {
+          codecs: [new RemoteAttachmentCodec()],
+        })
           .then(client => {
             setClient(client);
             setLoading(false);

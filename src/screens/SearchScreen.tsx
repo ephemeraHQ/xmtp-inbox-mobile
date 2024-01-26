@@ -1,6 +1,6 @@
 import {Box, HStack, Input, Pressable, SectionList, VStack} from 'native-base';
 import React, {useEffect, useMemo, useState} from 'react';
-import {Platform, SectionListRenderItem} from 'react-native';
+import {SectionListRenderItem} from 'react-native';
 import {AvatarWithFallback} from '../components/AvatarWithFallback';
 import {Icon} from '../components/common/Icon';
 import {Screen} from '../components/common/Screen';
@@ -180,7 +180,6 @@ export const SearchScreen = () => {
 
   return (
     <Screen
-      includeTopPadding={Platform.OS === 'android'}
       title={
         <Text typography="text-lg/heavy" textAlign={'center'}>
           {translate('you')}

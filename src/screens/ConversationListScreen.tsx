@@ -55,9 +55,13 @@ const useData = () => {
               conversation.messages(1),
               conversation.consentState(),
             ]);
+            const content = messages[0].content();
             return {
               topic: conversation.topic,
-              lastMessage: messages[0].content() as string,
+              lastMessage:
+                typeof content === 'string'
+                  ? content
+                  : messages[0].fallback ?? '',
               lastMessageTime: messages[0].sent,
               timeDisplay: getMessageTimeDisplay(messages[0].sent),
               isRequest: consent !== 'allowed',
@@ -85,9 +89,11 @@ const useData = () => {
           const {topic} = message;
           const convo = conversations.find(c => c.topic === topic);
           if (convo) {
+            const content = message.content();
             const newConvo: Conversation = {
               ...convo,
-              lastMessage: message.content() as string,
+              lastMessage:
+                typeof content === 'string' ? content : message.fallback ?? '',
               lastMessageTime: message.sent,
               timeDisplay: getMessageTimeDisplay(message.sent),
             };
@@ -102,9 +108,11 @@ const useData = () => {
               return;
             }
             const consent = await newConvo?.consentState();
+            const content = message.content();
             const newConversation: Conversation = {
               topic,
-              lastMessage: message.content() as string,
+              lastMessage:
+                typeof content === 'string' ? content : message.fallback ?? '',
               lastMessageTime: message.sent,
               timeDisplay: getMessageTimeDisplay(message.sent),
               isRequest: consent !== 'allowed',

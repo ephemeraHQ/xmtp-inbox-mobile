@@ -1,5 +1,5 @@
 import {useDisconnect, useSigner} from '@thirdweb-dev/react-native';
-import {Client} from '@xmtp/react-native-sdk';
+import {Client, RemoteAttachmentCodec} from '@xmtp/react-native-sdk';
 import {VStack} from 'native-base';
 import React, {useCallback, useEffect, useState} from 'react';
 import {DeviceEventEmitter, Image} from 'react-native';
@@ -53,8 +53,13 @@ export const OnboardingEnableIdentityScreen = () => {
       }
       try {
         const client = await Client.create(signer, {
-          preEnableIdentityCallback: enableIdentityPromise,
-          preCreateIdentityCallback: createIdentityPromise,
+          preEnableIdentityCallback: async () => {
+            await enableIdentityPromise;
+          },
+          preCreateIdentityCallback: async () => {
+            await createIdentityPromise;
+          },
+          codecs: [new RemoteAttachmentCodec()],
         });
         const keys = await client.exportKeyBundle();
         const address = await signer.getAddress();

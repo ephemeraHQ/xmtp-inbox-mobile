@@ -1,8 +1,7 @@
 import {useRoute} from '@react-navigation/native';
-import {DecodedMessage} from '@xmtp/react-native-sdk';
+import {DecodedMessage, RemoteAttachmentContent} from '@xmtp/react-native-sdk';
 import {
   Box,
-  Container,
   FlatList,
   HStack,
   KeyboardAvoidingView,
@@ -11,8 +10,10 @@ import {
 } from 'native-base';
 import React, {useCallback, useEffect, useState} from 'react';
 import {ListRenderItem, Platform} from 'react-native';
+import {Asset} from 'react-native-image-picker';
 import {ConversationHeader} from '../components/ConversationHeader';
 import {ConversationInput} from '../components/ConversationInput';
+import {ConversationMessageContent} from '../components/ConversationMessageContent';
 import {Button} from '../components/common/Button';
 import {Drawer} from '../components/common/Drawer';
 import {Icon} from '../components/common/Icon';
@@ -30,6 +31,7 @@ import {
   saveConsent,
   saveTopicAddresses,
 } from '../services/mmkvStorage';
+import {AWSHelper} from '../services/s3';
 import {colors} from '../theme/colors';
 
 const getTimestamp = (timestamp: number) => {
@@ -74,7 +76,6 @@ const useData = (topic: string) => {
 
 const getInitialConsentState = (address: string, peerAddress: string) => {
   const cachedConsent = getConsent(address, peerAddress);
-  console.log('cachedConsent', {cachedConsent, address, peerAddress});
   if (cachedConsent === undefined) {
     return 'unknown';
   }
@@ -105,24 +106,50 @@ export const ConversationScreen = () => {
   }, [conversation]);
 
   const sendMessage = useCallback(
-    (payload: {text?: string}) => {
-      conversation?.send(payload.text);
+    async (payload: {text?: string; asset?: Asset}) => {
+      if (!conversation) {
+        return;
+      }
+      if (payload.text) {
+        conversation?.send(payload.text);
+      }
+      if (payload.asset) {
+        client
+          ?.encryptAttachment({
+            fileUri: payload.asset.uri ?? '',
+            mimeType: payload.asset.type,
+          })
+          .then(encrypted => {
+            AWSHelper.uploadFile(
+              encrypted.encryptedLocalFileUri,
+              encrypted.metadata.filename ?? '',
+            ).then(response => {
+              const remote: RemoteAttachmentContent = {
+                ...encrypted.metadata,
+                scheme: 'https://',
+                url: response,
+              };
+              conversation?.send({remoteAttachment: remote}).catch(() => {});
+            });
+          })
+          .catch(() => {});
+      }
     },
-    [conversation],
+    [client, conversation],
   );
 
   const renderItem: ListRenderItem<DecodedMessage<unknown>> = ({item}) => {
     const isMe = item.senderAddress === myAddress;
-    const textContent = typeof item.content() === 'string';
-    // TODO: Handle other content types
-    if (!textContent) {
-      return null;
-    }
+
     return (
       <Pressable>
         <Box marginLeft={6} marginRight={6} marginY={2} flexShrink={1}>
-          <VStack>
-            <Container
+          <VStack height={400}>
+            <ConversationMessageContent
+              message={item}
+              address={myAddress ?? ''}
+            />
+            {/* <Container
               backgroundColor={
                 isMe ? colors.actionPrimary : colors.backgroundSecondary
               }
@@ -137,7 +164,7 @@ export const ConversationScreen = () => {
                 color={isMe ? colors.actionPrimaryText : colors.textPrimary}>
                 {item.content() as string}
               </Text>
-            </Container>
+            </Container> */}
             <Text
               flexShrink={1}
               color={colors.primaryN200}
