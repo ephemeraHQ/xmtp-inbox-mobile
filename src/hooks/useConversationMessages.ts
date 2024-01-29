@@ -15,7 +15,7 @@ export const useConversationMessages = (topic: string) => {
         });
 
         const initialMessages = await conversation.messages();
-        setMessages([initialMessages[0]]);
+        setMessages(initialMessages);
       }
     };
     getMessages();
