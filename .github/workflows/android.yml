@@ -1,8 +1,8 @@
 name: Android Tests
 on:
   pull_request:
-    paths:
-      - 'android/**'
+    # paths:
+    #   - 'android/**'
 jobs:
   build:
     runs-on: ubuntu-latest

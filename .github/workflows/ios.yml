@@ -10,8 +10,8 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Select Xcode 12.4
-        run: sudo xcode-select -switch /Applications/Xcode_15.0.1.app # Switch Xcode version
+      - name: Select Xcode 15.1
+        run: sudo xcode-select -switch /Applications/Xcode_15.1.app # Switch Xcode version
       - uses: actions/setup-node@v3
       - run: yarn
       - name: Build iOS App
