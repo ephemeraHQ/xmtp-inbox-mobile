@@ -12,4 +12,4 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v3
       - run: yarn
-      - run: yarn android
+      - run: cd android && ./gradlew assembleDebug
