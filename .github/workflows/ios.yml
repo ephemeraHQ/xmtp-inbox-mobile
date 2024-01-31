@@ -3,9 +3,10 @@ on:
   pull_request:
     paths:
       - 'ios/**'
+      - 'package.json'
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v2
         with:
