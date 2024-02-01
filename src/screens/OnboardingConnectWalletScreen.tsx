@@ -10,7 +10,6 @@ import {ScreenNames} from '../navigation/ScreenNames';
 
 export const OnboardingConnectWalletScreen = () => {
   const {navigate} = useTypedNavigation();
-  // const [showModal, setShowModal] = useState(false);
   const address = useAddress();
 
   useEffect(() => {
@@ -33,7 +32,7 @@ export const OnboardingConnectWalletScreen = () => {
           width={'100%'}
           flex={1}
           paddingX={'24px'}>
-          <Text typography="text-4xl/bold">
+          <Text testID="welcome-text-1" typography="text-4xl/bold">
             {translate('your_interoperable_web3_inbox')}
           </Text>
           <Text>
@@ -65,20 +64,6 @@ export const OnboardingConnectWalletScreen = () => {
               })}
               buttonTitle={translate('connect_your_wallet')}
             />
-            {/* <Button
-              width={''}
-              variant={'solid'}
-              backgroundColor={'brand.800'}
-              onPress={handleConnectWalletPress}
-              rightIcon={
-                <Icon
-                  name="arrow-right-circle-thick"
-                  size={24}
-                  color={colors.actionPrimaryText}
-                />
-              }>
-              Connect your wallet
-            </Button> */}
           </>
         </VStack>
       </Screen>
