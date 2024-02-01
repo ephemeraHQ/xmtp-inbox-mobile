@@ -144,27 +144,11 @@ export const ConversationScreen = () => {
     return (
       <Pressable>
         <Box marginLeft={6} marginRight={6} marginY={2} flexShrink={1}>
-          <VStack height={400}>
+          <VStack>
             <ConversationMessageContent
               message={item}
               address={myAddress ?? ''}
             />
-            {/* <Container
-              backgroundColor={
-                isMe ? colors.actionPrimary : colors.backgroundSecondary
-              }
-              alignSelf={isMe ? 'flex-end' : 'flex-start'}
-              borderRadius={'16px'}
-              borderBottomRightRadius={isMe ? 0 : '16px'}
-              borderTopLeftRadius={isMe ? '16px' : 0}
-              paddingY={3}
-              paddingX={5}>
-              <Text
-                typography="text-base/medium"
-                color={isMe ? colors.actionPrimaryText : colors.textPrimary}>
-                {item.content() as string}
-              </Text>
-            </Container> */}
             <Text
               flexShrink={1}
               color={colors.primaryN200}

@@ -3,13 +3,17 @@ on:
   pull_request:
     paths:
       - 'ios/**'
+      - 'package.json'
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - name: Select Xcode 15.1
+        run: ls /Applications/ && sudo xcode-select -switch /Applications/Xcode_15.1.app # Switch Xcode version
       - uses: actions/setup-node@v3
       - run: yarn
-      - run: yarn ios
+      - name: Build iOS App
+        run: yarn ios --no-packager --mode Release
