@@ -1,10 +1,12 @@
 import {Box, HStack, Input, Pressable, SectionList, VStack} from 'native-base';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {FC, useCallback, useEffect, useMemo, useState} from 'react';
 import {SectionListRenderItem} from 'react-native';
 import {AvatarWithFallback} from '../components/AvatarWithFallback';
+import {Button} from '../components/common/Button';
 import {Icon} from '../components/common/Icon';
 import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
+import {AppConfig} from '../consts/AppConfig';
 import {useClient} from '../hooks/useClient';
 import {useContactInfo} from '../hooks/useContactInfo';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
@@ -69,25 +71,23 @@ const useData = () => {
   };
 };
 
-const ListItem: SectionListRenderItem<Contact, {title: string}> = ({
-  item,
-  index,
-  section,
-}) => {
+const ListItem: FC<{
+  item: Contact;
+  section: {
+    title: string;
+    onPress: (item: Contact) => void;
+    data: readonly Contact[];
+  };
+  index: number;
+}> = ({item, index, section}) => {
   const {avatarUrl, displayName} = useContactInfo(item.address);
-  const {goBack, navigate} = useTypedNavigation();
   const isTop = index === 0;
   const isBottom = index === section.data.length - 1;
-  const handleNavigation = () => {
-    goBack();
-    if (item.isConnected && item.topic) {
-      navigate(ScreenNames.Conversation, {topic: item.topic});
-    } else {
-      navigate(ScreenNames.NewConversation, {address: item.address});
-    }
+  const handlePress = () => {
+    section.onPress(item);
   };
   return (
-    <Pressable onPress={handleNavigation}>
+    <Pressable onPress={handlePress}>
       <HStack
         alignItems={'center'}
         marginX={'16px'}
@@ -122,8 +122,24 @@ const ListItem: SectionListRenderItem<Contact, {title: string}> = ({
 export const SearchScreen = () => {
   const {goBack, navigate} = useTypedNavigation();
   const [searchText, setSearchText] = useState('');
+  const [participants, setParticipants] = useState<string[]>([]);
 
   const {recents, contacts} = useData();
+  const onItemPress = useCallback(
+    (item: Contact) => {
+      if (AppConfig.GROUPS_ENABLED) {
+        setParticipants([...participants, item.address]);
+      } else {
+        goBack();
+        if (item.isConnected && item.topic) {
+          navigate(ScreenNames.Conversation, {topic: item.topic});
+        } else {
+          navigate(ScreenNames.NewConversation, {address: item.address});
+        }
+      }
+    },
+    [goBack, navigate, participants],
+  );
 
   const items = useMemo(() => {
     const {filtered: filteredRecents, mapping: recentMapping} = recents.reduce<{
@@ -152,7 +168,6 @@ export const SearchScreen = () => {
     const filteredContacts = contacts.filter(
       contact =>
         !recentMapping.has(contact.address) &&
-        // contact.name?.toLowerCase().includes(searchText.toLowerCase()) ||
         contact.address.toLowerCase().includes(searchText.toLowerCase()),
     );
 
@@ -177,6 +192,32 @@ export const SearchScreen = () => {
       },
     ];
   }, [recents, contacts, searchText]);
+
+  const renderItem: SectionListRenderItem<Contact, {title: string}> = ({
+    item,
+    section,
+    index,
+    ...rest
+  }) => {
+    return (
+      <ListItem
+        {...rest}
+        item={item}
+        index={index}
+        section={{
+          ...section,
+          onPress: onItemPress,
+        }}
+      />
+    );
+  };
+
+  const removeParticipant = useCallback(
+    (address: string) => {
+      setParticipants(prev => prev.filter(it => it !== address));
+    },
+    [setParticipants],
+  );
 
   return (
     <Screen
@@ -213,11 +254,35 @@ export const SearchScreen = () => {
         paddingY={'12px'}
         paddingX={'8px'}
       />
+      {AppConfig.GROUPS_ENABLED && (
+        <VStack paddingX={'16px'} paddingTop={'16px'}>
+          <HStack flexWrap={'wrap'}>
+            {participants.map(participant => {
+              return (
+                <Button
+                  variant={'ghost'}
+                  size={'xs'}
+                  onPress={() => removeParticipant(participant)}>
+                  <Text>{formatAddress(participant)}</Text>
+                </Button>
+              );
+            })}
+          </HStack>
+          {participants.length > 0 && (
+            <Button
+              onPress={() => {
+                // TODO: Create Group
+              }}>
+              {translate('start')}
+            </Button>
+          )}
+        </VStack>
+      )}
       <SectionList
         w={'100%'}
         sections={items}
         keyExtractor={item => item.address}
-        renderItem={ListItem}
+        renderItem={renderItem}
         stickySectionHeadersEnabled={false}
         renderSectionHeader={({section}) => {
           if (section.data.length === 0) {

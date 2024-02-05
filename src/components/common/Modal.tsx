@@ -19,14 +19,16 @@ export const Modal: FC<PropsWithChildren<ModalProps>> = ({
   }
   return (
     <>
-      <BlurView style={styles.absolute} blurType="dark" blurAmount={10}>
+      <BlurView style={styles.absolute} blurType="light" blurAmount={10}>
         <TouchableOpacity
           onPress={onBackgroundPress}
           style={{width: '100%', height: '100%'}}
         />
       </BlurView>
       <BaseModal isOpen={isOpen} onClose={onBackgroundPress}>
-        <BaseModal.Content backgroundColor={colors.backgroundPrimary}>
+        <BaseModal.Content
+          backgroundColor={colors.backgroundPrimary}
+          borderRadius={'24px'}>
           <BaseModal.Body>{children}</BaseModal.Body>
         </BaseModal.Content>
       </BaseModal>

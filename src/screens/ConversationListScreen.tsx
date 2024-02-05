@@ -1,6 +1,5 @@
 import {useIsFocused} from '@react-navigation/native';
 import {useAddress, useENS} from '@thirdweb-dev/react-native';
-import {DecodedMessage} from '@xmtp/react-native-sdk';
 import {Box, Center, Fab, FlatList, HStack, VStack} from 'native-base';
 import React, {FC, useCallback, useEffect, useState} from 'react';
 import {ListRenderItem, Pressable} from 'react-native';
@@ -35,93 +34,61 @@ const useData = () => {
   const [requests, setRequests] = useState<Conversation[]>([]);
   const {client} = useClient();
 
-  useEffect(() => {
-    const getAllMessages = async () => {
-      if (!client) {
-        return;
-      }
-      const consentList = await client.contacts.refreshConsentList();
-      consentList.forEach(async item => {
-        saveConsent(
-          client.address,
-          item.value,
-          item.permissionType === 'allowed',
-        );
+  const getAllMessages = useCallback(async () => {
+    if (!client) {
+      return;
+    }
+    const consentList = await client.contacts.refreshConsentList();
+    consentList.forEach(async item => {
+      saveConsent(
+        client.address,
+        item.value,
+        item.permissionType === 'allowed',
+      );
+    });
+    client.conversations.list().then(async convos => {
+      const allMessages = await Promise.all(
+        convos.map(async conversation => {
+          const [messages, consent] = await Promise.all([
+            conversation.messages(1),
+            conversation.consentState(),
+          ]);
+          const content = messages[0].content();
+          return {
+            topic: conversation.topic,
+            lastMessage:
+              typeof content === 'string'
+                ? content
+                : messages[0].fallback ?? '',
+            lastMessageTime: messages[0].sent,
+            timeDisplay: getMessageTimeDisplay(messages[0].sent),
+            isRequest: consent !== 'allowed',
+            address: conversation.peerAddress as `0x${string}`,
+          };
+        }),
+      );
+      const sorted = allMessages.sort((a, b) => {
+        return b.lastMessageTime - a.lastMessageTime;
       });
-      client.conversations.list().then(async convos => {
-        const allMessages = await Promise.all(
-          convos.map(async conversation => {
-            const [messages, consent] = await Promise.all([
-              conversation.messages(1),
-              conversation.consentState(),
-            ]);
-            const content = messages[0].content();
-            return {
-              topic: conversation.topic,
-              lastMessage:
-                typeof content === 'string'
-                  ? content
-                  : messages[0].fallback ?? '',
-              lastMessageTime: messages[0].sent,
-              timeDisplay: getMessageTimeDisplay(messages[0].sent),
-              isRequest: consent !== 'allowed',
-              address: conversation.peerAddress as `0x${string}`,
-            };
-          }),
-        );
-        const sorted = allMessages.sort((a, b) => {
-          return b.lastMessageTime - a.lastMessageTime;
-        });
-        setConversations(sorted.filter(convo => !convo.isRequest));
-        setRequests(sorted.filter(convo => convo.isRequest));
-      });
-    };
-    getAllMessages();
+      setConversations(sorted.filter(convo => !convo.isRequest));
+      setRequests(sorted.filter(convo => convo.isRequest));
+    });
   }, [client]);
+
+  useEffect(() => {
+    getAllMessages();
+  }, [client, getAllMessages]);
 
   useEffect(() => {
     const startStream = () => {
       if (!client) {
         return;
       }
-      client.conversations.streamAllMessages(
-        async (message: DecodedMessage<unknown>) => {
-          const {topic} = message;
-          const convo = conversations.find(c => c.topic === topic);
-          if (convo) {
-            const content = message.content();
-            const newConvo: Conversation = {
-              ...convo,
-              lastMessage:
-                typeof content === 'string' ? content : message.fallback ?? '',
-              lastMessageTime: message.sent,
-              timeDisplay: getMessageTimeDisplay(message.sent),
-            };
-            setConversations(prev => [
-              newConvo,
-              ...prev.filter(c => c.topic !== topic),
-            ]);
-          } else {
-            const [convos] = await Promise.all([client.conversations.list()]);
-            const newConvo = convos.find(c => c.topic === topic);
-            if (!newConvo) {
-              return;
-            }
-            const consent = await newConvo?.consentState();
-            const content = message.content();
-            const newConversation: Conversation = {
-              topic,
-              lastMessage:
-                typeof content === 'string' ? content : message.fallback ?? '',
-              lastMessageTime: message.sent,
-              timeDisplay: getMessageTimeDisplay(message.sent),
-              isRequest: consent !== 'allowed',
-              address: newConvo?.peerAddress as `0x${string}`,
-            };
-            setConversations(prev => [newConversation, ...prev]);
-          }
-        },
-      );
+      client.conversations.streamAllMessages(async () => {
+        // TODO: This is a temporary fix to avoid not getting updated messages from state
+        // Should do this more efficiently
+        getAllMessages();
+      });
     };
 
     startStream();
@@ -129,7 +96,28 @@ const useData = () => {
     return () => {
       client?.conversations.cancelStreamAllMessages();
     };
-  }, [client, conversations]);
+  }, [client, getAllMessages]);
+
+  useEffect(() => {
+    const startStream = () => {
+      if (!client) {
+        return;
+      }
+      client.conversations.stream(async () => {
+        // TODO: This is a temporary fix to avoid not getting updated messages from state
+        // Should do this more efficiently
+        getAllMessages();
+      });
+    };
+
+    startStream();
+
+    return () => {
+      client?.conversations.cancelStream();
+    };
+  }, [client, getAllMessages]);
+
+  console.log('Connected as address:', client?.address);
 
   return {
     messageRequests: requests,
