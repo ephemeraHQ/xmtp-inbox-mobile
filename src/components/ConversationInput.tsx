@@ -1,6 +1,6 @@
 import {Box, HStack, Image, Pressable, VStack} from 'native-base';
 import React, {FC, useCallback, useEffect, useState} from 'react';
-import {StyleSheet, TextInput} from 'react-native';
+import {Platform, StyleSheet, TextInput} from 'react-native';
 import {
   Asset,
   launchCamera,
@@ -62,9 +62,9 @@ export const ConversationInput: FC<ConversationInputProps> = ({
         mediaType: 'photo',
       },
       response => {
-        response.assets?.forEach(asset => {
-          if (asset.uri) {
-            setAssetUri(asset);
+        response.assets?.forEach(resAsset => {
+          if (resAsset.uri) {
+            setAssetUri(resAsset);
           }
         });
       },
@@ -77,9 +77,9 @@ export const ConversationInput: FC<ConversationInputProps> = ({
         mediaType: 'photo',
       },
       response => {
-        response.assets?.forEach(asset => {
-          if (asset.uri) {
-            setAssetUri(asset);
+        response.assets?.forEach(resAsset => {
+          if (resAsset.uri) {
+            setAssetUri(resAsset);
           }
         });
       },
@@ -129,9 +129,13 @@ export const ConversationInput: FC<ConversationInputProps> = ({
         borderWidth={2}
         paddingLeft={4}
         marginX={2}
-        paddingY={2}
+        paddingY={Platform.select({
+          ios: 2,
+          android: 0,
+        })}
         bottom={0}
         borderRadius={24}
+        alignItems={'center'}
         borderBottomRightRadius={0}>
         <TextInput
           value={text}

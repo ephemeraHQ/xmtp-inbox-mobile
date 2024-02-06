@@ -1,6 +1,6 @@
 import {BlurView} from '@react-native-community/blur';
-import {HStack, VStack} from 'native-base';
-import React, {FC} from 'react';
+import {Box, HStack, VStack} from 'native-base';
+import React, {FC, PropsWithChildren} from 'react';
 import {Platform, Pressable, StyleSheet} from 'react-native';
 import {useContactInfo} from '../hooks/useContactInfo';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
@@ -15,6 +15,17 @@ interface ConversationHeaderProps {
   onAvatarPress: () => void;
 }
 
+const HeaderContainer: FC<PropsWithChildren> = ({children}) => {
+  if (Platform.OS === 'ios') {
+    return (
+      <BlurView style={styles.blur} blurType="light" blurAmount={5}>
+        {children}
+      </BlurView>
+    );
+  }
+  return <Box style={styles.blur}>{children}</Box>;
+};
+
 export const ConversationHeader: FC<ConversationHeaderProps> = ({
   peerAddress,
   onAvatarPress,
@@ -23,7 +34,7 @@ export const ConversationHeader: FC<ConversationHeaderProps> = ({
   const {displayName, avatarUrl} = useContactInfo(peerAddress);
 
   return (
-    <BlurView style={styles.blur} blurType="light" blurAmount={5}>
+    <HeaderContainer>
       <HStack
         w={'100%'}
         alignItems={'center'}
@@ -53,7 +64,7 @@ export const ConversationHeader: FC<ConversationHeaderProps> = ({
           />
         </Pressable>
       </HStack>
-    </BlurView>
+    </HeaderContainer>
   );
 };
 
@@ -63,7 +74,7 @@ const styles = StyleSheet.create({
     width: '100%',
     zIndex: 10,
     elevation: 10,
-    paddingTop: Platform.OS === 'ios' ? 60 : 0,
+    paddingTop: Platform.OS === 'ios' ? 60 : 20,
     paddingBottom: 8,
   },
 });

@@ -2,4 +2,5 @@
 export const AppConfig = {
   IMAGE_UPLOAD_ENABLED: false,
   LENS_ENABLED: false,
+  GROUPS_ENABLED: true,
 };

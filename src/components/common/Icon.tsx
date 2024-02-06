@@ -309,7 +309,10 @@ export type IconName =
   | 'wrench-screwdriver'
   | 'x-circle'
   | 'x-mark'
-  | 'xmtp-logo';
+  | 'xmtp-logo'
+  | 'walletconnect'
+  | 'metamask'
+  | 'coinbase-wallet';
 
 type IconType = 'mini' | 'outline' | 'solid';
 
@@ -623,6 +626,9 @@ const iconSet = new Set<IconName>([
   'x-circle',
   'x-mark',
   'xmtp-logo',
+  'walletconnect',
+  'metamask',
+  'coinbase-wallet',
 ]);
 
 const getIcon = (name: IconName, type: IconType) => {
@@ -3508,7 +3514,14 @@ const getIcon = (name: IconName, type: IconType) => {
 
     // case 'xmtp-logo':
     //   return require('../../../assets/icons/xmtp-logo.svg').default;
+    case 'walletconnect':
+      return require('../../../assets/icons/walletconnect.svg').default;
 
+    case 'metamask':
+      return require('../../../assets/icons/metamask.svg').default;
+
+    case 'coinbase-wallet':
+      return require('../../../assets/icons/coinbase_wallet.svg').default;
     default:
       return null;
   }

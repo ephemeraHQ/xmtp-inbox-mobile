@@ -3,12 +3,10 @@ import {Box, Center} from 'native-base';
 import React from 'react';
 import {ImageBackground} from 'react-native';
 import {Screen} from '../components/common/Screen';
-// import {Screen} from 'react-native-screens';
 
 export const LoadingScreen = () => {
   return (
     <Screen containerStlye={{justifyContent: 'center', alignItems: 'center'}}>
-      {/* <Spinner /> */}
       <Center>
         <ImageBackground
           source={require('../../assets/images/welcome.png')}
