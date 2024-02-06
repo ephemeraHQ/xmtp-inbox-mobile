@@ -7,6 +7,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
+import {AppConfig} from '../consts/AppConfig';
 import {getClientKeys} from '../services/encryptedStorage';
 
 interface ClientContextValue {
@@ -39,9 +40,10 @@ export const ClientProvider: FC<PropsWithChildren> = ({children}) => {
         }
         Client.createFromKeyBundle(keys, {
           codecs: [new RemoteAttachmentCodec()],
+          enableAlphaMls: AppConfig.GROUPS_ENABLED,
         })
-          .then(client => {
-            setClient(client);
+          .then(newClient => {
+            setClient(newClient);
             setLoading(false);
           })
           .catch(() => {

@@ -110,6 +110,7 @@ PODS:
     - hermes-engine/Pre-built (= 0.73.0)
   - hermes-engine/Pre-built (0.73.0)
   - libevent (2.1.12)
+  - LibXMTP (0.4.1-beta0)
   - Logging (1.0.0)
   - MessagePacker (0.4.7)
   - MMKV (1.3.2):
@@ -1216,17 +1217,16 @@ PODS:
     - GenericJSON (~> 2.0)
     - Logging (~> 1.0.0)
     - secp256k1.swift (~> 0.1)
-  - XMTP (0.7.7-alpha0):
+  - XMTP (0.7.8-alpha0):
     - Connect-Swift (= 0.3.0)
     - GzipSwift
+    - LibXMTP (= 0.4.1-beta0)
     - web3.swift
-    - XMTPRust (= 0.3.7-beta0)
-  - XMTPReactNative (1.25.1):
+  - XMTPReactNative (1.27.0-beta.1):
     - ExpoModulesCore
     - MessagePacker
     - secp256k1.swift
-    - XMTP (= 0.7.7-alpha0)
-  - XMTPRust (0.3.7-beta0)
+    - XMTP (= 0.7.8-alpha0)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -1355,6 +1355,7 @@ SPEC REPOS:
     - GenericJSON
     - GzipSwift
     - libevent
+    - LibXMTP
     - Logging
     - MessagePacker
     - MMKV
@@ -1365,7 +1366,6 @@ SPEC REPOS:
     - SwiftProtobuf
     - web3.swift
     - XMTP
-    - XMTPRust
 
 EXTERNAL SOURCES:
   boost:
@@ -1565,6 +1565,7 @@ SPEC CHECKSUMS:
   GzipSwift: 893f3e48e597a1a4f62fafcb6514220fcf8287fa
   hermes-engine: 34304f8c6e8fa68f63a5fe29af82f227d817d7a7
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
+  LibXMTP: a3bb8d00c275034e55f1f7bf632335821c792d3c
   Logging: 9ef4ecb546ad3169398d5a723bc9bea1c46bef26
   MessagePacker: ab2fe250e86ea7aedd1a9ee47a37083edd41fd02
   MMKV: f21593c0af4b3f2a0ceb8f820f28bb639ea22bb7
@@ -1634,9 +1635,8 @@ SPEC CHECKSUMS:
   SwiftProtobuf: b02b5075dcf60c9f5f403000b3b0c202a11b6ae1
   WatermelonDB: 842d22ba555425aa9f3ce551239a001200c539bc
   web3.swift: 2263d1e12e121b2c42ffb63a5a7beb1acaf33959
-  XMTP: b2488aa96eced55fd41a5aece1334be6b5ab622d
-  XMTPReactNative: 5c1ce9decb8722bbbe8cf41dd2179d60f56078f9
-  XMTPRust: 8848a2ba761b2c961d666632f2ad27d1082faa93
+  XMTP: 7c308fde3213aa0b0ad8198c9984932260f22b65
+  XMTPReactNative: 9e0ad9cc76f6156727baf3767259151a5ff7faac
   Yoga: e64aa65de36c0832d04e8c7bd614396c77a80047
 
 PODFILE CHECKSUM: c765268d8eab018a5f4619e1d00ca4dab437bc4f

@@ -7,6 +7,7 @@ import {Button} from '../components/common/Button';
 import {Icon} from '../components/common/Icon';
 import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
+import {AppConfig} from '../consts/AppConfig';
 import {EventEmitterEvents} from '../consts/EventEmitters';
 import {useClientContext} from '../context/ClientContext';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
@@ -53,6 +54,7 @@ export const OnboardingEnableIdentityScreen = () => {
       }
       try {
         const client = await Client.create(signer, {
+          enableAlphaMls: AppConfig.GROUPS_ENABLED,
           preEnableIdentityCallback: async () => {
             await enableIdentityPromise;
           },
