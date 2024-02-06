@@ -30,6 +30,7 @@ interface Conversation {
 }
 
 const useData = () => {
+  const [initialLoading, setInitialLoading] = useState(true);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [requests, setRequests] = useState<Conversation[]>([]);
   const {client} = useClient();
@@ -46,37 +47,35 @@ const useData = () => {
         item.permissionType === 'allowed',
       );
     });
-    client.conversations.list().then(async convos => {
-      const allMessages = await Promise.all(
-        convos.map(async conversation => {
-          const [messages, consent] = await Promise.all([
-            conversation.messages(1),
-            conversation.consentState(),
-          ]);
-          const content = messages[0].content();
-          return {
-            topic: conversation.topic,
-            lastMessage:
-              typeof content === 'string'
-                ? content
-                : messages[0].fallback ?? '',
-            lastMessageTime: messages[0].sent,
-            timeDisplay: getMessageTimeDisplay(messages[0].sent),
-            isRequest: consent !== 'allowed',
-            address: conversation.peerAddress as `0x${string}`,
-          };
-        }),
-      );
-      const sorted = allMessages.sort((a, b) => {
-        return b.lastMessageTime - a.lastMessageTime;
-      });
-      setConversations(sorted.filter(convo => !convo.isRequest));
-      setRequests(sorted.filter(convo => convo.isRequest));
+    const convos = await client.conversations.list();
+    const allMessages = await Promise.all(
+      convos.map(async conversation => {
+        const [messages, consent] = await Promise.all([
+          conversation.messages(1),
+          conversation.consentState(),
+        ]);
+        const content = messages[0].content();
+        return {
+          topic: conversation.topic,
+          lastMessage:
+            typeof content === 'string' ? content : messages[0].fallback ?? '',
+          lastMessageTime: messages[0].sent,
+          timeDisplay: getMessageTimeDisplay(messages[0].sent),
+          isRequest: consent !== 'allowed',
+          address: conversation.peerAddress as `0x${string}`,
+        };
+      }),
+    );
+    const sorted = allMessages.sort((a, b) => {
+      return b.lastMessageTime - a.lastMessageTime;
     });
+    setConversations(sorted.filter(convo => !convo.isRequest));
+    setRequests(sorted.filter(convo => convo.isRequest));
+    return;
   }, [client]);
 
   useEffect(() => {
-    getAllMessages();
+    getAllMessages().then(() => setInitialLoading(false));
   }, [client, getAllMessages]);
 
   useEffect(() => {
@@ -84,10 +83,29 @@ const useData = () => {
       if (!client) {
         return;
       }
-      client.conversations.streamAllMessages(async () => {
-        // TODO: This is a temporary fix to avoid not getting updated messages from state
-        // Should do this more efficiently
-        getAllMessages();
+      client.conversations.streamAllMessages(async message => {
+        const topic = message.topic;
+        setConversations(prev => {
+          const content = message.content();
+          const messageStringContent =
+            typeof content === 'string' ? content : message.fallback ?? '';
+          const existingConversation = prev.find(it => it.topic === topic);
+          // Handle existing conversations here, new conversations handled in stream
+          if (existingConversation) {
+            return prev.map(it =>
+              it.topic === topic
+                ? {
+                    ...it,
+                    lastMessage: messageStringContent,
+                    lastMessageTime: message.sent,
+                    timeDisplay: getMessageTimeDisplay(message.sent),
+                  }
+                : it,
+            );
+          } else {
+            return prev;
+          }
+        });
       });
     };
 
@@ -103,10 +121,25 @@ const useData = () => {
       if (!client) {
         return;
       }
-      client.conversations.stream(async () => {
-        // TODO: This is a temporary fix to avoid not getting updated messages from state
-        // Should do this more efficiently
-        getAllMessages();
+      client.conversations.stream(async newConversation => {
+        const [messages, consent] = await Promise.all([
+          newConversation.messages(1),
+          newConversation.consentState(),
+        ]);
+        const content = messages[0].content();
+        const messageStringContent =
+          typeof content === 'string' ? content : messages[0].fallback ?? '';
+        setConversations(prev => [
+          {
+            topic: newConversation.topic,
+            lastMessage: messageStringContent,
+            lastMessageTime: messages[0].sent,
+            timeDisplay: getMessageTimeDisplay(messages[0].sent),
+            isRequest: consent !== 'allowed',
+            address: newConversation.peerAddress as `0x${string}`,
+          },
+          ...prev,
+        ]);
       });
     };
 
@@ -122,6 +155,7 @@ const useData = () => {
   return {
     messageRequests: requests,
     messages: conversations,
+    initialLoading,
   };
 };
 
@@ -271,7 +305,7 @@ const ListItem: FC<{item: Conversation}> = ({item}) => {
           style={{marginRight: 16}}
           address={item.address}
         />
-        <VStack flex={1} style={{justifyContent: 'flex-end'}}>
+        <VStack flex={1} justifyContent={'flex-end'}>
           <Text
             numberOfLines={1}
             ellipsizeMode="middle"
@@ -283,8 +317,9 @@ const ListItem: FC<{item: Conversation}> = ({item}) => {
           </Text>
         </VStack>
         <Text
+          alignSelf={'flex-start'}
           typography="text-xs/regular"
-          style={{alignSelf: 'flex-start', textAlignVertical: 'top'}}>
+          style={{textAlignVertical: 'top'}}>
           {item.timeDisplay}
         </Text>
       </HStack>
@@ -299,7 +334,7 @@ export const ConversationListScreen = () => {
   const [showPickerModal, setShowPickerModal] = useState(false);
   const [showConsentDrawer, setShowConsentDrawer] = useState(false);
   const focused = useIsFocused();
-  const {messages, messageRequests} = useData();
+  const {messages, messageRequests, initialLoading} = useData();
   const {navigate} = useTypedNavigation();
 
   const showPicker = () => {
@@ -339,7 +374,7 @@ export const ConversationListScreen = () => {
             />
           }
           ListEmptyComponent={
-            list === 'ALL_MESSAGES' ? (
+            list === 'ALL_MESSAGES' && !initialLoading ? (
               <VStack
                 justifyContent={'center'}
                 alignItems={'center'}

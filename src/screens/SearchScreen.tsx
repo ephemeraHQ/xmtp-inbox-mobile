@@ -4,6 +4,7 @@ import {SectionListRenderItem} from 'react-native';
 import {AvatarWithFallback} from '../components/AvatarWithFallback';
 import {Button} from '../components/common/Button';
 import {Icon} from '../components/common/Icon';
+import {Pill} from '../components/common/Pill';
 import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
 import {AppConfig} from '../consts/AppConfig';
@@ -141,6 +142,12 @@ export const SearchScreen = () => {
     [goBack, navigate, participants],
   );
 
+  const onGroupStart = useCallback(() => {
+    const first = participants[0];
+    goBack();
+    navigate(ScreenNames.NewConversation, {address: first});
+  }, [participants, navigate, goBack]);
+
   const items = useMemo(() => {
     const {filtered: filteredRecents, mapping: recentMapping} = recents.reduce<{
       filtered: Contact[];
@@ -255,24 +262,24 @@ export const SearchScreen = () => {
         paddingX={'8px'}
       />
       {AppConfig.GROUPS_ENABLED && (
-        <VStack paddingX={'16px'} paddingTop={'16px'}>
+        <VStack paddingX={'16px'} paddingTop={'16px'} w="100%">
           <HStack flexWrap={'wrap'}>
             {participants.map(participant => {
               return (
-                <Button
-                  variant={'ghost'}
-                  size={'xs'}
-                  onPress={() => removeParticipant(participant)}>
-                  <Text>{formatAddress(participant)}</Text>
-                </Button>
+                <Pill
+                  size={'sm'}
+                  onPress={() => removeParticipant(participant)}
+                  text={formatAddress(participant)}
+                />
               );
             })}
           </HStack>
           {participants.length > 0 && (
             <Button
-              onPress={() => {
-                // TODO: Create Group
-              }}>
+              w={20}
+              alignSelf={'center'}
+              size={'xs'}
+              onPress={onGroupStart}>
               {translate('start')}
             </Button>
           )}
