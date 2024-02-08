@@ -1,3 +1,4 @@
+import {getAddress} from 'ethers/lib/utils';
 import {Box, HStack, Input, Pressable, SectionList, VStack} from 'native-base';
 import React, {FC, useCallback, useEffect, useMemo, useState} from 'react';
 import {SectionListRenderItem} from 'react-native';
@@ -55,7 +56,7 @@ const useData = () => {
       list?.forEach(async item => {
         if (item.permissionType === 'allowed') {
           contactList.push({
-            address: item.value,
+            address: getAddress(item.value),
             isConnected: true,
             topic: convoMap.get(item.value),
           });
@@ -135,7 +136,7 @@ export const SearchScreen = () => {
         if (item.isConnected && item.topic) {
           navigate(ScreenNames.Conversation, {topic: item.topic});
         } else {
-          navigate(ScreenNames.NewConversation, {address: item.address});
+          navigate(ScreenNames.NewConversation, {addresses: [item.address]});
         }
       }
     },
@@ -143,9 +144,8 @@ export const SearchScreen = () => {
   );
 
   const onGroupStart = useCallback(() => {
-    const first = participants[0];
     goBack();
-    navigate(ScreenNames.NewConversation, {address: first});
+    navigate(ScreenNames.NewConversation, {addresses: participants});
   }, [participants, navigate, goBack]);
 
   const items = useMemo(() => {

@@ -11,9 +11,10 @@ import {
 import React, {useCallback, useEffect, useState} from 'react';
 import {ListRenderItem, Platform} from 'react-native';
 import {Asset} from 'react-native-image-picker';
-import {ConversationHeader} from '../components/ConversationHeader';
+import {AvatarWithFallback} from '../components/AvatarWithFallback';
 import {ConversationInput} from '../components/ConversationInput';
 import {ConversationMessageContent} from '../components/ConversationMessageContent';
+import {GroupHeader} from '../components/GroupHeader';
 import {Button} from '../components/common/Button';
 import {Drawer} from '../components/common/Drawer';
 import {Icon} from '../components/common/Icon';
@@ -22,17 +23,44 @@ import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
 import {useClient} from '../hooks/useClient';
 import {useContactInfo} from '../hooks/useContactInfo';
-import {useConversation} from '../hooks/useConversation';
-import {useConversationMessages} from '../hooks/useConversationMessages';
+import {useGroup} from '../hooks/useGroup';
+import {useGroupMessages} from '../hooks/useGroupMessages';
 import {translate} from '../i18n';
-import {
-  getConsent,
-  getTopicAddresses,
-  saveConsent,
-  saveTopicAddresses,
-} from '../services/mmkvStorage';
+import {getConsent, saveConsent} from '../services/mmkvStorage';
 import {AWSHelper} from '../services/s3';
 import {colors} from '../theme/colors';
+
+const GroupParticipant: React.FC<{address: string}> = ({address}) => {
+  const {displayName, avatarUrl} = useContactInfo(address);
+  return (
+    <VStack alignItems={'center'} justifyContent={'center'}>
+      <HStack>
+        <Text typography="text-xl/bold" textAlign={'center'}>
+          {displayName}
+        </Text>
+        <AvatarWithFallback size={40} address={address} avatarUri={avatarUrl} />
+      </HStack>
+      <Text typography="text-sm/bold">{translate('domain_origin')}</Text>
+
+      <Button
+        variant={'ghost'}
+        rightIcon={
+          <Icon
+            name={'arrow-right'}
+            type={'mini'}
+            color={colors.actionPrimary}
+          />
+        }>
+        <Text
+          typography="text-base/bold"
+          color={colors.actionPrimary}
+          textAlign={'center'}>
+          {'lenster.xyz'}
+        </Text>
+      </Button>
+    </VStack>
+  );
+};
 
 const getTimestamp = (timestamp: number) => {
   // If today, return hours and minutes if not return date
@@ -48,34 +76,35 @@ const getTimestamp = (timestamp: number) => {
   return date.toLocaleDateString();
 };
 
-const useData = (topic: string) => {
-  const {messages} = useConversationMessages(topic);
+const useData = (id: string) => {
+  const {messages, refetch} = useGroupMessages(id);
   const {client} = useClient();
-  const {conversation} = useConversation(topic);
-  const cachedPeerAddress = getTopicAddresses(topic)?.[0];
-  const {displayName, avatarUrl} = useContactInfo(
-    conversation?.peerAddress || '',
-  );
+  const {group} = useGroup(id);
+  // const cachedPeerAddress = getTopicAddresses(id)?.[0];
+  // const {displayName, avatarUrl} = useContactInfo(
+  //   conversation?.peerAddress || '',
+  // );
 
-  useEffect(() => {
-    if (topic && conversation?.peerAddress) {
-      saveTopicAddresses(topic, [conversation?.peerAddress]);
-    }
-  }, [conversation?.peerAddress, topic]);
+  // useEffect(() => {
+  //   if (id && conversation?.peerAddress) {
+  //     saveTopicAddresses(id, [conversation?.peerAddress]);
+  //   }
+  // }, [conversation?.peerAddress, id]);
 
   return {
-    profileImage: avatarUrl,
-    name: displayName,
-    address: conversation?.peerAddress ?? cachedPeerAddress,
+    // profileImage: avatarUrl,
+    name: group?.id,
+    addresses: group?.peerAddresses,
     myAddress: client?.address,
     messages,
-    conversation,
+    group,
     client,
+    refetch,
   };
 };
 
-const getInitialConsentState = (address: string, peerAddress: string) => {
-  const cachedConsent = getConsent(address, peerAddress);
+const getInitialConsentState = (addresses: string, peerAddress: string) => {
+  const cachedConsent = getConsent(addresses, peerAddress);
   if (cachedConsent === undefined) {
     return 'unknown';
   }
@@ -85,33 +114,34 @@ const getInitialConsentState = (address: string, peerAddress: string) => {
   return 'denied';
 };
 
-export const ConversationScreen = () => {
+export const GroupScreen = () => {
   const {params} = useRoute();
-  const {topic} = params as {topic: string};
-  const {name, myAddress, messages, address, conversation, client} =
-    useData(topic);
+  const {id} = params as {id: string};
+  const {myAddress, messages, addresses, group, client, refetch} = useData(id);
   const [showReply, setShowReply] = useState(false);
-  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showGroupModal, setShowGroupModal] = useState(false);
   const [consent, setConsent] = useState<'allowed' | 'denied' | 'unknown'>(
-    getInitialConsentState(myAddress ?? '', address ?? ''),
+    getInitialConsentState(myAddress ?? '', group?.id ?? ''),
   );
 
   useEffect(() => {
-    if (!conversation) {
+    if (!group) {
       return;
     }
-    conversation.consentState().then(currentConsent => {
-      setConsent(currentConsent);
-    });
-  }, [conversation]);
+    // TODO: Update with consent
+    setConsent('allowed');
+    // group..then(currentConsent => {
+    //   setConsent(currentConsent);
+    // });
+  }, [group]);
 
   const sendMessage = useCallback(
     async (payload: {text?: string; asset?: Asset}) => {
-      if (!conversation) {
+      if (!group) {
         return;
       }
       if (payload.text) {
-        conversation?.send(payload.text);
+        group?.send(payload.text).then(refetch);
       }
       if (payload.asset) {
         client
@@ -129,18 +159,22 @@ export const ConversationScreen = () => {
                 scheme: 'https://',
                 url: response,
               };
-              conversation?.send({remoteAttachment: remote}).catch(() => {});
+              group
+                ?.send({remoteAttachment: remote})
+                .then(refetch)
+                .catch(() => {});
             });
           })
           .catch(() => {});
       }
     },
-    [client, conversation],
+    [client, group, refetch],
   );
 
   const renderItem: ListRenderItem<DecodedMessage<unknown>> = ({item}) => {
-    const isMe = item.senderAddress === myAddress;
-
+    const isMe =
+      item.senderAddress?.toLocaleLowerCase() ===
+      myAddress?.toLocaleLowerCase();
     return (
       <Pressable>
         <Box marginLeft={6} marginRight={6} marginY={2} flexShrink={1}>
@@ -160,20 +194,20 @@ export const ConversationScreen = () => {
   };
 
   const onConsent = useCallback(() => {
-    if (address) {
-      client?.contacts.allow([address]);
+    if (addresses) {
+      client?.contacts.allow(addresses);
     }
     setConsent('allowed');
-    saveConsent(myAddress ?? '', address ?? '', true);
-  }, [address, client?.contacts, myAddress]);
+    saveConsent(myAddress ?? '', id ?? '', true);
+  }, [addresses, client?.contacts, myAddress, id]);
 
   const onBlock = useCallback(() => {
-    if (address) {
-      client?.contacts.deny([address]);
+    if (addresses) {
+      client?.contacts.deny(addresses);
     }
     setConsent('denied');
-    saveConsent(myAddress ?? '', address ?? '', false);
-  }, [address, client?.contacts, myAddress]);
+    saveConsent(myAddress ?? '', id ?? '', false);
+  }, [addresses, client?.contacts, id, myAddress]);
 
   return (
     <>
@@ -183,9 +217,9 @@ export const ConversationScreen = () => {
           alignItems: undefined,
         }}>
         <Box backgroundColor={colors.backgroundPrimary} paddingBottom={10}>
-          <ConversationHeader
-            peerAddress={address}
-            onAvatarPress={() => setShowProfileModal(true)}
+          <GroupHeader
+            peerAddresses={addresses ?? []}
+            onGroupPress={() => setShowGroupModal(false)}
           />
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -205,7 +239,7 @@ export const ConversationScreen = () => {
               <ConversationInput
                 sendMessage={sendMessage}
                 currentAddress={myAddress}
-                id={topic}
+                id={id}
               />
             ) : (
               <HStack justifyContent={'space-around'} marginX={'40px'}>
@@ -244,30 +278,12 @@ export const ConversationScreen = () => {
         </VStack>
       </Drawer>
       <Modal
-        onBackgroundPress={() => setShowProfileModal(false)}
-        isOpen={showProfileModal}>
+        onBackgroundPress={() => setShowGroupModal(false)}
+        isOpen={showGroupModal}>
         <VStack alignItems={'center'} justifyContent={'center'}>
-          <Text typography="text-xl/bold" textAlign={'center'}>
-            {name}
-          </Text>
-          <Text typography="text-sm/bold">{translate('domain_origin')}</Text>
-
-          <Button
-            variant={'ghost'}
-            rightIcon={
-              <Icon
-                name={'arrow-right'}
-                type={'mini'}
-                color={colors.actionPrimary}
-              />
-            }>
-            <Text
-              typography="text-base/bold"
-              color={colors.actionPrimary}
-              textAlign={'center'}>
-              {'lenster.xyz'}
-            </Text>
-          </Button>
+          {addresses?.map(address => (
+            <GroupParticipant key={address} address={address} />
+          ))}
         </VStack>
       </Modal>
     </>

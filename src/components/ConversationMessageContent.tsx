@@ -7,14 +7,13 @@ import {Text} from './common/Text';
 
 interface ConversationMessageContentProps {
   message: DecodedMessage<unknown>;
-  address: string;
+  isMe: boolean;
 }
 
 export const ConversationMessageContent: FC<
   ConversationMessageContentProps
-> = ({message, address}) => {
+> = ({message, isMe}) => {
   if (message.contentTypeId === 'xmtp.org/text:1.0') {
-    const isMe = message.senderAddress === address;
     return (
       <Container
         backgroundColor={
