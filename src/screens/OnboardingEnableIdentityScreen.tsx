@@ -7,6 +7,7 @@ import {Button} from '../components/common/Button';
 import {Icon} from '../components/common/Icon';
 import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
+import {AppConfig} from '../consts/AppConfig';
 import {EventEmitterEvents} from '../consts/EventEmitters';
 import {useClientContext} from '../context/ClientContext';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
@@ -52,19 +53,39 @@ export const OnboardingEnableIdentityScreen = () => {
         return;
       }
       try {
-        const client = await Client.create(signer, {
-          preEnableIdentityCallback: async () => {
-            await enableIdentityPromise;
-          },
-          preCreateIdentityCallback: async () => {
-            await createIdentityPromise;
-          },
-          codecs: [new RemoteAttachmentCodec()],
-        });
-        const keys = await client.exportKeyBundle();
-        const address = await signer.getAddress();
-        saveClientKeys(address as `0x${string}`, keys);
-        setClient(client);
+        if (AppConfig.GROUPS_ENABLED) {
+          const client = await Client.createRandom({
+            enableAlphaMls: AppConfig.GROUPS_ENABLED,
+            env: AppConfig.XMTP_ENV,
+            preEnableIdentityCallback: async () => {
+              await enableIdentityPromise;
+            },
+            preCreateIdentityCallback: async () => {
+              await createIdentityPromise;
+            },
+            codecs: [new RemoteAttachmentCodec()],
+          });
+          const keys = await client.exportKeyBundle();
+          const address = await signer.getAddress();
+          saveClientKeys(address as `0x${string}`, keys);
+          setClient(client);
+        } else {
+          const client = await Client.create(signer, {
+            enableAlphaMls: AppConfig.GROUPS_ENABLED,
+            env: AppConfig.XMTP_ENV,
+            preEnableIdentityCallback: async () => {
+              await enableIdentityPromise;
+            },
+            preCreateIdentityCallback: async () => {
+              await createIdentityPromise;
+            },
+            codecs: [new RemoteAttachmentCodec()],
+          });
+          const keys = await client.exportKeyBundle();
+          const address = await signer.getAddress();
+          saveClientKeys(address as `0x${string}`, keys);
+          setClient(client);
+        }
       } catch (e) {}
     };
     startClientCreation();

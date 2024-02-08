@@ -9,6 +9,7 @@ export enum ScreenNames {
   Account = 'account',
   ConversationList = 'conversation_list',
   Conversation = 'conversation',
+  Group = 'group',
   NewConversation = 'new_conversation',
   Discover = 'discover',
   Search = 'search',

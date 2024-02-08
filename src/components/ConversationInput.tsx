@@ -20,17 +20,17 @@ import {colors} from '../theme/colors';
 interface ConversationInputProps {
   sendMessage: (payload: {text?: string; asset?: Asset}) => void;
   currentAddress?: string;
-  topic?: string;
+  id?: string;
 }
 
 export const ConversationInput: FC<ConversationInputProps> = ({
   sendMessage,
   currentAddress,
-  topic,
+  id,
 }) => {
   const [focused, setFocus] = useState<boolean>(false);
   const [text, setText] = useState<string>(
-    currentAddress && topic ? getDraftText(currentAddress, topic) ?? '' : '',
+    currentAddress && id ? getDraftText(currentAddress, id) ?? '' : '',
   );
   const [asset, setAssetUri] = useState<Asset | null>();
   // currentAddress && topic
@@ -38,22 +38,13 @@ export const ConversationInput: FC<ConversationInputProps> = ({
   //   : null,
 
   useEffect(() => {
-    if (text && currentAddress && topic) {
-      saveDraftText(currentAddress, topic, text);
+    if (text && currentAddress && id) {
+      saveDraftText(currentAddress, id, text);
     }
-    if (!text && currentAddress && topic) {
-      clearDraftText(currentAddress, topic);
+    if (!text && currentAddress && id) {
+      clearDraftText(currentAddress, id);
     }
-  }, [currentAddress, text, topic]);
-
-  // useEffect(() => {
-  //   if (asset && currentAddress && topic) {
-  //     // saveDraftImage(currentAddress, topic, assetUri);
-  //   }
-  //   if (!asset && currentAddress && topic) {
-  //     // clearDraftImage(currentAddress, topic);
-  //   }
-  // }, [currentAddress, assetUri, topic]);
+  }, [currentAddress, text, id]);
 
   const handleImageUploadPress = useCallback(() => {
     launchImageLibrary(
