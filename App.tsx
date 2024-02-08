@@ -1,5 +1,6 @@
 import './src/polyfills';
 
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {Ethereum} from '@thirdweb-dev/chains';
 import {
   ThirdwebProvider,
@@ -28,6 +29,8 @@ const config = createConfig({
   publicClient,
   webSocketPublicClient,
 });
+
+const queryClient = new QueryClient();
 
 function App(): React.JSX.Element {
   const newColorTheme = {
@@ -72,9 +75,11 @@ function App(): React.JSX.Element {
           walletConnect({recommended: true}),
         ]}>
         <NativeBaseProvider theme={theme}>
-          <ClientProvider>
-            <AppNavigation />
-          </ClientProvider>
+          <QueryClientProvider client={queryClient}>
+            <ClientProvider>
+              <AppNavigation />
+            </ClientProvider>
+          </QueryClientProvider>
         </NativeBaseProvider>
       </ThirdwebProvider>
     </WagmiConfig>

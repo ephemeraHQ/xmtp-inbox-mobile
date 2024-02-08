@@ -254,6 +254,17 @@ export const SearchScreen = () => {
             />
           </Box>
         }
+        rightElement={
+          searchText ? (
+            <Pressable onPress={() => setSearchText('')}>
+              <Icon
+                name="x-circle"
+                color={colors.textSecondary}
+                type="outline"
+              />
+            </Pressable>
+          ) : undefined
+        }
         backgroundColor={colors.backgroundTertiary}
         value={searchText}
         onChangeText={setSearchText}

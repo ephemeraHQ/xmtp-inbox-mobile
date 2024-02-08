@@ -71,7 +71,10 @@ const getTimestamp = (timestamp: number) => {
     date.getMonth() === now.getMonth() &&
     date.getFullYear() === now.getFullYear()
   ) {
-    return `${date.getHours()}:${date.getMinutes()}`;
+    return date.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   }
   return date.toLocaleDateString();
 };
@@ -219,7 +222,7 @@ export const GroupScreen = () => {
         <Box backgroundColor={colors.backgroundPrimary} paddingBottom={10}>
           <GroupHeader
             peerAddresses={addresses ?? []}
-            onGroupPress={() => setShowGroupModal(false)}
+            onGroupPress={() => setShowGroupModal(true)}
           />
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
