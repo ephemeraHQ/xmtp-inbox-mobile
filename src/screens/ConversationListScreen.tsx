@@ -1,9 +1,7 @@
 import {useIsFocused} from '@react-navigation/native';
 import {useAddress, useENS} from '@thirdweb-dev/react-native';
-import {Conversation} from '@xmtp/react-native-sdk';
-import {Group} from '@xmtp/react-native-sdk/build/lib/Group';
 import {Box, Center, Fab, FlatList, HStack, VStack} from 'native-base';
-import React, {FC, useCallback, useEffect, useState} from 'react';
+import React, {FC, useCallback, useMemo, useState} from 'react';
 import {ListRenderItem, Pressable} from 'react-native';
 import {AvatarWithFallback} from '../components/AvatarWithFallback';
 import {ConversationListItem} from '../components/ConversationListItem';
@@ -14,177 +12,51 @@ import {Icon} from '../components/common/Icon';
 import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
 import {useClient} from '../hooks/useClient';
+import {useListMessages} from '../hooks/useListMessages';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
+import {
+  ListConversation,
+  ListGroup,
+  ListMessages,
+} from '../models/ListMessages';
 import {ScreenNames} from '../navigation/ScreenNames';
-import {saveConsent} from '../services/mmkvStorage';
 import {colors} from '../theme/colors';
-import {getMessageTimeDisplay} from '../utils/getMessageTimeDisplay';
 
 const EmptyBackground = require('../../assets/images/Bg_asset.svg').default;
 
 const keyExtractor = (item: ListConversation | ListGroup) =>
   'conversation' in item ? item.conversation.topic : item.group.id;
 
-interface ListItem {
-  lastMessageTime: number;
-  display: string;
-  isRequest: boolean;
-}
-
-interface ListConversation extends ListItem {
-  conversation: Conversation<any>;
-}
-
-interface ListGroup extends ListItem {
-  group: Group<any>;
-}
-
 const useData = () => {
-  const [initialLoading, setInitialLoading] = useState(true);
-  const [listItems, setListItems] = useState<(ListConversation | ListGroup)[]>(
-    [],
-  );
-  const [requests, setRequests] = useState<(ListConversation | ListGroup)[]>(
-    [],
-  );
   const {client} = useClient();
+  const {data, isLoading, refetch, isRefetching} = useListMessages();
 
-  const getAllMessages = useCallback(async () => {
-    if (!client) {
-      return;
-    }
-    const consentList = await client.contacts.refreshConsentList();
-    consentList.forEach(async item => {
-      saveConsent(
-        client.address,
-        item.value,
-        item.permissionType === 'allowed',
-      );
-    });
-    const [convos, groups] = await Promise.all([
-      client.conversations.list(),
-      client.conversations.listGroups(),
-    ]);
-    const allMessages: (ListConversation | ListGroup)[] = await Promise.all([
-      ...convos.map(async conversation => {
-        const [messages, consent] = await Promise.all([
-          conversation.messages(1),
-          conversation.consentState(),
-        ]);
-        const content = messages[0].content();
-        return {
-          conversation,
-          display:
-            typeof content === 'string' ? content : messages[0].fallback ?? '',
-          lastMessageTime: messages[0].sent,
-          isRequest: consent !== 'allowed',
-        };
-      }),
-      ...groups.map(async group => {
-        const messages = await group.messages();
-        const content = messages[0].content();
-        const display =
-          typeof content === 'string' ? content : messages[0].fallback ?? '';
-        return {
-          group,
-          display,
-          lastMessageTime: messages[0].sent,
-          isRequest: false,
-        };
-      }),
-    ]);
-    const sorted = allMessages.sort((a, b) => {
-      return b.lastMessageTime - a.lastMessageTime;
-    });
-    setListItems(sorted.filter(convo => !convo.isRequest));
-    setRequests(sorted.filter(convo => convo.isRequest));
-    return;
-  }, [client]);
-
-  useEffect(() => {
-    getAllMessages().then(() => setInitialLoading(false));
-  }, [getAllMessages]);
-
-  useEffect(() => {
-    const startStream = () => {
-      if (!client) {
-        return;
+  const {listItems, requests} = useMemo(() => {
+    const listMessages: ListMessages = [];
+    const requestsItems: ListMessages = [];
+    data?.forEach(item => {
+      if ('conversation' in item) {
+        if (item.isRequest) {
+          requestsItems.push(item);
+        } else {
+          listMessages.push(item);
+        }
+      } else {
+        listMessages.push(item);
       }
-      client.conversations.streamAllMessages(async message => {
-        const topic = message.topic;
-        setListItems(prev => {
-          const content = message.content();
-          const messageStringContent =
-            typeof content === 'string' ? content : message.fallback ?? '';
-          const existingConversation = prev.find(
-            it => 'topic' in it && it.topic === topic,
-          );
-          // Handle existing conversations here, new conversations handled in stream
-          if (existingConversation) {
-            return prev.map(it =>
-              'topic' in it && it.topic === topic
-                ? {
-                    ...it,
-                    lastMessage: messageStringContent,
-                    lastMessageTime: message.sent,
-                    timeDisplay: getMessageTimeDisplay(message.sent),
-                  }
-                : it,
-            );
-          } else {
-            return prev;
-          }
-        });
-      });
-    };
-
-    startStream();
-
-    return () => {
-      client?.conversations.cancelStreamAllMessages();
-    };
-  }, [client]);
-
-  useEffect(() => {
-    const startStream = () => {
-      if (!client) {
-        return;
-      }
-      client.conversations.stream(async newConversation => {
-        const [messages, consent] = await Promise.all([
-          newConversation.messages(1),
-          newConversation.consentState(),
-        ]);
-        const content = messages[0].content();
-        const messageStringContent =
-          typeof content === 'string' ? content : messages[0].fallback ?? '';
-        setListItems(prev => [
-          {
-            conversation: newConversation,
-            display: messageStringContent,
-            lastMessageTime: messages[0].sent,
-            isRequest: consent !== 'allowed',
-          },
-          ...prev,
-        ]);
-      });
-    };
-
-    startStream();
-
-    return () => {
-      client?.conversations.cancelStream();
-      client?.conversations.cancelStreamAllMessages();
-    };
-  }, [client, getAllMessages]);
+    });
+    return {listItems: listMessages, requests: requestsItems};
+  }, [data]);
 
   console.log('Connected as address:', client?.address);
 
   return {
     messageRequests: requests,
     messages: listItems,
-    initialLoading,
+    isLoading,
+    refetch,
+    isRefetching,
   };
 };
 
@@ -323,7 +195,8 @@ export const ConversationListScreen = () => {
   const [showPickerModal, setShowPickerModal] = useState(false);
   const [showConsentDrawer, setShowConsentDrawer] = useState(false);
   const focused = useIsFocused();
-  const {messages, messageRequests, initialLoading} = useData();
+  const {messages, messageRequests, isLoading, refetch, isRefetching} =
+    useData();
   const {navigate} = useTypedNavigation();
 
   const showPicker = () => {
@@ -370,6 +243,8 @@ export const ConversationListScreen = () => {
         <FlatList
           w={'100%'}
           h={'100%'}
+          onRefresh={refetch}
+          refreshing={isRefetching}
           keyExtractor={keyExtractor}
           data={list === 'ALL_MESSAGES' ? messages : messageRequests}
           ListHeaderComponent={
@@ -381,7 +256,7 @@ export const ConversationListScreen = () => {
             />
           }
           ListEmptyComponent={
-            list === 'ALL_MESSAGES' && !initialLoading ? (
+            list === 'ALL_MESSAGES' && !isLoading ? (
               <VStack
                 justifyContent={'center'}
                 alignItems={'center'}

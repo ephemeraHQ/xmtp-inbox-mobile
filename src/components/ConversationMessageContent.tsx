@@ -1,6 +1,7 @@
 import {DecodedMessage, RemoteAttachmentContent} from '@xmtp/react-native-sdk';
 import {Container} from 'native-base';
 import React, {FC} from 'react';
+import {translate} from '../i18n';
 import {colors} from '../theme/colors';
 import {ImageMessage} from './ImageMessage';
 import {Text} from './common/Text';
@@ -37,6 +38,23 @@ export const ConversationMessageContent: FC<
   if (message.contentTypeId === 'xmtp.org/remoteStaticAttachment:1.0') {
     return (
       <ImageMessage content={message.content() as RemoteAttachmentContent} />
+    );
+  }
+
+  if (message.contentTypeId === 'xmtp.org/group_membership_change:1.0') {
+    return (
+      <Container
+        alignSelf="center"
+        borderRadius={'16px'}
+        paddingY={3}
+        paddingX={5}>
+        <Text
+          typography="text-base/medium"
+          color={colors.textSecondary}
+          alignSelf="center">
+          {translate('group_changed')}
+        </Text>
+      </Container>
     );
   }
 

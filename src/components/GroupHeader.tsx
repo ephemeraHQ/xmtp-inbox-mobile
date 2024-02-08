@@ -2,8 +2,9 @@ import {BlurView} from '@react-native-community/blur';
 import {Box, HStack, VStack} from 'native-base';
 import React, {FC, PropsWithChildren} from 'react';
 import {Platform, Pressable, StyleSheet} from 'react-native';
+import {useGroupContactInfo} from '../hooks/useGroupContactInfo';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
-import {formatGroupHeader} from '../utils/formatGroupHeader';
+import {GroupAvatarStack} from './GroupAvatarStack';
 import {Icon} from './common/Icon';
 import {Text} from './common/Text';
 
@@ -28,6 +29,7 @@ export const GroupHeader: FC<GroupHeaderProps> = ({
   onGroupPress,
 }) => {
   const {goBack} = useTypedNavigation();
+  const {data, groupDisplayName} = useGroupContactInfo(peerAddresses);
 
   return (
     <HeaderContainer>
@@ -43,12 +45,17 @@ export const GroupHeader: FC<GroupHeaderProps> = ({
         </Pressable>
 
         <VStack flex={1} paddingLeft={2} alignItems={'flex-end'}>
-          <Pressable onPress={onGroupPress}>
-            <Text typography="text-lg/heavy">
-              {formatGroupHeader(peerAddresses)}
+          <Text typography="text-lg/heavy">{groupDisplayName}</Text>
+          {/* <HStack alignItems={'center'}>
+            <Icon name="ethereum" size={16} />
+            <Text typography="text-xs/mono medium" color={colors.textSecondary}>
+              {formatAddress(peerAddress)}
             </Text>
-          </Pressable>
+          </HStack> */}
         </VStack>
+        <Pressable onPress={onGroupPress}>
+          <GroupAvatarStack style={{paddingRight: 30}} data={data} />
+        </Pressable>
       </HStack>
     </HeaderContainer>
   );

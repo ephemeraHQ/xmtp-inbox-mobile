@@ -54,5 +54,6 @@
   "walletconnect": "WalletConnect",
   "metamask": "Metamask",
   "coinbase_wallet": "Coinbase Wallet",
-  "guest_wallet": "Guest Wallet"
+  "guest_wallet": "Guest Wallet",
+  "group_changed": "Group Changed"
 }
