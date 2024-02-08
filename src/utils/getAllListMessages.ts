@@ -1,4 +1,4 @@
-import {Client, DecodedMessage} from '@xmtp/react-native-sdk';
+import {Client} from '@xmtp/react-native-sdk';
 import {ListMessages} from '../models/ListMessages';
 import {saveConsent} from '../services/mmkvStorage';
 
@@ -31,13 +31,7 @@ export const getAllListMessages = async (client?: Client<any> | null) => {
       };
     }),
     ...groups.map(async group => {
-      const messages = (await group.messages()).map(
-        it =>
-          DecodedMessage.from(
-            it as unknown as string,
-            client,
-          ) as DecodedMessage,
-      );
+      const messages = await group.messages();
       const content = messages[0].content();
       const display =
         typeof content === 'string' ? content : messages[0].fallback ?? '';
