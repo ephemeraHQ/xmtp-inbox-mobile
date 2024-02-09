@@ -12,6 +12,7 @@ interface ScreenProps {
   containerStlye?: ViewStyle;
   includeTopPadding?: boolean;
   includeBackground?: boolean;
+  testId?: string;
 }
 
 export const Screen: FC<ScreenProps> = ({
@@ -22,10 +23,12 @@ export const Screen: FC<ScreenProps> = ({
   containerStlye,
   includeTopPadding = true,
   includeBackground = true,
+  testId,
 }) => {
   const showHeader = left || right || title;
   return (
     <Box
+      testID={testId}
       flex={1}
       backgroundColor={includeBackground ? colors.backgroundPrimary : undefined}
       paddingTop={

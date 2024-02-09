@@ -9,6 +9,7 @@ import {Pill} from '../components/common/Pill';
 import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
 import {AppConfig} from '../consts/AppConfig';
+import {TestIds} from '../consts/TestIds';
 import {useClient} from '../hooks/useClient';
 import {useContactInfo} from '../hooks/useContactInfo';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
@@ -89,7 +90,9 @@ const ListItem: FC<{
     section.onPress(item);
   };
   return (
-    <Pressable onPress={handlePress}>
+    <Pressable
+      onPress={handlePress}
+      testID={`${TestIds.SEARCH_RESULT}_${item.address}`}>
       <HStack
         alignItems={'center'}
         marginX={'16px'}
@@ -228,6 +231,7 @@ export const SearchScreen = () => {
 
   return (
     <Screen
+      testId={TestIds.SEARCH_SCREEN}
       title={
         <Text typography="text-lg/heavy" textAlign={'center'}>
           {translate('you')}
@@ -244,6 +248,7 @@ export const SearchScreen = () => {
         </Pressable>
       }>
       <Input
+        testID={TestIds.SEARCH_INPUT}
         variant={'unstyled'}
         leftElement={
           <Box paddingLeft={'8px'}>
@@ -278,6 +283,8 @@ export const SearchScreen = () => {
             {participants.map(participant => {
               return (
                 <Pill
+                  key={participant}
+                  testId={`${TestIds.SEARCH_PARTICIPANTS_LIST_PILL}_${participant}`}
                   size={'sm'}
                   onPress={() => removeParticipant(participant)}
                   text={formatAddress(participant)}
@@ -287,6 +294,7 @@ export const SearchScreen = () => {
           </HStack>
           {participants.length > 0 && (
             <Button
+              testID={TestIds.SEARCH_START_BUTTON}
               w={20}
               alignSelf={'center'}
               size={'xs'}

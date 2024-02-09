@@ -8,15 +8,17 @@ interface WalletOptionButtonProps {
   onPress: () => void;
   title: string;
   icon: IconName;
+  testId: string;
 }
 
 export const WalletOptionButton: FC<WalletOptionButtonProps> = ({
   onPress,
   title,
   icon,
+  testId,
 }) => {
   return (
-    <Pressable onPress={onPress}>
+    <Pressable onPress={onPress} testID={testId}>
       <HStack
         w="100%"
         justifyContent={'space-between'}

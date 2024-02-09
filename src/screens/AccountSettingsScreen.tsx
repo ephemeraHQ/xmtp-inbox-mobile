@@ -1,3 +1,4 @@
+import Clipboard from '@react-native-clipboard/clipboard';
 import {
   useAddress,
   useDisconnect,
@@ -115,7 +116,7 @@ type Section = 'TOGGLE' | 'CONTACT' | 'DELETE';
 
 export const AccountSettingsScreen = () => {
   const {navigate, goBack} = useTypedNavigation();
-  const {setClient} = useClientContext();
+  const {client, setClient} = useClientContext();
   const {avatarUrl, addresses, wallets, name} = useData();
   const [walletsShown, setWalletsShown] = useState(false);
   const disconnect = useDisconnect();
@@ -308,6 +309,9 @@ export const AccountSettingsScreen = () => {
           address={address ?? ''}
         />
         <Button
+          onLongPress={() =>
+            __DEV__ ? Clipboard.setString(client?.address ?? '') : {}
+          }
           onPress={() => setWalletsShown(true)}
           variant={'ghost'}
           rightIcon={
@@ -318,7 +322,9 @@ export const AccountSettingsScreen = () => {
               color="#0F172A"
             />
           }>
-          <Text typography="text-xl/bold">{name}</Text>
+          <Text typography="text-xl/bold">
+            {__DEV__ ? client?.address : name}
+          </Text>
         </Button>
         <HStack flexWrap={'wrap'} justifyContent={'center'}>
           {addresses.map(address => (
