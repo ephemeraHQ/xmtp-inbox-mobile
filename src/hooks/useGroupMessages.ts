@@ -15,12 +15,14 @@ export const useGroupMessages = (id: string) => {
   }, [group]);
 
   useEffect(() => {
-    let cancelStream: (() => void) | undefined;
     getMessages();
+    const cancelStream = group?.streamGroupMessages(async message => {
+      setMessages(prevMessages => [message, ...prevMessages]);
+    });
     return () => {
       cancelStream?.();
     };
-  }, [getMessages]);
+  }, [getMessages, group]);
 
   return {
     messages,

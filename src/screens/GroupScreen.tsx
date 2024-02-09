@@ -11,56 +11,22 @@ import {
 import React, {useCallback, useEffect, useState} from 'react';
 import {ListRenderItem, Platform} from 'react-native';
 import {Asset} from 'react-native-image-picker';
-import {AvatarWithFallback} from '../components/AvatarWithFallback';
+import {AddGroupParticipantModal} from '../components/AddGroupParticipantModal';
 import {ConversationInput} from '../components/ConversationInput';
 import {ConversationMessageContent} from '../components/ConversationMessageContent';
 import {GroupHeader} from '../components/GroupHeader';
+import {GroupInfoModal} from '../components/GroupInfoModal';
 import {Button} from '../components/common/Button';
 import {Drawer} from '../components/common/Drawer';
-import {Icon} from '../components/common/Icon';
-import {Modal} from '../components/common/Modal';
 import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
 import {useClient} from '../hooks/useClient';
-import {useContactInfo} from '../hooks/useContactInfo';
 import {useGroup} from '../hooks/useGroup';
 import {useGroupMessages} from '../hooks/useGroupMessages';
 import {translate} from '../i18n';
 import {getConsent, saveConsent} from '../services/mmkvStorage';
 import {AWSHelper} from '../services/s3';
 import {colors} from '../theme/colors';
-
-const GroupParticipant: React.FC<{address: string}> = ({address}) => {
-  const {displayName, avatarUrl} = useContactInfo(address);
-  return (
-    <VStack alignItems={'center'} justifyContent={'center'}>
-      <HStack>
-        <Text typography="text-xl/bold" textAlign={'center'}>
-          {displayName}
-        </Text>
-        <AvatarWithFallback size={40} address={address} avatarUri={avatarUrl} />
-      </HStack>
-      <Text typography="text-sm/bold">{translate('domain_origin')}</Text>
-
-      <Button
-        variant={'ghost'}
-        rightIcon={
-          <Icon
-            name={'arrow-right'}
-            type={'mini'}
-            color={colors.actionPrimary}
-          />
-        }>
-        <Text
-          typography="text-base/bold"
-          color={colors.actionPrimary}
-          textAlign={'center'}>
-          {'lenster.xyz'}
-        </Text>
-      </Button>
-    </VStack>
-  );
-};
 
 const getTimestamp = (timestamp: number) => {
   // If today, return hours and minutes if not return date
@@ -83,16 +49,6 @@ const useData = (id: string) => {
   const {messages, refetch} = useGroupMessages(id);
   const {client} = useClient();
   const {group} = useGroup(id);
-  // const cachedPeerAddress = getTopicAddresses(id)?.[0];
-  // const {displayName, avatarUrl} = useContactInfo(
-  //   conversation?.peerAddress || '',
-  // );
-
-  // useEffect(() => {
-  //   if (id && conversation?.peerAddress) {
-  //     saveTopicAddresses(id, [conversation?.peerAddress]);
-  //   }
-  // }, [conversation?.peerAddress, id]);
 
   return {
     // profileImage: avatarUrl,
@@ -123,6 +79,7 @@ export const GroupScreen = () => {
   const {myAddress, messages, addresses, group, client, refetch} = useData(id);
   const [showReply, setShowReply] = useState(false);
   const [showGroupModal, setShowGroupModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
   const [consent, setConsent] = useState<'allowed' | 'denied' | 'unknown'>(
     getInitialConsentState(myAddress ?? '', group?.id ?? ''),
   );
@@ -280,15 +237,21 @@ export const GroupScreen = () => {
           </Box>
         </VStack>
       </Drawer>
-      <Modal
-        onBackgroundPress={() => setShowGroupModal(false)}
-        isOpen={showGroupModal}>
-        <VStack alignItems={'center'} justifyContent={'center'}>
-          {addresses?.map(address => (
-            <GroupParticipant key={address} address={address} />
-          ))}
-        </VStack>
-      </Modal>
+      <GroupInfoModal
+        shown={showGroupModal}
+        hide={() => setShowGroupModal(false)}
+        addresses={addresses ?? []}
+        onPlusPress={() => {
+          setShowGroupModal(false);
+          setShowAddModal(true);
+        }}
+        group={group!}
+      />
+      <AddGroupParticipantModal
+        shown={showAddModal}
+        hide={() => setShowAddModal(false)}
+        group={group!}
+      />
     </>
   );
 };
