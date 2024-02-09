@@ -9,6 +9,7 @@ interface PillProps {
   text: string;
   onPress?: () => void;
   size?: 'sm' | 'md' | 'lg';
+  testId?: string;
 }
 
 export const Pill: FC<PillProps> = ({
@@ -17,6 +18,7 @@ export const Pill: FC<PillProps> = ({
   onPress,
   rightIconName,
   size,
+  testId,
 }) => {
   const sizeProps = useMemo(() => {
     if (size === 'sm') {
@@ -48,7 +50,7 @@ export const Pill: FC<PillProps> = ({
   }, [size]);
 
   return (
-    <Pressable onPress={onPress}>
+    <Pressable onPress={onPress} testID={testId}>
       <Box
         {...sizeProps}
         borderRadius={'24px'}

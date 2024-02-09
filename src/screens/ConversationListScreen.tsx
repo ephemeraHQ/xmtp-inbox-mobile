@@ -11,6 +11,7 @@ import {Drawer} from '../components/common/Drawer';
 import {Icon} from '../components/common/Icon';
 import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
+import {TestIds} from '../consts/TestIds';
 import {useClient} from '../hooks/useClient';
 import {useListMessages} from '../hooks/useListMessages';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
@@ -239,7 +240,7 @@ export const ConversationListScreen = () => {
 
   return (
     <>
-      <Screen>
+      <Screen testId={TestIds.CONVERSATION_LIST_SCREEN}>
         <FlatList
           w={'100%'}
           h={'100%'}
@@ -281,6 +282,7 @@ export const ConversationListScreen = () => {
         />
         {!showPickerModal && focused && (
           <Fab
+            testID={TestIds.CONVERSATION_LIST_NEW_BUTTON}
             position="absolute"
             size="sm"
             right={27}
@@ -304,7 +306,9 @@ export const ConversationListScreen = () => {
         isOpen={showPickerModal}
         onBackgroundPress={() => setShowPickerModal(false)}>
         <VStack w={'100%'} alignItems={'flex-start'}>
-          <Pressable onPress={() => handleFilterPress('ALL_MESSAGES')}>
+          <Pressable
+            onPress={() => handleFilterPress('ALL_MESSAGES')}
+            testID={TestIds.CONVERSATION_LIST_ALL_MESSAGES_BUTTON}>
             <HStack
               w={'100%'}
               paddingX="12px"
@@ -337,7 +341,9 @@ export const ConversationListScreen = () => {
               )}
             </HStack>
           </Pressable>
-          <Pressable onPress={() => handleFilterPress('MESSAGE_REQUESTS')}>
+          <Pressable
+            onPress={() => handleFilterPress('MESSAGE_REQUESTS')}
+            testID={TestIds.CONVERSATION_LIST_REQUESTS_BUTTON}>
             <HStack
               w={'100%'}
               paddingX="12px"

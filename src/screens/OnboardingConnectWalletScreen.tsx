@@ -16,6 +16,7 @@ import {Icon} from '../components/common/Icon';
 import {Modal} from '../components/common/Modal';
 import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
+import {TestIds} from '../consts/TestIds';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
 import {ScreenNames} from '../navigation/ScreenNames';
@@ -44,7 +45,7 @@ export const OnboardingConnectWalletScreen = () => {
 
   return (
     <>
-      <Screen>
+      <Screen testId={TestIds.ONBOARDING_CONNECT_WALLET_SCREEN}>
         <Image
           source={require('../../assets/images/XmtpOrangeLogo.png')}
           style={{justifyContent: 'center', alignItems: 'center'}}
@@ -61,7 +62,7 @@ export const OnboardingConnectWalletScreen = () => {
           width={'100%'}
           flex={1}
           paddingX={'24px'}>
-          <Text testID="welcome-text-1" typography="text-4xl/bold">
+          <Text typography="text-4xl/bold">
             {translate('your_interoperable_web3_inbox')}
           </Text>
           <Text>
@@ -72,6 +73,7 @@ export const OnboardingConnectWalletScreen = () => {
           <>
             <Button
               rightIcon={<Icon name="arrow-right-circle" />}
+              testID={TestIds.ONBOARDING_CONNECT_WALLET_BUTTON}
               onPress={() => setShowModal(true)}>
               {translate('connect_your_wallet')}
             </Button>
@@ -97,6 +99,7 @@ export const OnboardingConnectWalletScreen = () => {
             }}
             title={translate('walletconnect')}
             icon={'walletconnect'}
+            testId={TestIds.ONBOARDING_CONNECT_WALLET_CONNECT_OPTION_BUTTON}
           />
           <WalletOptionButton
             onPress={async () => {
@@ -105,6 +108,7 @@ export const OnboardingConnectWalletScreen = () => {
             }}
             title={translate('metamask')}
             icon={'metamask'}
+            testId={TestIds.ONBOARDING_CONNECT_METAMASK_OPTION_BUTTON}
           />
           <WalletOptionButton
             onPress={async () => {
@@ -113,18 +117,17 @@ export const OnboardingConnectWalletScreen = () => {
             }}
             title={translate('coinbase_wallet')}
             icon={'coinbase-wallet'}
+            testId={TestIds.ONBOARDING_CONNECT_COINBASE_OPTION_BUTTON}
           />
-          {__DEV__ && (
-            <WalletOptionButton
-              onPress={async () => {
-                await connect(localWalletConfig);
-                setShowModal(false);
-              }}
-              title={translate('guest_wallet')}
-              icon={'wallet'}
-            />
-          )}
-
+          <WalletOptionButton
+            onPress={async () => {
+              await connect(localWalletConfig);
+              setShowModal(false);
+            }}
+            title={translate('guest_wallet')}
+            icon={'wallet'}
+            testId={TestIds.ONBOARDING_CONNECT_GUEST_OPTION_BUTTON}
+          />
           <Button
             variant={'ghost'}
             onPress={handleWalletInfo}

@@ -86,7 +86,9 @@ export const OnboardingEnableIdentityScreen = () => {
           saveClientKeys(address as `0x${string}`, keys);
           setClient(client);
         }
-      } catch (e) {}
+      } catch (e) {
+        console.log('Error creating client', e);
+      }
     };
     startClientCreation();
   }, [setClient, signer]);
