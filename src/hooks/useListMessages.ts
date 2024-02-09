@@ -95,18 +95,15 @@ export const useListMessages = () => {
   //       return;
   //     }
   //     client.conversations.streamGroups(async newGroup => {
-  //       const messagesJson = await newGroup.messages(1);
-  //       const message = DecodedMessage.from(messagesJson[0], client);
-  //       const content = message.content();
-  //       const messageStringContent =
-  //         typeof content === 'string' ? content : message.fallback ?? '';
+  //       const messages = await newGroup.messages(1);
+  //       const message = messagesJson[0], client);
   //       queryClient.setQueryData<ListMessages>(
   //         [QueryKeys.List, client?.address],
   //         prev => {
   //           return [
   //             {
   //               group: newGroup,
-  //               display: messageStringContent,
+  //               display: '',
   //               lastMessageTime: message.sent,
   //               isRequest: false,
   //             },
