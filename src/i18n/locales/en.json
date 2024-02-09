@@ -55,5 +55,7 @@
   "metamask": "Metamask",
   "coinbase_wallet": "Coinbase Wallet",
   "guest_wallet": "Guest Wallet",
-  "group_changed": "Group Changed"
+  "group_changed": "Group Changed",
+  "add_to_group": "Add",
+  "group": "Group"
 }

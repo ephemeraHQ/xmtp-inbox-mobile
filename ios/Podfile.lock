@@ -106,16 +106,16 @@ PODS:
   - GenericJSON (2.0.2)
   - glog (0.3.5)
   - GzipSwift (5.1.1)
-  - hermes-engine (0.73.0):
-    - hermes-engine/Pre-built (= 0.73.0)
-  - hermes-engine/Pre-built (0.73.0)
+  - hermes-engine (0.73.2):
+    - hermes-engine/Pre-built (= 0.73.2)
+  - hermes-engine/Pre-built (0.73.2)
   - libevent (2.1.12)
-  - LibXMTP (0.4.1-beta0)
+  - LibXMTP (0.4.1-beta2)
   - Logging (1.0.0)
   - MessagePacker (0.4.7)
-  - MMKV (1.3.2):
-    - MMKVCore (~> 1.3.2)
-  - MMKVCore (1.3.2)
+  - MMKV (1.3.3):
+    - MMKVCore (~> 1.3.3)
+  - MMKVCore (1.3.3)
   - OpenSSL-Universal (1.1.1100)
   - RCT-Folly (2022.05.16.00):
     - boost
@@ -1217,16 +1217,16 @@ PODS:
     - GenericJSON (~> 2.0)
     - Logging (~> 1.0.0)
     - secp256k1.swift (~> 0.1)
-  - XMTP (0.7.8-alpha0):
+  - XMTP (0.8.2):
     - Connect-Swift (= 0.3.0)
     - GzipSwift
-    - LibXMTP (= 0.4.1-beta0)
+    - LibXMTP (= 0.4.1-beta2)
     - web3.swift
-  - XMTPReactNative (1.27.0-beta.3):
+  - XMTPReactNative (1.27.0-beta.6):
     - ExpoModulesCore
     - MessagePacker
     - secp256k1.swift
-    - XMTP (= 0.7.8-alpha0)
+    - XMTP (= 0.8.2)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -1532,7 +1532,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   BigInt: 74b4d88367b0e819d9f77393549226d36faeb0d8
-  boost: 26fad476bfa736552bbfa698a06cc530475c1505
+  boost: d3f49c53809116a5d38da093a8aa78bf551aed09
   BVLinearGradient: 880f91a7854faff2df62518f0281afb1c60d49a3
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   CoinbaseWalletSDK: ea1f37512bbc69ebe07416e3b29bf840f5cc3152
@@ -1563,13 +1563,13 @@ SPEC CHECKSUMS:
   GenericJSON: 79a840eeb77030962e8cf02a62d36bd413b67626
   glog: c5d68082e772fa1c511173d6b30a9de2c05a69a2
   GzipSwift: 893f3e48e597a1a4f62fafcb6514220fcf8287fa
-  hermes-engine: 34304f8c6e8fa68f63a5fe29af82f227d817d7a7
+  hermes-engine: b361c9ef5ef3cda53f66e195599b47e1f84ffa35
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
-  LibXMTP: a3bb8d00c275034e55f1f7bf632335821c792d3c
+  LibXMTP: a9c3d09126ad70443c991f439283dc95224a46ff
   Logging: 9ef4ecb546ad3169398d5a723bc9bea1c46bef26
   MessagePacker: ab2fe250e86ea7aedd1a9ee47a37083edd41fd02
-  MMKV: f21593c0af4b3f2a0ceb8f820f28bb639ea22bb7
-  MMKVCore: 31b4cb83f8266467eef20a35b6d78e409a11060d
+  MMKV: f902fb6719da13c2ab0965233d8963a59416f911
+  MMKVCore: d26e4d3edd5cb8588c2569222cbd8be4231374e9
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   RCT-Folly: 7169b2b1c44399c76a47b5deaaba715eeeb476c0
   RCTRequired: 9b1e7e262745fb671e33c51c1078d093bd30e322
@@ -1635,8 +1635,8 @@ SPEC CHECKSUMS:
   SwiftProtobuf: b02b5075dcf60c9f5f403000b3b0c202a11b6ae1
   WatermelonDB: 842d22ba555425aa9f3ce551239a001200c539bc
   web3.swift: 2263d1e12e121b2c42ffb63a5a7beb1acaf33959
-  XMTP: 7c308fde3213aa0b0ad8198c9984932260f22b65
-  XMTPReactNative: 32916f42a52a58dec82fe7c844034bb930a627f1
+  XMTP: b70e7b864e38d430d2b55e813f33eec775ed0f0d
+  XMTPReactNative: ca17e3be61be4744a89182c372228c4a776a4693
   Yoga: e64aa65de36c0832d04e8c7bd614396c77a80047
 
 PODFILE CHECKSUM: c765268d8eab018a5f4619e1d00ca4dab437bc4f

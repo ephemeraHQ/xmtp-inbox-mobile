@@ -53,39 +53,21 @@ export const OnboardingEnableIdentityScreen = () => {
         return;
       }
       try {
-        if (AppConfig.GROUPS_ENABLED) {
-          const client = await Client.createRandom({
-            enableAlphaMls: AppConfig.GROUPS_ENABLED,
-            env: AppConfig.XMTP_ENV,
-            preEnableIdentityCallback: async () => {
-              await enableIdentityPromise;
-            },
-            preCreateIdentityCallback: async () => {
-              await createIdentityPromise;
-            },
-            codecs: [new RemoteAttachmentCodec()],
-          });
-          const keys = await client.exportKeyBundle();
-          const address = await signer.getAddress();
-          saveClientKeys(address as `0x${string}`, keys);
-          setClient(client);
-        } else {
-          const client = await Client.create(signer, {
-            enableAlphaMls: AppConfig.GROUPS_ENABLED,
-            env: AppConfig.XMTP_ENV,
-            preEnableIdentityCallback: async () => {
-              await enableIdentityPromise;
-            },
-            preCreateIdentityCallback: async () => {
-              await createIdentityPromise;
-            },
-            codecs: [new RemoteAttachmentCodec()],
-          });
-          const keys = await client.exportKeyBundle();
-          const address = await signer.getAddress();
-          saveClientKeys(address as `0x${string}`, keys);
-          setClient(client);
-        }
+        const client = await Client.create(signer, {
+          enableAlphaMls: AppConfig.GROUPS_ENABLED,
+          env: AppConfig.XMTP_ENV,
+          preEnableIdentityCallback: async () => {
+            await enableIdentityPromise;
+          },
+          preCreateIdentityCallback: async () => {
+            await createIdentityPromise;
+          },
+          codecs: [new RemoteAttachmentCodec()],
+        });
+        const keys = await client.exportKeyBundle();
+        const address = await signer.getAddress();
+        saveClientKeys(address as `0x${string}`, keys);
+        setClient(client);
       } catch (e) {
         console.log('Error creating client', e);
       }

@@ -38,32 +38,18 @@ export const ClientProvider: FC<PropsWithChildren> = ({children}) => {
         if (!keys) {
           return setLoading(false);
         }
-        if (AppConfig.GROUPS_ENABLED) {
-          Client.createRandom({
-            codecs: [new RemoteAttachmentCodec()],
-            env: AppConfig.XMTP_ENV,
+        Client.createFromKeyBundle(keys, {
+          codecs: [new RemoteAttachmentCodec()],
+          enableAlphaMls: AppConfig.GROUPS_ENABLED,
+          env: AppConfig.XMTP_ENV,
+        })
+          .then(newClient => {
+            setClient(newClient);
+            setLoading(false);
           })
-            .then(newClient => {
-              setClient(newClient);
-              setLoading(false);
-            })
-            .catch(() => {
-              setLoading(false);
-            });
-        } else {
-          Client.createFromKeyBundle(keys, {
-            codecs: [new RemoteAttachmentCodec()],
-            enableAlphaMls: AppConfig.GROUPS_ENABLED,
-            env: AppConfig.XMTP_ENV,
-          })
-            .then(newClient => {
-              setClient(newClient);
-              setLoading(false);
-            })
-            .catch(() => {
-              setLoading(false);
-            });
-        }
+          .catch(() => {
+            setLoading(false);
+          });
       })
       .catch(() => {
         return setLoading(false);
