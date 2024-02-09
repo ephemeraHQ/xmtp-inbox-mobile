@@ -10,7 +10,7 @@ export const getAllListMessages = async (client?: Client<any> | null) => {
   consentList.forEach(async item => {
     saveConsent(client.address, item.value, item.permissionType === 'allowed');
   });
-
+  await client.conversations.syncGroups();
   const [convos, groups] = await Promise.all([
     client.conversations.list(),
     client.conversations.listGroups(),
