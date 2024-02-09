@@ -24,9 +24,9 @@ describe('Example', () => {
       element(by.id(TestIds.ONBOARDING_CONNECT_GUEST_OPTION_BUTTON)),
     ).toBeVisible();
     await element(by.id(TestIds.ONBOARDING_CONNECT_GUEST_OPTION_BUTTON)).tap();
-    await expect(
-      element(by.id(TestIds.CONVERSATION_LIST_SCREEN)),
-    ).toBeVisible();
+    await waitFor(element(by.id(TestIds.CONVERSATION_LIST_SCREEN)))
+      .toBeVisible()
+      .withTimeout(5000);
     await expect(
       element(by.id(TestIds.CONVERSATION_LIST_NEW_BUTTON)),
     ).toBeVisible();
