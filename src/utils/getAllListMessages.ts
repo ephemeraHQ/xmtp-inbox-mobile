@@ -31,10 +31,11 @@ export const getAllListMessages = async (client?: Client<any> | null) => {
       };
     }),
     ...groups.map(async group => {
+      await group.sync();
       const messages = await group.messages();
-      const content = messages[0].content();
+      const content = messages?.[0].content();
       const display =
-        typeof content === 'string' ? content : messages[0].fallback ?? '';
+        typeof content === 'string' ? content : messages?.[0].fallback ?? '';
       return {
         group,
         display,
