@@ -168,5 +168,6 @@ const styles = StyleSheet.create({
     lineHeight: 23,
     letterSpacing: 0.5,
     flex: 1,
+    color: colors.textPrimary,
   },
 });

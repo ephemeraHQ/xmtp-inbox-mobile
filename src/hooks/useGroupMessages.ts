@@ -1,31 +1,34 @@
+import {useQueryClient} from '@tanstack/react-query';
 import {DecodedMessage} from '@xmtp/react-native-sdk';
-import {useCallback, useEffect, useState} from 'react';
+import {useEffect} from 'react';
+import {ContentTypes} from '../consts/ContentTypes';
+import {QueryKeys} from '../queries/QueryKeys';
+import {useGroupMessagesQuery} from '../queries/useGroupMessagesQuery';
 import {useGroup} from './useGroup';
 
 export const useGroupMessages = (id: string) => {
-  const [messages, setMessages] = useState<DecodedMessage<unknown>[]>([]);
   const {group} = useGroup(id);
-
-  const getMessages = useCallback(async () => {
-    if (group) {
-      await group.sync();
-      const initialMessages = await group.messages();
-      setMessages(initialMessages);
-    }
-  }, [group]);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
-    getMessages();
     const cancelStream = group?.streamGroupMessages(async message => {
-      setMessages(prevMessages => [message, ...prevMessages]);
+      queryClient.setQueryData<DecodedMessage<unknown>[]>(
+        [QueryKeys.GroupMessages, id],
+        prevMessages => [message, ...(prevMessages ?? [])],
+      );
+      if (message.contentTypeId === ContentTypes.GroupMembershipChange) {
+        await group.sync();
+        const addresses = await group.memberAddresses();
+        queryClient.setQueryData(
+          [QueryKeys.GroupParticipants, group?.id],
+          addresses,
+        );
+      }
     });
     return () => {
       cancelStream?.();
     };
-  }, [getMessages, group]);
+  }, [group, queryClient, id]);
 
-  return {
-    messages,
-    refetch: getMessages,
-  };
+  return useGroupMessagesQuery(id);
 };

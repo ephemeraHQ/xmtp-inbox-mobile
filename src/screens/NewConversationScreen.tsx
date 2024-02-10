@@ -9,6 +9,7 @@ import {Screen} from '../components/common/Screen';
 import {useClient} from '../hooks/useClient';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {ScreenNames} from '../navigation/ScreenNames';
+import {saveConsent} from '../services/mmkvStorage';
 
 export const NewConversationScreen = () => {
   const {replace} = useTypedNavigation();
@@ -33,12 +34,13 @@ export const NewConversationScreen = () => {
         client?.conversations
           ?.newConversation(addresses[0])
           .then(conversation => {
+            saveConsent(client?.address, addresses[0], true);
             conversation.send(message);
             replace(ScreenNames.Conversation, {topic: conversation.topic});
           });
       }
     },
-    [addresses, client?.conversations, replace],
+    [addresses, client?.address, client?.conversations, replace],
   );
 
   return (

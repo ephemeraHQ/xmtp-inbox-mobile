@@ -1,6 +1,7 @@
 import {DecodedMessage, RemoteAttachmentContent} from '@xmtp/react-native-sdk';
 import {Container} from 'native-base';
 import React, {FC} from 'react';
+import {ContentTypes} from '../consts/ContentTypes';
 import {translate} from '../i18n';
 import {colors} from '../theme/colors';
 import {ImageMessage} from './ImageMessage';
@@ -14,7 +15,7 @@ interface ConversationMessageContentProps {
 export const ConversationMessageContent: FC<
   ConversationMessageContentProps
 > = ({message, isMe}) => {
-  if (message.contentTypeId === 'xmtp.org/text:1.0') {
+  if (message.contentTypeId === ContentTypes.Text) {
     return (
       <Container
         backgroundColor={
@@ -35,13 +36,13 @@ export const ConversationMessageContent: FC<
     );
   }
 
-  if (message.contentTypeId === 'xmtp.org/remoteStaticAttachment:1.0') {
+  if (message.contentTypeId === ContentTypes.RemoteStaticAttachment) {
     return (
       <ImageMessage content={message.content() as RemoteAttachmentContent} />
     );
   }
 
-  if (message.contentTypeId === 'xmtp.org/group_membership_change:1.0') {
+  if (message.contentTypeId === ContentTypes.GroupMembershipChange) {
     return (
       <Container
         alignSelf="center"

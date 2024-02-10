@@ -1,4 +1,4 @@
-import {Avatar, Box} from 'native-base';
+import {Box, HStack} from 'native-base';
 import React, {FC} from 'react';
 import {StyleSheet, ViewStyle} from 'react-native';
 import {AvatarWithFallback} from './AvatarWithFallback';
@@ -14,8 +14,8 @@ interface GroupAvatarStackProps {
 export const GroupAvatarStack: FC<GroupAvatarStackProps> = ({data, style}) => {
   return (
     <Box style={style}>
-      <Avatar.Group max={3}>
-        {data.map(({avatarUrl, address}) => (
+      <HStack maxW={'20px'}>
+        {data.slice(0, 4).map(({avatarUrl, address}) => (
           <AvatarWithFallback
             key={address}
             size={32}
@@ -24,7 +24,7 @@ export const GroupAvatarStack: FC<GroupAvatarStackProps> = ({data, style}) => {
             style={styles.avatar}
           />
         ))}
-      </Avatar.Group>
+      </HStack>
     </Box>
   );
 };
@@ -34,6 +34,6 @@ const styles = StyleSheet.create({
     // flexDirection: 'row',
   },
   avatar: {
-    marginRight: -40,
+    marginRight: -25,
   },
 });

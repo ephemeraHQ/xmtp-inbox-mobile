@@ -105,6 +105,13 @@ export const ConversationScreen = () => {
     });
   }, [conversation]);
 
+  useEffect(() => {
+    if (consent === 'unknown') {
+      return;
+    }
+    saveConsent(client?.address ?? '', address ?? '', consent === 'allowed');
+  }, [address, client?.address, consent]);
+
   const sendMessage = useCallback(
     async (payload: {text?: string; asset?: Asset}) => {
       if (!conversation) {
@@ -190,7 +197,7 @@ export const ConversationScreen = () => {
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             height={'100%'}
-            paddingBottom={'10px'}
+            keyboardVerticalOffset={50}
             w="100%">
             <Box flex={1}>
               <FlatList
