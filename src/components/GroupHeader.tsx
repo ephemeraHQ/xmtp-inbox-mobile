@@ -4,6 +4,7 @@ import React, {FC, PropsWithChildren} from 'react';
 import {Platform, Pressable, StyleSheet} from 'react-native';
 import {useGroupContactInfo} from '../hooks/useGroupContactInfo';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
+import {colors} from '../theme/colors';
 import {GroupAvatarStack} from './GroupAvatarStack';
 import {Icon} from './common/Icon';
 import {Text} from './common/Text';
@@ -21,7 +22,11 @@ const HeaderContainer: FC<PropsWithChildren> = ({children}) => {
       </BlurView>
     );
   }
-  return <Box style={styles.blur}>{children}</Box>;
+  return (
+    <Box backgroundColor={colors.backgroundPrimary} style={styles.blur}>
+      {children}
+    </Box>
+  );
 };
 
 export const GroupHeader: FC<GroupHeaderProps> = ({
@@ -45,7 +50,9 @@ export const GroupHeader: FC<GroupHeaderProps> = ({
         </Pressable>
 
         <VStack flex={1} paddingLeft={2} alignItems={'flex-end'}>
-          <Text typography="text-lg/heavy">{groupDisplayName}</Text>
+          <Text typography="text-lg/heavy" numberOfLines={1}>
+            {groupDisplayName}
+          </Text>
           {/* <HStack alignItems={'center'}>
             <Icon name="ethereum" size={16} />
             <Text typography="text-xs/mono medium" color={colors.textSecondary}>
@@ -69,5 +76,6 @@ const styles = StyleSheet.create({
     elevation: 10,
     paddingTop: Platform.OS === 'ios' ? 60 : 20,
     paddingBottom: 8,
+    paddingRight: Platform.OS === 'ios' ? 0 : 20,
   },
 });

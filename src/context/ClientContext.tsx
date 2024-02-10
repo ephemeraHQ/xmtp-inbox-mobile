@@ -1,4 +1,4 @@
-import {useAddress} from '@thirdweb-dev/react-native';
+import {useAddress, useConnectionStatus} from '@thirdweb-dev/react-native';
 import {Client, RemoteAttachmentCodec} from '@xmtp/react-native-sdk';
 import React, {
   FC,
@@ -28,8 +28,12 @@ export const ClientProvider: FC<PropsWithChildren> = ({children}) => {
   const [client, setClient] = useState<Client<unknown> | null>(null);
   const [loading, setLoading] = useState(true);
   const address = useAddress();
+  const status = useConnectionStatus();
 
   useEffect(() => {
+    if (status === 'unknown' || status === 'connecting') {
+      return;
+    }
     if (!address) {
       return setLoading(false);
     }
@@ -54,7 +58,7 @@ export const ClientProvider: FC<PropsWithChildren> = ({children}) => {
       .catch(() => {
         return setLoading(false);
       });
-  }, [address]);
+  }, [address, status]);
 
   return (
     <ClientContext.Provider

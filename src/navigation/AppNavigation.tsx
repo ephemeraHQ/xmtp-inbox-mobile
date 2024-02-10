@@ -32,6 +32,7 @@ const OnboardingStack = createNativeStackNavigator<OnboardingStackParams>();
 
 export const AppNavigation = () => {
   const {client, loading} = useClientContext();
+
   return (
     <NavigationContainer linking={linkingDefinition}>
       {loading && (
@@ -42,7 +43,7 @@ export const AppNavigation = () => {
           />
         </LoadingStack.Navigator>
       )}
-      {!client && (
+      {!loading && !client && (
         <OnboardingStack.Navigator screenOptions={{headerShown: false}}>
           <OnboardingStack.Screen
             name={ScreenNames.OnboardingConnectWallet}
@@ -54,7 +55,7 @@ export const AppNavigation = () => {
           />
         </OnboardingStack.Navigator>
       )}
-      {!!client && (
+      {!loading && !!client && (
         <AuthenticatedStack.Navigator
           initialRouteName={ScreenNames.ConversationList}
           screenOptions={{

@@ -1,10 +1,11 @@
 import {Group} from '@xmtp/react-native-sdk/build/lib/Group';
 import {Box, HStack, VStack} from 'native-base';
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC} from 'react';
 import {Pressable} from 'react-native';
 import {useGroupContactInfo} from '../hooks/useGroupContactInfo';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {ScreenNames} from '../navigation/ScreenNames';
+import {useGroupParticipantsQuery} from '../queries/useGroupParticipantsQuery';
 import {getMessageTimeDisplay} from '../utils/getMessageTimeDisplay';
 import {GroupAvatarStack} from './GroupAvatarStack';
 import {Text} from './common/Text';
@@ -20,14 +21,9 @@ export const GroupListItem: FC<GroupListItemProps> = ({
   display,
   lastMessageTime,
 }) => {
-  const [addresses, setAddresses] = useState<string[]>([]);
+  const {data: addresses} = useGroupParticipantsQuery(group.id);
   const {navigate} = useTypedNavigation();
-  const {data, groupDisplayName} = useGroupContactInfo(addresses);
-  useEffect(() => {
-    group.memberAddresses().then(groupAddresses => {
-      setAddresses(groupAddresses);
-    });
-  }, [group]);
+  const {data, groupDisplayName} = useGroupContactInfo(addresses ?? []);
 
   return (
     <Pressable
@@ -38,7 +34,7 @@ export const GroupListItem: FC<GroupListItemProps> = ({
       }}>
       <HStack space={[2, 3]} alignItems={'center'} w={'100%'} padding={'16px'}>
         <Box marginRight={'30px'}>
-          <GroupAvatarStack style={{paddingRight: 30}} data={data} />
+          <GroupAvatarStack style={{paddingRight: 10}} data={data} />
         </Box>
         <VStack flex={1} justifyContent={'flex-end'}>
           <Text

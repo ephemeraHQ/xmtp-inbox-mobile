@@ -13,9 +13,9 @@ export const LoadingScreen = () => {
           style={{justifyContent: 'center', alignItems: 'center'}}>
           <BlurView
             blurType="light"
-            blurRadius={200}
+            blurRadius={20}
             blurAmount={1}
-            style={{borderRadius: 200}}>
+            style={{borderRadius: 20}}>
             <Box height={'200px'} width={'200px'} borderRadius={'200px'} />
           </BlurView>
         </ImageBackground>

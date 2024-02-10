@@ -23,7 +23,11 @@ const HeaderContainer: FC<PropsWithChildren> = ({children}) => {
       </BlurView>
     );
   }
-  return <Box style={styles.blur}>{children}</Box>;
+  return (
+    <Box backgroundColor={colors.backgroundPrimary} style={styles.blur}>
+      {children}
+    </Box>
+  );
 };
 
 export const ConversationHeader: FC<ConversationHeaderProps> = ({

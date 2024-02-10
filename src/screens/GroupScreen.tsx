@@ -24,6 +24,7 @@ import {useClient} from '../hooks/useClient';
 import {useGroup} from '../hooks/useGroup';
 import {useGroupMessages} from '../hooks/useGroupMessages';
 import {translate} from '../i18n';
+import {useGroupParticipantsQuery} from '../queries/useGroupParticipantsQuery';
 import {getConsent, saveConsent} from '../services/mmkvStorage';
 import {AWSHelper} from '../services/s3';
 import {colors} from '../theme/colors';
@@ -46,37 +47,40 @@ const getTimestamp = (timestamp: number) => {
 };
 
 const useData = (id: string) => {
-  const {messages, refetch} = useGroupMessages(id);
+  const {data: messages} = useGroupMessages(id);
+  const {data: addresses} = useGroupParticipantsQuery(id);
   const {client} = useClient();
   const {group} = useGroup(id);
 
   return {
-    // profileImage: avatarUrl,
     name: group?.id,
-    addresses: group?.peerAddresses,
     myAddress: client?.address,
     messages,
     group,
     client,
-    refetch,
+    addresses,
   };
 };
 
-const getInitialConsentState = (addresses: string, peerAddress: string) => {
-  const cachedConsent = getConsent(addresses, peerAddress);
-  if (cachedConsent === undefined) {
-    return 'unknown';
-  }
-  if (cachedConsent) {
-    return 'allowed';
-  }
-  return 'denied';
+const getInitialConsentState = (
+  addresses: string,
+  groupId: string,
+): 'allowed' | 'denied' | 'unknown' => {
+  const cachedConsent = getConsent(addresses, groupId);
+  // if (cachedConsent === undefined) {
+  //   return 'unknown';
+  // }
+  // if (cachedConsent) {
+  //   return 'allowed';
+  // }
+  // return 'denied';
+  return cachedConsent ? 'allowed' : 'allowed';
 };
 
 export const GroupScreen = () => {
   const {params} = useRoute();
   const {id} = params as {id: string};
-  const {myAddress, messages, addresses, group, client, refetch} = useData(id);
+  const {myAddress, messages, addresses, group, client} = useData(id);
   const [showReply, setShowReply] = useState(false);
   const [showGroupModal, setShowGroupModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -101,7 +105,7 @@ export const GroupScreen = () => {
         return;
       }
       if (payload.text) {
-        group?.send(payload.text).then(refetch);
+        group?.send(payload.text);
       }
       if (payload.asset) {
         client
@@ -119,16 +123,13 @@ export const GroupScreen = () => {
                 scheme: 'https://',
                 url: response,
               };
-              group
-                ?.send({remoteAttachment: remote})
-                .then(refetch)
-                .catch(() => {});
+              group?.send({remoteAttachment: remote});
             });
           })
           .catch(() => {});
       }
     },
-    [client, group, refetch],
+    [client, group],
   );
 
   const renderItem: ListRenderItem<DecodedMessage<unknown>> = ({item}) => {
@@ -183,6 +184,7 @@ export const GroupScreen = () => {
           />
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={50}
             height={'100%'}
             paddingBottom={'10px'}
             w="100%">

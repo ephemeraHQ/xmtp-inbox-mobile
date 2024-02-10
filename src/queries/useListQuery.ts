@@ -9,5 +9,6 @@ export const useListQuery = () => {
   return useQuery({
     queryKey: [QueryKeys.List, client?.address],
     queryFn: () => getAllListMessages(client),
+    enabled: !!client,
   });
 };
