@@ -6,6 +6,7 @@ import {useClientContext} from '../context/ClientContext';
 import {AccountSettingsScreen} from '../screens/AccountSettingsScreen';
 import {ConversationListScreen} from '../screens/ConversationListScreen';
 import {ConversationScreen} from '../screens/ConversationScreen';
+import {DevScreen} from '../screens/DevScreen';
 import {DiscoverScreen} from '../screens/DiscoverScreen';
 import {GroupScreen} from '../screens/GroupScreen';
 import {LoadingScreen} from '../screens/LoadingScreen';
@@ -111,6 +112,15 @@ export const AppNavigation = () => {
               presentation: 'modal',
             }}
           />
+          {__DEV__ && (
+            <AuthenticatedStack.Screen
+              name={ScreenNames.Dev}
+              component={DevScreen}
+              options={{
+                presentation: 'modal',
+              }}
+            />
+          )}
         </AuthenticatedStack.Navigator>
       )}
     </NavigationContainer>

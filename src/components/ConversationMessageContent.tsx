@@ -38,7 +38,9 @@ export const ConversationMessageContent: FC<
 
   if (message.contentTypeId === ContentTypes.RemoteStaticAttachment) {
     return (
-      <ImageMessage content={message.content() as RemoteAttachmentContent} />
+      <Container alignSelf={isMe ? 'flex-end' : 'flex-start'}>
+        <ImageMessage content={message.content() as RemoteAttachmentContent} />
+      </Container>
     );
   }
 

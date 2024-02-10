@@ -11,15 +11,15 @@ import {
 import React, {useCallback, useEffect, useState} from 'react';
 import {ListRenderItem, Platform} from 'react-native';
 import {Asset} from 'react-native-image-picker';
-import {AddGroupParticipantModal} from '../components/AddGroupParticipantModal';
 import {ConversationInput} from '../components/ConversationInput';
 import {ConversationMessageContent} from '../components/ConversationMessageContent';
 import {GroupHeader} from '../components/GroupHeader';
-import {GroupInfoModal} from '../components/GroupInfoModal';
 import {Button} from '../components/common/Button';
 import {Drawer} from '../components/common/Drawer';
 import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
+import {AddGroupParticipantModal} from '../components/modals/AddGroupParticipantModal';
+import {GroupInfoModal} from '../components/modals/GroupInfoModal';
 import {useClient} from '../hooks/useClient';
 import {useGroup} from '../hooks/useGroup';
 import {useGroupMessages} from '../hooks/useGroupMessages';
