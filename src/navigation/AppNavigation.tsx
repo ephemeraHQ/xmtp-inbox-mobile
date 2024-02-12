@@ -45,7 +45,12 @@ export const AppNavigation = () => {
         </LoadingStack.Navigator>
       )}
       {!loading && !client && (
-        <OnboardingStack.Navigator screenOptions={{headerShown: false}}>
+        <OnboardingStack.Navigator
+          screenOptions={{
+            headerShown: false,
+            // https://github.com/Kureev/react-native-blur/issues/595
+            animation: Platform.OS === 'android' ? 'none' : 'default',
+          }}>
           <OnboardingStack.Screen
             name={ScreenNames.OnboardingConnectWallet}
             component={OnboardingConnectWalletScreen}
