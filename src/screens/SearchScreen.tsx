@@ -1,4 +1,4 @@
-import {getAddress} from 'ethers/lib/utils';
+import {getAddress, isAddress} from 'ethers/lib/utils';
 import {Box, HStack, Input, Pressable, SectionList, VStack} from 'native-base';
 import React, {FC, useCallback, useEffect, useMemo, useState} from 'react';
 import {SectionListRenderItem} from 'react-native';
@@ -141,6 +141,8 @@ export const SearchScreen = () => {
     navigate(ScreenNames.NewConversation, {addresses: participants});
   }, [participants, navigate, goBack]);
 
+  const isValidAddress = useMemo(() => isAddress(searchText), [searchText]);
+
   const items = useMemo(() => {
     const {filtered: filteredRecents, mapping: recentMapping} = recents.reduce<{
       filtered: Contact[];
@@ -267,6 +269,17 @@ export const SearchScreen = () => {
         paddingY={'12px'}
         paddingX={'8px'}
       />
+      {isValidAddress && (
+        <HStack paddingX={'16px'} paddingTop={'16px'} w="100%">
+          <Icon name="check-circle" color={colors.actionPositive} size={17} />
+          <Text
+            paddingLeft={'8px'}
+            color={colors.actionPositive}
+            typography="text-xs/semi-bold">
+            {translate('valid_address')}
+          </Text>
+        </HStack>
+      )}
       <VStack paddingX={'16px'} paddingTop={'16px'} w="100%">
         <HStack flexWrap={'wrap'}>
           {participants.map(participant => {

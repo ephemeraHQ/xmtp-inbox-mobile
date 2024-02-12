@@ -1,6 +1,7 @@
 import {Group} from '@xmtp/react-native-sdk/build/lib/Group';
 import {HStack, Pressable, VStack} from 'native-base';
 import React, {FC, useCallback} from 'react';
+import {AppConfig} from '../../consts/AppConfig';
 import {useContactInfo} from '../../hooks/useContactInfo';
 import {translate} from '../../i18n';
 import {colors} from '../../theme/colors';
@@ -24,7 +25,10 @@ const GroupParticipant: React.FC<{
 }> = ({address, onRemove}) => {
   const {displayName, avatarUrl} = useContactInfo(address);
   return (
-    <VStack alignItems={'center'} justifyContent={'center'}>
+    <VStack
+      alignItems={'center'}
+      justifyContent={'center'}
+      marginY={AppConfig.LENS_ENABLED ? 0 : 2}>
       <HStack alignItems={'center'}>
         <Text typography="text-xl/bold" textAlign={'center'}>
           {displayName}
@@ -39,23 +43,27 @@ const GroupParticipant: React.FC<{
           <Icon name={'trash'} type={'mini'} color={colors.actionPrimary} />
         </Pressable>
       </HStack>
-      <Text typography="text-sm/bold">{translate('domain_origin')}</Text>
-      <Button
-        variant={'ghost'}
-        rightIcon={
-          <Icon
-            name={'arrow-right'}
-            type={'mini'}
-            color={colors.actionPrimary}
-          />
-        }>
-        <Text
-          typography="text-base/bold"
-          color={colors.actionPrimary}
-          textAlign={'center'}>
-          {'lenster.xyz'}
-        </Text>
-      </Button>
+      {AppConfig.LENS_ENABLED && (
+        <>
+          <Text typography="text-sm/bold">{translate('domain_origin')}</Text>
+          <Button
+            variant={'ghost'}
+            rightIcon={
+              <Icon
+                name={'arrow-right'}
+                type={'mini'}
+                color={colors.actionPrimary}
+              />
+            }>
+            <Text
+              typography="text-base/bold"
+              color={colors.actionPrimary}
+              textAlign={'center'}>
+              {'lenster.xyz'}
+            </Text>
+          </Button>
+        </>
+      )}
     </VStack>
   );
 };

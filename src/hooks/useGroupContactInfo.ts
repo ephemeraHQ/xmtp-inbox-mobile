@@ -8,6 +8,7 @@ import {
 } from '../services/mmkvStorage';
 import {formatAddress} from '../utils/formatAddress';
 import {getEnsInfo} from '../utils/getEnsInfo';
+import {useClient} from './useClient';
 
 type GroupContactInfoState = Record<
   string,
@@ -22,6 +23,7 @@ export const useGroupContactInfo = (addresses: string[]) => {
   const [state, setState] = useState<GroupContactInfoState>({});
   const supportedChains = useSupportedChains();
   const {clientId} = useWalletContext();
+  const {client} = useClient();
 
   useEffect(() => {
     addresses.forEach(address => {
@@ -76,11 +78,16 @@ export const useGroupContactInfo = (addresses: string[]) => {
 
     let groupDisplayName = '';
 
-    Object.values(state).forEach(it => {
+    Object.values(state).forEach((it, index) => {
       arr.push(it);
-      groupDisplayName += it.displayName + ', ';
+      if (it.address === client?.address) {
+        return;
+      }
+      groupDisplayName +=
+        it.displayName +
+        (index === Object.values(state).length - 1 ? '' : ', ');
     });
     return {groupDisplayName, data: arr};
-  }, [state]);
+  }, [client?.address, state]);
   return data;
 };

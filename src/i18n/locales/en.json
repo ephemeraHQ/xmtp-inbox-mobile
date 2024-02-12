@@ -68,5 +68,8 @@
   "get_groups": "Get Groups",
   "get_contacts": "Get Contacts",
 
-  "discover": "Discover"
+  "discover": "Discover",
+
+  "valid_address": "Valid Ethereum Address",
+  "message_requests_from_new_addresses": "Message requests from addresses you’ve never interacted with show up here"
 }

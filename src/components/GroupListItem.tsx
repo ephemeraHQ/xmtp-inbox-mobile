@@ -39,7 +39,7 @@ export const GroupListItem: FC<GroupListItemProps> = ({
         <VStack flex={1} justifyContent={'flex-end'}>
           <Text
             numberOfLines={1}
-            ellipsizeMode="middle"
+            ellipsizeMode="tail"
             typography="text-base/bold">
             {groupDisplayName}
           </Text>
