@@ -15,4 +15,5 @@ export enum ScreenNames {
   Search = 'search',
   QRCode = 'qr_code',
   UserProfiles = 'user_profiles',
+  Dev = 'dev',
 }

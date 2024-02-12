@@ -1,14 +1,14 @@
 import {Group} from '@xmtp/react-native-sdk/build/lib/Group';
 import {HStack, Pressable, VStack} from 'native-base';
 import React, {FC, useCallback} from 'react';
-import {useContactInfo} from '../hooks/useContactInfo';
-import {translate} from '../i18n';
-import {colors} from '../theme/colors';
-import {AvatarWithFallback} from './AvatarWithFallback';
-import {Button} from './common/Button';
-import {Icon} from './common/Icon';
-import {Modal} from './common/Modal';
-import {Text} from './common/Text';
+import {useContactInfo} from '../../hooks/useContactInfo';
+import {translate} from '../../i18n';
+import {colors} from '../../theme/colors';
+import {AvatarWithFallback} from '../AvatarWithFallback';
+import {Button} from '../common/Button';
+import {Icon} from '../common/Icon';
+import {Modal} from '../common/Modal';
+import {Text} from '../common/Text';
 
 export interface GroupInfoModalProps {
   shown: boolean;

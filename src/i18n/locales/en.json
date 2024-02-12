@@ -57,5 +57,16 @@
   "guest_wallet": "Guest Wallet",
   "group_changed": "Group Changed",
   "add_to_group": "Add",
-  "group": "Group"
+  "group": "Group",
+
+  "dev_screen": "Dev Screen",
+  "client": "Client",
+  "address": "Address",
+  "list_queries": "List Queries",
+  "conversation_messages_queries": "Conversation Messages",
+  "group_messages_queries": "Group Messages Queries",
+  "group_members_queries": "Group Members Queries",
+  "get_conversations": "Get Conversations",
+  "get_groups": "Get Groups",
+  "get_contacts": "Get Contacts"
 }

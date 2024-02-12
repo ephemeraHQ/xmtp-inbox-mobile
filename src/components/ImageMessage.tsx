@@ -48,9 +48,10 @@ export const ImageMessage: FC<ImageMessageProps> = ({content}) => {
       resizeMethod="auto"
       resizeMode="cover"
       source={{uri: downloadedUri}}
-      // source={require('../../assets/images/discover1.png')}
       height={40}
       width={40}
+      borderRadius={10}
+      alt="image message"
     />
   );
 };

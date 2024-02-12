@@ -21,7 +21,7 @@ export const GroupListItem: FC<GroupListItemProps> = ({
   display,
   lastMessageTime,
 }) => {
-  const {data: addresses} = useGroupParticipantsQuery(group.id);
+  const {data: addresses} = useGroupParticipantsQuery(group?.id);
   const {navigate} = useTypedNavigation();
   const {data, groupDisplayName} = useGroupContactInfo(addresses ?? []);
 
@@ -29,7 +29,7 @@ export const GroupListItem: FC<GroupListItemProps> = ({
     <Pressable
       onPress={() => {
         navigate(ScreenNames.Group, {
-          id: group.id,
+          id: group?.id,
         });
       }}>
       <HStack space={[2, 3]} alignItems={'center'} w={'100%'} padding={'16px'}>

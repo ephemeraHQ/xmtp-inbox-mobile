@@ -5,10 +5,9 @@ import {QueryKeys} from './QueryKeys';
 
 export const useListQuery = () => {
   const {client} = useClient();
-
   return useQuery({
     queryKey: [QueryKeys.List, client?.address],
     queryFn: () => getAllListMessages(client),
-    enabled: !!client,
+    enabled: Boolean(client),
   });
 };

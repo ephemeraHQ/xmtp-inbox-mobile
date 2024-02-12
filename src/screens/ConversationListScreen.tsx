@@ -27,11 +27,12 @@ import {colors} from '../theme/colors';
 const EmptyBackground = require('../../assets/images/Bg_asset.svg').default;
 
 const keyExtractor = (item: ListConversation | ListGroup) =>
-  'conversation' in item ? item.conversation.topic : item.group.id;
+  'conversation' in item ? item.conversation?.topic : item.group?.id ?? '';
 
 const useData = () => {
   const {client} = useClient();
-  const {data, isLoading, refetch, isRefetching} = useListMessages();
+  const {data, isLoading, refetch, isRefetching, isError, error} =
+    useListMessages();
 
   const {listItems, requests} = useMemo(() => {
     const listMessages: ListMessages = [];
@@ -58,6 +59,8 @@ const useData = () => {
     isLoading,
     refetch,
     isRefetching,
+    isError,
+    error,
   };
 };
 
@@ -85,6 +88,11 @@ const ListHeader: FC<ListHeaderProps> = ({
   const handleAccountPress = useCallback(() => {
     navigate(ScreenNames.Account);
   }, [navigate]);
+  const navigateToDev = useCallback(() => {
+    if (__DEV__) {
+      navigate(ScreenNames.Dev);
+    }
+  }, [navigate]);
   return (
     <VStack>
       <HStack
@@ -109,6 +117,7 @@ const ListHeader: FC<ListHeaderProps> = ({
           shadow={4}>
           <Box>
             <Button
+              onLongPress={navigateToDev}
               size={'sm'}
               variant={'ghost'}
               leftIcon={
@@ -203,7 +212,6 @@ export const ConversationListScreen = () => {
   const showPicker = () => {
     setShowPickerModal(true);
   };
-
   const handleNewMessagePress = useCallback(() => {
     navigate(ScreenNames.Search);
   }, [navigate]);

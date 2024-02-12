@@ -57,10 +57,10 @@ export const OnboardingEnableIdentityScreen = () => {
           enableAlphaMls: AppConfig.GROUPS_ENABLED,
           env: AppConfig.XMTP_ENV,
           preEnableIdentityCallback: async () => {
-            await enableIdentityPromise;
+            await enableIdentityPromise();
           },
           preCreateIdentityCallback: async () => {
-            await createIdentityPromise;
+            await createIdentityPromise();
           },
           codecs: [new RemoteAttachmentCodec()],
         });

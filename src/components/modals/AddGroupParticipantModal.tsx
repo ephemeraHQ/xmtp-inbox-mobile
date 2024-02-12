@@ -2,17 +2,17 @@ import {Group} from '@xmtp/react-native-sdk/build/lib/Group';
 import {Box, FlatList, HStack, Input, Pressable, VStack} from 'native-base';
 import React, {FC, useCallback, useMemo, useState} from 'react';
 import {ListRenderItem, useWindowDimensions} from 'react-native';
-import {TestIds} from '../consts/TestIds';
-import {useContactInfo} from '../hooks/useContactInfo';
-import {useContacts} from '../hooks/useContacts';
-import {translate} from '../i18n';
-import {colors} from '../theme/colors';
-import {formatAddress} from '../utils/formatAddress';
-import {AvatarWithFallback} from './AvatarWithFallback';
-import {Button} from './common/Button';
-import {Icon} from './common/Icon';
-import {Modal} from './common/Modal';
-import {Text} from './common/Text';
+import {TestIds} from '../../consts/TestIds';
+import {useContactInfo} from '../../hooks/useContactInfo';
+import {useContacts} from '../../hooks/useContacts';
+import {translate} from '../../i18n';
+import {colors} from '../../theme/colors';
+import {formatAddress} from '../../utils/formatAddress';
+import {AvatarWithFallback} from '../AvatarWithFallback';
+import {Button} from '../common/Button';
+import {Icon} from '../common/Icon';
+import {Modal} from '../common/Modal';
+import {Text} from '../common/Text';
 
 export interface GroupInfoModalProps {
   shown: boolean;

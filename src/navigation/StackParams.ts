@@ -19,6 +19,7 @@ export type AuthenticatedStackParams = {
   [ScreenNames.Search]: undefined;
   [ScreenNames.QRCode]: undefined;
   [ScreenNames.UserProfiles]: {address: string};
+  [ScreenNames.Dev]: undefined;
 };
 
 export type RootStackParams = LoadingStackParams &
