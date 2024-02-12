@@ -48,7 +48,7 @@ export const ClientProvider: FC<PropsWithChildren> = ({children}) => {
         }
         Client.createFromKeyBundle(keys, {
           codecs: [new RemoteAttachmentCodec()],
-          enableAlphaMls: AppConfig.GROUPS_ENABLED,
+          enableAlphaMls: true,
           env: AppConfig.XMTP_ENV,
         })
           .then(newClient => {

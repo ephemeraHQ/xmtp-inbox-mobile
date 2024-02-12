@@ -1,15 +1,8 @@
 import {useRoute} from '@react-navigation/native';
 import {DecodedMessage, RemoteAttachmentContent} from '@xmtp/react-native-sdk';
-import {
-  Box,
-  FlatList,
-  HStack,
-  KeyboardAvoidingView,
-  Pressable,
-  VStack,
-} from 'native-base';
+import {Box, FlatList, HStack, Pressable, VStack} from 'native-base';
 import React, {useCallback, useEffect, useState} from 'react';
-import {ListRenderItem, Platform} from 'react-native';
+import {KeyboardAvoidingView, ListRenderItem, Platform} from 'react-native';
 import {Asset} from 'react-native-image-picker';
 import {ConversationInput} from '../components/ConversationInput';
 import {ConversationMessageContent} from '../components/ConversationMessageContent';
@@ -184,10 +177,8 @@ export const GroupScreen = () => {
           />
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={50}
-            height={'100%'}
-            paddingBottom={'10px'}
-            w="100%">
+            style={{height: '100%'}}
+            keyboardVerticalOffset={10}>
             <Box flex={1}>
               <FlatList
                 keyExtractor={item => item.id}

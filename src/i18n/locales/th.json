@@ -1,0 +1,72 @@
+{
+  "show_collectibles_publicly": "แสดงของสะสมแบบสาธารณะ",
+  "notifications": "การแจ้งเตือน",
+  "privacy": "ความเป็นส่วนตัว",
+  "support": "สนับสนุน",
+  "clear_local_data": "ล้างข้อมูลในเครื่อง",
+  "disconnect_wallet": "ยกเลิกการเชื่อมต่อกระเป๋าเงิน",
+  "connect_existing_wallet": "เชื่อมต่อกระเป๋าเงินที่มีอยู่",
+  "create_new_wallet": "สร้างกระเป๋าเงินใหม่",
+  "you": "คุณ",
+  "search": "ค้นหา",
+
+  "youve_got_no_messages": "คุณไม่มีข้อความ",
+  "start_a_conversation_to_get_going": "เริ่มการสนทนาเพื่อเริ่มต้น!",
+  "filter_conversations": "กรองการสนทนา",
+  "all_messages": "ข้อความทั้งหมด",
+  "message_requests": "คำขอข้อความ",
+  "message_requests_count": "%{count} คำขอข้อความ",
+  "this_address_has_never_sent_you": "ที่อยู่นี้ไม่เคยส่งข้อความให้คุณมาก่อน คุณต้องการอนุญาตให้พวกเขาส่งข้อความให้คุณหรือไม่?",
+  "no": "ไม่",
+  "yes": "ใช่",
+  "start": "เริ่ม",
+
+  "xmtp_app_directory": "ไดเร็กทอรีแอป XMTP",
+
+  "recents": "ล่าสุด",
+  "contacts": "รายชื่อติดต่อ",
+
+  "your_interoperable_web3_inbox": "กล่องข้อความ web3 ที่ใช้งานร่วมกันได้ของคุณ",
+  "youre_just_a_few_steps_away_from_secure_wallet_to_wallet_messaging": "คุณอยู่ห่างจากการส่งข้อความจากกระเป๋าเงินไปยังกระเป๋าเงินอย่างปลอดภัยเพียงไม่กี่ขั้นตอน",
+  "connect_your_wallet": "เชื่อมต่อกระเป๋าเงินของคุณ",
+  "you_can_connect_or_create": "คุณสามารถเชื่อมต่อหรือสร้างกระเป๋าเงินผ่าน Wallet Connect",
+  "whats_a_wallet": "กระเป๋าเงินคืออะไร?",
+
+  "step_1_of_2": "ขั้นตอนที่ 1 จาก 2",
+  "create_your_xmtp_identity": "สร้างตัวตน XMTP ของคุณ",
+  "now_that_your_wallet_is_connected": "ตอนนี้ที่กระเป๋าเงินของคุณได้เชื่อมต่อแล้ว เรากำลังจะสร้างตัวตน XMTP ของคุณบนเครือข่ายของเราด้วยลายเซ็นกระเป๋าเงิน",
+  "create_xmtp_identity": "สร้างตัวตน XMTP",
+  "step_2_of_2": "ขั้นตอนที่ 2 จาก 2",
+
+  "domain_origin": "ที่มาของโดเมน",
+
+  "copy_your_code": "คัดลอกโค้ดของคุณ",
+
+  "allow": "อนุญาต",
+  "block": "บล็อก",
+
+  "yesterday": "เมื่อวาน",
+
+  "conversation_image_alt": "รูปภาพที่แนบ",
+
+  "walletconnect": "WalletConnect",
+  "metamask": "Metamask",
+  "coinbase_wallet": "Coinbase Wallet",
+  "guest_wallet": "กระเป๋าเงินแขก",
+  "group_changed": "กลุ่มเปลี่ยนแปลง",
+  "add_to_group": "เพิ่ม",
+  "group": "กลุ่ม",
+
+  "dev_screen": "หน้าจอพัฒนา",
+  "client": "ไคลเอนต์",
+  "address": "ที่อยู่",
+  "list_queries": "รายการคิวรี",
+  "conversation_messages_queries": "ข้อความสนทนา",
+  "group_messages_queries": "คิวรีข้อความกลุ่ม",
+  "group_members_queries": "คิวรีสมาชิกกลุ่ม",
+  "get_conversations": "รับการสนทนา",
+  "get_groups": "รับกลุ่ม",
+  "get_contacts": "รับรายชื่อติดต่อ",
+
+  "discover": "ค้นพบ"
+}

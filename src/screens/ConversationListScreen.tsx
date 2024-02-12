@@ -138,7 +138,9 @@ const ListHeader: FC<ListHeaderProps> = ({
               }
               onPress={showPickerModal}>
               <Text typography="text-sm/heavy">
-                {list === 'ALL_MESSAGES' ? 'All Messages' : 'Message Requests'}
+                {list === 'ALL_MESSAGES'
+                  ? translate('all_messages')
+                  : translate('message_requests')}
               </Text>
             </Button>
           </Box>

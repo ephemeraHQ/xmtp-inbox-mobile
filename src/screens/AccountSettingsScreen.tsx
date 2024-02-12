@@ -312,7 +312,11 @@ export const AccountSettingsScreen = () => {
           onLongPress={() =>
             __DEV__ ? Clipboard.setString(client?.address ?? '') : {}
           }
-          onPress={() => setWalletsShown(true)}
+          onPress={() => {
+            if (AppConfig.MULTI_WALLET) {
+              setWalletsShown(true);
+            }
+          }}
           variant={'ghost'}
           rightIcon={
             <Icon
