@@ -8,7 +8,7 @@ import React, {
   useState,
 } from 'react';
 import {AppConfig} from '../consts/AppConfig';
-import {getClientKeys} from '../services/encryptedStorage';
+import {clearClientKeys, getClientKeys} from '../services/encryptedStorage';
 
 interface ClientContextValue {
   client: Client<unknown> | null;
@@ -34,8 +34,12 @@ export const ClientProvider: FC<PropsWithChildren> = ({children}) => {
     if (status === 'unknown' || status === 'connecting') {
       return;
     }
-    if (!address) {
+    if (status === 'disconnected') {
       return setLoading(false);
+    }
+    if (!address) {
+      // Address still shows as undefined even when connected
+      return;
     }
     getClientKeys(address as `0x${string}`)
       .then(keys => {
@@ -44,7 +48,7 @@ export const ClientProvider: FC<PropsWithChildren> = ({children}) => {
         }
         Client.createFromKeyBundle(keys, {
           codecs: [new RemoteAttachmentCodec()],
-          enableAlphaMls: AppConfig.GROUPS_ENABLED,
+          enableAlphaMls: true,
           env: AppConfig.XMTP_ENV,
         })
           .then(newClient => {
@@ -52,6 +56,7 @@ export const ClientProvider: FC<PropsWithChildren> = ({children}) => {
             setLoading(false);
           })
           .catch(() => {
+            clearClientKeys(address as `0x${string}`);
             setLoading(false);
           });
       })

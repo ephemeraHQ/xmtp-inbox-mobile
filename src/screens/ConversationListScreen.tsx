@@ -94,7 +94,7 @@ const ListHeader: FC<ListHeaderProps> = ({
     }
   }, [navigate]);
   return (
-    <VStack>
+    <VStack marginTop={'4px'}>
       <HStack
         w={'100%'}
         justifyContent={'space-between'}
@@ -138,7 +138,9 @@ const ListHeader: FC<ListHeaderProps> = ({
               }
               onPress={showPickerModal}>
               <Text typography="text-sm/heavy">
-                {list === 'ALL_MESSAGES' ? 'All Messages' : 'Message Requests'}
+                {list === 'ALL_MESSAGES'
+                  ? translate('all_messages')
+                  : translate('message_requests')}
               </Text>
             </Button>
           </Box>
@@ -156,8 +158,7 @@ const ListHeader: FC<ListHeaderProps> = ({
             typography="text-caption/regular"
             textAlign={'center'}
             color={colors.actionAlertText}>
-            Message requests from addresses you’ve never interacted with show up
-            here
+            {translate('message_requests_from_new_addresses')}
           </Text>
         </Box>
       ) : messageRequestCount > 0 ? (

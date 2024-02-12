@@ -273,7 +273,7 @@ export const DiscoverScreen = () => {
     <Screen
       title={
         <Text typography="text-lg/heavy" textAlign={'center'}>
-          Discover
+          {translate('discover')}
         </Text>
       }
       left={

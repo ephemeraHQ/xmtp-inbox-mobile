@@ -1,5 +1,4 @@
 {
-
   "show_collectibles_publicly": "Show collectibles publicly",
   "notifications": "Notifications",
   "privacy": "Privacy",
@@ -9,6 +8,7 @@
   "connect_existing_wallet": "Connect existing wallet",
   "create_new_wallet": "Create new wallet",
   "you": "You",
+  "search": "Search",
 
   "youve_got_no_messages": "You’ve got no messages",
   "start_a_conversation_to_get_going": "Start a conversation to get going!",
@@ -16,8 +16,7 @@
   "all_messages": "All Messages",
   "message_requests": "Message requests",
   "message_requests_count": "%{count} Message requests",
-  "this_address_has_never_sent_you":
-    "This address has never sent you a message before. Do you want to allow them to message you?",
+  "this_address_has_never_sent_you": "This address has never sent you a message before. Do you want to allow them to message you?",
   "no": "No",
   "yes": "Yes",
   "start": "Start",
@@ -28,8 +27,7 @@
   "contacts": "Contacts",
 
   "your_interoperable_web3_inbox": "Your interoperable web3 inbox",
-  "youre_just_a_few_steps_away_from_secure_wallet_to_wallet_messaging":
-    "You're just a few steps away from secure, wallet-to-wallet messaging",
+  "youre_just_a_few_steps_away_from_secure_wallet_to_wallet_messaging": "You're just a few steps away from secure, wallet-to-wallet messaging",
   "connect_your_wallet": "Connect your wallet",
   "you_can_connect_or_create": "You can connect or create a wallet via Wallet Connect.",
   "whats_a_wallet": "What's a wallet?",
@@ -68,5 +66,10 @@
   "group_members_queries": "Group Members Queries",
   "get_conversations": "Get Conversations",
   "get_groups": "Get Groups",
-  "get_contacts": "Get Contacts"
+  "get_contacts": "Get Contacts",
+
+  "discover": "Discover",
+
+  "valid_address": "Valid Ethereum Address",
+  "message_requests_from_new_addresses": "Message requests from addresses you’ve never interacted with show up here"
 }

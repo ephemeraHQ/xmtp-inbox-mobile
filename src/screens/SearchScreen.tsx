@@ -1,4 +1,4 @@
-import {getAddress} from 'ethers/lib/utils';
+import {getAddress, isAddress} from 'ethers/lib/utils';
 import {Box, HStack, Input, Pressable, SectionList, VStack} from 'native-base';
 import React, {FC, useCallback, useEffect, useMemo, useState} from 'react';
 import {SectionListRenderItem} from 'react-native';
@@ -8,7 +8,6 @@ import {Icon} from '../components/common/Icon';
 import {Pill} from '../components/common/Pill';
 import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
-import {AppConfig} from '../consts/AppConfig';
 import {TestIds} from '../consts/TestIds';
 import {useClient} from '../hooks/useClient';
 import {useContactInfo} from '../hooks/useContactInfo';
@@ -132,24 +131,17 @@ export const SearchScreen = () => {
   const {recents, contacts} = useData();
   const onItemPress = useCallback(
     (item: Contact) => {
-      if (AppConfig.GROUPS_ENABLED) {
-        setParticipants([...participants, item.address]);
-      } else {
-        goBack();
-        if (item.isConnected && item.topic) {
-          navigate(ScreenNames.Conversation, {topic: item.topic});
-        } else {
-          navigate(ScreenNames.NewConversation, {addresses: [item.address]});
-        }
-      }
+      setParticipants(prev => [...prev, item.address]);
     },
-    [goBack, navigate, participants],
+    [setParticipants],
   );
 
   const onGroupStart = useCallback(() => {
     goBack();
     navigate(ScreenNames.NewConversation, {addresses: participants});
   }, [participants, navigate, goBack]);
+
+  const isValidAddress = useMemo(() => isAddress(searchText), [searchText]);
 
   const items = useMemo(() => {
     const {filtered: filteredRecents, mapping: recentMapping} = recents.reduce<{
@@ -234,7 +226,7 @@ export const SearchScreen = () => {
       testId={TestIds.SEARCH_SCREEN}
       title={
         <Text typography="text-lg/heavy" textAlign={'center'}>
-          {translate('you')}
+          {translate('search')}
         </Text>
       }
       left={
@@ -277,33 +269,42 @@ export const SearchScreen = () => {
         paddingY={'12px'}
         paddingX={'8px'}
       />
-      {AppConfig.GROUPS_ENABLED && (
-        <VStack paddingX={'16px'} paddingTop={'16px'} w="100%">
-          <HStack flexWrap={'wrap'}>
-            {participants.map(participant => {
-              return (
-                <Pill
-                  key={participant}
-                  testId={`${TestIds.SEARCH_PARTICIPANTS_LIST_PILL}_${participant}`}
-                  size={'sm'}
-                  onPress={() => removeParticipant(participant)}
-                  text={formatAddress(participant)}
-                />
-              );
-            })}
-          </HStack>
-          {participants.length > 0 && (
-            <Button
-              testID={TestIds.SEARCH_START_BUTTON}
-              w={20}
-              alignSelf={'center'}
-              size={'xs'}
-              onPress={onGroupStart}>
-              {translate('start')}
-            </Button>
-          )}
-        </VStack>
+      {isValidAddress && (
+        <HStack paddingX={'16px'} paddingTop={'16px'} w="100%">
+          <Icon name="check-circle" color={colors.actionPositive} size={17} />
+          <Text
+            paddingLeft={'8px'}
+            color={colors.actionPositive}
+            typography="text-xs/semi-bold">
+            {translate('valid_address')}
+          </Text>
+        </HStack>
       )}
+      <VStack paddingX={'16px'} paddingTop={'16px'} w="100%">
+        <HStack flexWrap={'wrap'}>
+          {participants.map(participant => {
+            return (
+              <Pill
+                key={participant}
+                testId={`${TestIds.SEARCH_PARTICIPANTS_LIST_PILL}_${participant}`}
+                size={'sm'}
+                onPress={() => removeParticipant(participant)}
+                text={formatAddress(participant)}
+              />
+            );
+          })}
+        </HStack>
+        {participants.length > 0 && (
+          <Button
+            testID={TestIds.SEARCH_START_BUTTON}
+            w={20}
+            alignSelf={'center'}
+            size={'xs'}
+            onPress={onGroupStart}>
+            {translate('start')}
+          </Button>
+        )}
+      </VStack>
       <SectionList
         w={'100%'}
         sections={items}

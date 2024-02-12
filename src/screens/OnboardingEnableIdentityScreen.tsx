@@ -54,7 +54,7 @@ export const OnboardingEnableIdentityScreen = () => {
       }
       try {
         const client = await Client.create(signer, {
-          enableAlphaMls: AppConfig.GROUPS_ENABLED,
+          enableAlphaMls: true,
           env: AppConfig.XMTP_ENV,
           preEnableIdentityCallback: async () => {
             await enableIdentityPromise();
