@@ -1,6 +1,13 @@
 import {useQueryClient} from '@tanstack/react-query';
 import {useEffect} from 'react';
-import {ListConversation, ListMessages} from '../models/ListMessages';
+import {DeviceEventEmitter} from 'react-native';
+import {ContentTypes} from '../consts/ContentTypes';
+import {EventEmitterEvents} from '../consts/EventEmitters';
+import {
+  ListConversation,
+  ListGroup,
+  ListMessages,
+} from '../models/ListMessages';
 import {QueryKeys} from '../queries/QueryKeys';
 import {useListQuery} from '../queries/useListQuery';
 import {useClient} from './useClient';
@@ -43,7 +50,35 @@ export const useListMessages = () => {
               });
               return data;
             } else {
-              return prev;
+              const existingGroup = prev?.find(it => {
+                return 'group' in it && it.group.id === topic;
+              });
+              if (existingGroup) {
+                if (
+                  message.contentTypeId === ContentTypes.GroupMembershipChange
+                ) {
+                  DeviceEventEmitter.emit(
+                    `${EventEmitterEvents.GROUP_CHANGED}_${topic}`,
+                  );
+                }
+                const data = prev?.map(it => {
+                  if ('group' in it && it.group.id === topic) {
+                    if ('group' in existingGroup) {
+                      const newIt: ListGroup = {
+                        group: existingGroup.group,
+                        display: messageStringContent,
+                        lastMessageTime: message.sent,
+                        isRequest: it.isRequest,
+                      };
+                      return newIt;
+                    }
+                  }
+                  return it;
+                });
+                return data;
+              } else {
+                return prev;
+              }
             }
           },
         );
@@ -89,37 +124,35 @@ export const useListMessages = () => {
     };
   }, [client, queryClient]);
 
-  // useEffect(() => {
-  //   const startStream = () => {
-  //     if (!client) {
-  //       return;
-  //     }
-  //     client.conversations.streamGroups(async newGroup => {
-  //       const messages = await newGroup.messages(1);
-  //       const message = messagesJson[0], client);
-  //       queryClient.setQueryData<ListMessages>(
-  //         [QueryKeys.List, client?.address],
-  //         prev => {
-  //           return [
-  //             {
-  //               group: newGroup,
-  //               display: '',
-  //               lastMessageTime: message.sent,
-  //               isRequest: false,
-  //             },
-  //             ...(prev ?? []),
-  //           ];
-  //         },
-  //       );
-  //     });
-  //   };
+  useEffect(() => {
+    const startStream = () => {
+      if (!client) {
+        return;
+      }
+      client.conversations.streamGroups(async newGroup => {
+        queryClient.setQueryData<ListMessages>(
+          [QueryKeys.List, client?.address],
+          prev => {
+            return [
+              {
+                group: newGroup,
+                display: '',
+                lastMessageTime: Date.now(),
+                isRequest: false,
+              },
+              ...(prev ?? []),
+            ];
+          },
+        );
+      });
+    };
 
-  //   startStream();
+    startStream();
 
-  //   return () => {
-  //     client?.conversations.cancelGroupStream();
-  //   };
-  // }, [client, queryClient]);
+    return () => {
+      client?.conversations.cancelStreamGroups();
+    };
+  }, [client, queryClient]);
 
   return useListQuery();
 };

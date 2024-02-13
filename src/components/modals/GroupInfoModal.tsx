@@ -1,7 +1,9 @@
 import {Group} from '@xmtp/react-native-sdk/build/lib/Group';
 import {HStack, Pressable, VStack} from 'native-base';
 import React, {FC, useCallback} from 'react';
+import {DeviceEventEmitter} from 'react-native';
 import {AppConfig} from '../../consts/AppConfig';
+import {EventEmitterEvents} from '../../consts/EventEmitters';
 import {useContactInfo} from '../../hooks/useContactInfo';
 import {translate} from '../../i18n';
 import {colors} from '../../theme/colors';
@@ -78,6 +80,9 @@ export const GroupInfoModal: FC<GroupInfoModalProps> = ({
   const onRemovePress = useCallback(
     async (address: string) => {
       await group.removeMembers([address]);
+      DeviceEventEmitter.emit(
+        `${EventEmitterEvents.GROUP_CHANGED}_${group.id}`,
+      );
       hide();
     },
     [group, hide],

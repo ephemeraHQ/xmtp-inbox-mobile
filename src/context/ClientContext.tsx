@@ -1,5 +1,5 @@
 import {useAddress, useConnectionStatus} from '@thirdweb-dev/react-native';
-import {Client, RemoteAttachmentCodec} from '@xmtp/react-native-sdk';
+import {Client} from '@xmtp/react-native-sdk';
 import React, {
   FC,
   PropsWithChildren,
@@ -8,11 +8,17 @@ import React, {
   useState,
 } from 'react';
 import {AppConfig} from '../consts/AppConfig';
+import {
+  SupportedContentTypes,
+  supportedContentTypes,
+} from '../consts/ContentTypes';
 import {clearClientKeys, getClientKeys} from '../services/encryptedStorage';
 
 interface ClientContextValue {
-  client: Client<unknown> | null;
-  setClient: React.Dispatch<React.SetStateAction<Client<unknown> | null>>;
+  client: Client<SupportedContentTypes> | null;
+  setClient: React.Dispatch<
+    React.SetStateAction<Client<SupportedContentTypes> | null>
+  >;
   loading: boolean;
 }
 
@@ -25,7 +31,9 @@ export const ClientContext = createContext<ClientContextValue>({
 });
 
 export const ClientProvider: FC<PropsWithChildren> = ({children}) => {
-  const [client, setClient] = useState<Client<unknown> | null>(null);
+  const [client, setClient] = useState<Client<SupportedContentTypes> | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
   const address = useAddress();
   const status = useConnectionStatus();
@@ -46,8 +54,8 @@ export const ClientProvider: FC<PropsWithChildren> = ({children}) => {
         if (!keys) {
           return setLoading(false);
         }
-        Client.createFromKeyBundle(keys, {
-          codecs: [new RemoteAttachmentCodec()],
+        Client.createFromKeyBundle<SupportedContentTypes>(keys, {
+          codecs: supportedContentTypes,
           enableAlphaMls: true,
           env: AppConfig.XMTP_ENV,
         })

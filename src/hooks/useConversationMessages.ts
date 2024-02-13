@@ -1,9 +1,12 @@
 import {DecodedMessage} from '@xmtp/react-native-sdk';
 import {useEffect, useState} from 'react';
+import {SupportedContentTypes} from '../consts/ContentTypes';
 import {useConversation} from './useConversation';
 
 export const useConversationMessages = (topic: string) => {
-  const [messages, setMessages] = useState<DecodedMessage<unknown>[]>([]);
+  const [messages, setMessages] = useState<
+    DecodedMessage<SupportedContentTypes>[]
+  >([]);
   const {conversation} = useConversation(topic);
 
   useEffect(() => {

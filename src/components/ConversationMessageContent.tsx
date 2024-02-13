@@ -1,14 +1,14 @@
 import {DecodedMessage, RemoteAttachmentContent} from '@xmtp/react-native-sdk';
 import {Container} from 'native-base';
 import React, {FC} from 'react';
-import {ContentTypes} from '../consts/ContentTypes';
+import {ContentTypes, SupportedContentTypes} from '../consts/ContentTypes';
 import {translate} from '../i18n';
 import {colors} from '../theme/colors';
 import {ImageMessage} from './ImageMessage';
 import {Text} from './common/Text';
 
 interface ConversationMessageContentProps {
-  message: DecodedMessage<unknown>;
+  message: DecodedMessage<SupportedContentTypes>;
   isMe: boolean;
 }
 

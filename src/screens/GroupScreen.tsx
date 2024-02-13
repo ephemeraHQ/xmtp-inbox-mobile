@@ -13,6 +13,7 @@ import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
 import {AddGroupParticipantModal} from '../components/modals/AddGroupParticipantModal';
 import {GroupInfoModal} from '../components/modals/GroupInfoModal';
+import {SupportedContentTypes} from '../consts/ContentTypes';
 import {useClient} from '../hooks/useClient';
 import {useGroup} from '../hooks/useGroup';
 import {useGroupMessages} from '../hooks/useGroupMessages';
@@ -125,7 +126,9 @@ export const GroupScreen = () => {
     [client, group],
   );
 
-  const renderItem: ListRenderItem<DecodedMessage<unknown>> = ({item}) => {
+  const renderItem: ListRenderItem<DecodedMessage<SupportedContentTypes>> = ({
+    item,
+  }) => {
     const isMe =
       item.senderAddress?.toLocaleLowerCase() ===
       myAddress?.toLocaleLowerCase();

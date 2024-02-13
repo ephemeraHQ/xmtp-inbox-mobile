@@ -1,4 +1,5 @@
 import {useRoute} from '@react-navigation/native';
+import {useQueryClient} from '@tanstack/react-query';
 import {DecodedMessage, RemoteAttachmentContent} from '@xmtp/react-native-sdk';
 import {Box, FlatList, HStack, Pressable, VStack} from 'native-base';
 import React, {useCallback, useEffect, useState} from 'react';
@@ -13,11 +14,13 @@ import {Icon} from '../components/common/Icon';
 import {Modal} from '../components/common/Modal';
 import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
+import {SupportedContentTypes} from '../consts/ContentTypes';
 import {useClient} from '../hooks/useClient';
 import {useContactInfo} from '../hooks/useContactInfo';
 import {useConversation} from '../hooks/useConversation';
 import {useConversationMessages} from '../hooks/useConversationMessages';
 import {translate} from '../i18n';
+import {QueryKeys} from '../queries/QueryKeys';
 import {
   getConsent,
   getTopicAddresses,
@@ -36,7 +39,10 @@ const getTimestamp = (timestamp: number) => {
     date.getMonth() === now.getMonth() &&
     date.getFullYear() === now.getFullYear()
   ) {
-    return `${date.getHours()}:${date.getMinutes()}`;
+    return date.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   }
   return date.toLocaleDateString();
 };
@@ -88,6 +94,7 @@ export const ConversationScreen = () => {
   const [consent, setConsent] = useState<'allowed' | 'denied' | 'unknown'>(
     getInitialConsentState(myAddress ?? '', address ?? ''),
   );
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (!conversation) {
@@ -138,7 +145,9 @@ export const ConversationScreen = () => {
     [client, conversation],
   );
 
-  const renderItem: ListRenderItem<DecodedMessage<unknown>> = ({item}) => {
+  const renderItem: ListRenderItem<DecodedMessage<SupportedContentTypes>> = ({
+    item,
+  }) => {
     const isMe = item.senderAddress === myAddress;
 
     return (
@@ -165,7 +174,10 @@ export const ConversationScreen = () => {
     }
     setConsent('allowed');
     saveConsent(myAddress ?? '', address ?? '', true);
-  }, [address, client?.contacts, myAddress]);
+    queryClient.invalidateQueries({
+      queryKey: [QueryKeys.List, client?.address],
+    });
+  }, [address, client?.address, client?.contacts, myAddress, queryClient]);
 
   const onBlock = useCallback(() => {
     if (address) {
