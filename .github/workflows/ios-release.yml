@@ -1,8 +1,8 @@
 name: Release to TestFlight
 on:
   push:
-    branches:
-      - main
+    # branches:
+    # - main
 
 jobs:
   rebase:
