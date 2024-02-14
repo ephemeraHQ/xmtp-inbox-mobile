@@ -96,6 +96,7 @@ export const OnboardingConnectWalletScreen = () => {
             onPress={async () => {
               await connect(walletConnectConfig);
               setShowModal(false);
+              navigate(ScreenNames.OnboardingEnableIdentity);
             }}
             title={translate('walletconnect')}
             icon={'walletconnect'}
@@ -105,6 +106,7 @@ export const OnboardingConnectWalletScreen = () => {
             onPress={async () => {
               await connect(metamaskConfig);
               setShowModal(false);
+              navigate(ScreenNames.OnboardingEnableIdentity);
             }}
             title={translate('metamask')}
             icon={'metamask'}
@@ -114,6 +116,7 @@ export const OnboardingConnectWalletScreen = () => {
             onPress={async () => {
               await connect(coinbaseWalletConfig);
               setShowModal(false);
+              navigate(ScreenNames.OnboardingEnableIdentity);
             }}
             title={translate('coinbase_wallet')}
             icon={'coinbase-wallet'}
@@ -123,6 +126,7 @@ export const OnboardingConnectWalletScreen = () => {
             onPress={async () => {
               await connect(localWalletConfig);
               setShowModal(false);
+              navigate(ScreenNames.OnboardingEnableIdentity);
             }}
             title={translate('guest_wallet')}
             icon={'wallet'}
