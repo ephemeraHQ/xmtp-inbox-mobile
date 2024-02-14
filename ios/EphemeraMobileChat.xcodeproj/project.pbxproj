@@ -14,6 +14,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		331A34C09CDF74F0FC0CF2E9 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A92300ADBC27B47A39B6CF1 /* ExpoModulesProvider.swift */; };
 		42683F2D9EA5DDC49A85CEC0 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78611DF31EED3FF745D00249 /* ExpoModulesProvider.swift */; };
+		638ED9512B7D419B009F369B /* Assests.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 638ED9502B7D419B009F369B /* Assests.xcassets */; };
 		7699B88040F8A987B510C191 /* libPods-EphemeraMobileChat-EphemeraMobileChatTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-EphemeraMobileChat-EphemeraMobileChatTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
@@ -98,6 +99,7 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				638ED9502B7D419B009F369B /* Assests.xcassets */,
 			);
 			name = EphemeraMobileChat;
 			sourceTree = "<group>";
@@ -277,6 +279,7 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				638ED9512B7D419B009F369B /* Assests.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -506,6 +509,7 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EphemeraMobileChat.app/EphemeraMobileChat";
 			};
 			name = Debug;
@@ -531,6 +535,7 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EphemeraMobileChat.app/EphemeraMobileChat";
 			};
 			name = Release;
@@ -546,6 +551,7 @@
 				DEVELOPMENT_TEAM = FY4NZR34Z3;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = EphemeraMobileChat/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "XMTP Inbox";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -558,7 +564,7 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = org.ephemera.EphemeraMobileChat;
+				PRODUCT_BUNDLE_IDENTIFIER = com.xmtplabs.inbox.ios;
 				PRODUCT_NAME = EphemeraMobileChat;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -576,6 +582,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = FY4NZR34Z3;
 				INFOPLIST_FILE = EphemeraMobileChat/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "XMTP Inbox";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -588,7 +595,7 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
-				PRODUCT_BUNDLE_IDENTIFIER = org.ephemera.EphemeraMobileChat;
+				PRODUCT_BUNDLE_IDENTIFIER = com.xmtplabs.inbox.ios;
 				PRODUCT_NAME = EphemeraMobileChat;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -664,13 +671,10 @@
 					"-DFOLLY_USE_LIBCPP=1",
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-Wl",
-					"-ld_classic",
-				);
+				OTHER_LDFLAGS = "$(inherited)";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
 				USE_HERMES = true;
 			};
 			name = Debug;
@@ -736,13 +740,10 @@
 					"-DFOLLY_USE_LIBCPP=1",
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-Wl",
-					"-ld_classic",
-				);
+				OTHER_LDFLAGS = "$(inherited)";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
 				USE_HERMES = true;
 				VALIDATE_PRODUCT = YES;
 			};
