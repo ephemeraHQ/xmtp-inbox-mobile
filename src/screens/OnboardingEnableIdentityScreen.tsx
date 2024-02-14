@@ -1,5 +1,5 @@
 import {useDisconnect, useSigner} from '@thirdweb-dev/react-native';
-import {Client, RemoteAttachmentCodec} from '@xmtp/react-native-sdk';
+import {Client} from '@xmtp/react-native-sdk';
 import {VStack} from 'native-base';
 import React, {useCallback, useEffect, useState} from 'react';
 import {DeviceEventEmitter, Image} from 'react-native';
@@ -8,6 +8,7 @@ import {Icon} from '../components/common/Icon';
 import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
 import {AppConfig} from '../consts/AppConfig';
+import {supportedContentTypes} from '../consts/ContentTypes';
 import {EventEmitterEvents} from '../consts/EventEmitters';
 import {useClientContext} from '../context/ClientContext';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
@@ -62,7 +63,7 @@ export const OnboardingEnableIdentityScreen = () => {
           preCreateIdentityCallback: async () => {
             await createIdentityPromise();
           },
-          codecs: [new RemoteAttachmentCodec()],
+          codecs: supportedContentTypes,
         });
         const keys = await client.exportKeyBundle();
         const address = await signer.getAddress();

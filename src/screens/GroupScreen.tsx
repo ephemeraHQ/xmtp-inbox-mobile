@@ -13,6 +13,7 @@ import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
 import {AddGroupParticipantModal} from '../components/modals/AddGroupParticipantModal';
 import {GroupInfoModal} from '../components/modals/GroupInfoModal';
+import {SupportedContentTypes} from '../consts/ContentTypes';
 import {useClient} from '../hooks/useClient';
 import {useGroup} from '../hooks/useGroup';
 import {useGroupMessages} from '../hooks/useGroupMessages';
@@ -40,7 +41,7 @@ const getTimestamp = (timestamp: number) => {
 };
 
 const useData = (id: string) => {
-  const {data: messages} = useGroupMessages(id);
+  const {data: messages, refetch, isRefetching} = useGroupMessages(id);
   const {data: addresses} = useGroupParticipantsQuery(id);
   const {client} = useClient();
   const {group} = useGroup(id);
@@ -49,6 +50,8 @@ const useData = (id: string) => {
     name: group?.id,
     myAddress: client?.address,
     messages,
+    refetch,
+    isRefetching,
     group,
     client,
     addresses,
@@ -73,7 +76,8 @@ const getInitialConsentState = (
 export const GroupScreen = () => {
   const {params} = useRoute();
   const {id} = params as {id: string};
-  const {myAddress, messages, addresses, group, client} = useData(id);
+  const {myAddress, messages, addresses, group, client, refetch, isRefetching} =
+    useData(id);
   const [showReply, setShowReply] = useState(false);
   const [showGroupModal, setShowGroupModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -125,7 +129,9 @@ export const GroupScreen = () => {
     [client, group],
   );
 
-  const renderItem: ListRenderItem<DecodedMessage<unknown>> = ({item}) => {
+  const renderItem: ListRenderItem<DecodedMessage<SupportedContentTypes>> = ({
+    item,
+  }) => {
     const isMe =
       item.senderAddress?.toLocaleLowerCase() ===
       myAddress?.toLocaleLowerCase();
@@ -186,6 +192,8 @@ export const GroupScreen = () => {
                 data={messages}
                 renderItem={renderItem}
                 ListFooterComponent={<Box height={'100px'} />}
+                onRefresh={refetch}
+                refreshing={isRefetching}
               />
             </Box>
             {consent !== 'unknown' ? (

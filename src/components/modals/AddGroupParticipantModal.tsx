@@ -1,7 +1,12 @@
 import {Group} from '@xmtp/react-native-sdk/build/lib/Group';
 import {Box, FlatList, HStack, Input, Pressable, VStack} from 'native-base';
 import React, {FC, useCallback, useMemo, useState} from 'react';
-import {ListRenderItem, useWindowDimensions} from 'react-native';
+import {
+  DeviceEventEmitter,
+  ListRenderItem,
+  useWindowDimensions,
+} from 'react-native';
+import {EventEmitterEvents} from '../../consts/EventEmitters';
 import {TestIds} from '../../consts/TestIds';
 import {useContactInfo} from '../../hooks/useContactInfo';
 import {useContacts} from '../../hooks/useContacts';
@@ -69,6 +74,7 @@ export const AddGroupParticipantModal: FC<GroupInfoModalProps> = ({
 
   const onAdd = useCallback(async () => {
     await group.addMembers(participants);
+    DeviceEventEmitter.emit(`${EventEmitterEvents.GROUP_CHANGED}_${group.id}`);
     hide();
   }, [participants, group, hide]);
 

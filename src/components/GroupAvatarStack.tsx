@@ -1,28 +1,40 @@
 import {Box, HStack} from 'native-base';
 import React, {FC} from 'react';
 import {StyleSheet, ViewStyle} from 'react-native';
+import {useContactInfo} from '../hooks/useContactInfo';
 import {AvatarWithFallback} from './AvatarWithFallback';
 
 interface GroupAvatarStackProps {
-  data: {
-    avatarUrl: string | null;
-    address: string;
-  }[];
+  addresses: string[];
   style?: ViewStyle;
 }
 
-export const GroupAvatarStack: FC<GroupAvatarStackProps> = ({data, style}) => {
+const AvatarWithLoader = ({address}: {address: string}) => {
+  const {avatarUrl, loading} = useContactInfo(address);
+  if (loading) {
+    return (
+      <AvatarWithFallback address={address} size={32} style={styles.avatar} />
+    );
+  }
+  return (
+    <AvatarWithFallback
+      style={styles.avatar}
+      address={address}
+      avatarUri={avatarUrl}
+      size={32}
+    />
+  );
+};
+
+export const GroupAvatarStack: FC<GroupAvatarStackProps> = ({
+  addresses,
+  style,
+}) => {
   return (
     <Box style={style}>
       <HStack maxW={'20px'}>
-        {data.slice(0, 4).map(({avatarUrl, address}) => (
-          <AvatarWithFallback
-            key={address}
-            size={32}
-            address={address}
-            avatarUri={avatarUrl}
-            style={styles.avatar}
-          />
+        {addresses.slice(0, 4).map(address => (
+          <AvatarWithLoader key={address} address={address} />
         ))}
       </HStack>
     </Box>

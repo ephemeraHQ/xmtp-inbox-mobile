@@ -1,5 +1,6 @@
 import {Conversation} from '@xmtp/react-native-sdk';
 import {useEffect, useState} from 'react';
+import {SupportedContentTypes} from '../consts/ContentTypes';
 import {useClient} from './useClient';
 
 export const useConversation = (topic: string) => {
@@ -8,7 +9,7 @@ export const useConversation = (topic: string) => {
   }
   const {client} = useClient();
   const [conversation, setConversation] =
-    useState<Conversation<unknown> | null>(null);
+    useState<Conversation<SupportedContentTypes> | null>(null);
 
   useEffect(() => {
     const getConversation = async () => {

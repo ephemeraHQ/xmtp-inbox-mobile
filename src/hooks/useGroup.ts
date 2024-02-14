@@ -1,5 +1,6 @@
 import {Group} from '@xmtp/react-native-sdk/build/lib/Group';
 import {useEffect, useState} from 'react';
+import {SupportedContentTypes} from '../consts/ContentTypes';
 import {useClient} from './useClient';
 
 export const useGroup = (id: string) => {
@@ -7,7 +8,7 @@ export const useGroup = (id: string) => {
     throw new Error('useGroup requires an id');
   }
   const {client} = useClient();
-  const [group, setGroup] = useState<Group<unknown> | null>(null);
+  const [group, setGroup] = useState<Group<SupportedContentTypes> | null>(null);
 
   useEffect(() => {
     const getGroup = async () => {

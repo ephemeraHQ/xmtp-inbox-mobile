@@ -96,7 +96,10 @@ function createImageData(size: number): number[] {
 
 export const Blockie: FC<BlockieProps> = ({address, size: propSize}) => {
   const {size, scale, bgcolor, color, spotcolor} = useMemo(() => {
-    return buildBlockieOpts({seed: address, size: propSize});
+    return buildBlockieOpts({
+      seed: address.toLocaleLowerCase(),
+      size: propSize,
+    });
   }, [address, propSize]);
 
   const imageData = useMemo(() => {

@@ -1,4 +1,5 @@
 import {useRoute} from '@react-navigation/native';
+import {useQueryClient} from '@tanstack/react-query';
 import {Box} from 'native-base';
 import React, {useCallback} from 'react';
 import {Asset} from 'react-native-image-picker';
@@ -8,7 +9,9 @@ import {GroupHeader} from '../components/GroupHeader';
 import {Screen} from '../components/common/Screen';
 import {useClient} from '../hooks/useClient';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
+import {ListMessages} from '../models/ListMessages';
 import {ScreenNames} from '../navigation/ScreenNames';
+import {QueryKeys} from '../queries/QueryKeys';
 import {saveConsent} from '../services/mmkvStorage';
 
 export const NewConversationScreen = () => {
@@ -16,6 +19,7 @@ export const NewConversationScreen = () => {
   const {params} = useRoute();
   const {addresses} = params as {addresses: string[]};
   const {client} = useClient();
+  const queryClient = useQueryClient();
 
   const onSend = useCallback(
     async (message: {text?: string; asset?: Asset}) => {
@@ -24,7 +28,23 @@ export const NewConversationScreen = () => {
         client?.conversations
           ?.newGroup(addresses)
           .then(group => {
-            group.send(message);
+            // The client is not notified of a group they create, so we add it to the list here
+            group.send(message as {text: string}).then(() => {
+              queryClient.setQueryData<ListMessages>(
+                [QueryKeys.List, client?.address],
+                prev => {
+                  return [
+                    {
+                      group,
+                      display: message.text ?? 'Image',
+                      lastMessageTime: Date.now(),
+                      isRequest: false,
+                    },
+                    ...(prev ?? []),
+                  ];
+                },
+              );
+            });
             replace(ScreenNames.Group, {id: group.id});
           })
           .catch(err => {
@@ -35,12 +55,12 @@ export const NewConversationScreen = () => {
           ?.newConversation(addresses[0])
           .then(conversation => {
             saveConsent(client?.address, addresses[0], true);
-            conversation.send(message);
+            conversation.send(message as {text: string});
             replace(ScreenNames.Conversation, {topic: conversation.topic});
           });
       }
     },
-    [addresses, client?.address, client?.conversations, replace],
+    [addresses, client?.address, client?.conversations, queryClient, replace],
   );
 
   return (

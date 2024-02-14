@@ -2,7 +2,7 @@ import {BlurView} from '@react-native-community/blur';
 import {Box, HStack, VStack} from 'native-base';
 import React, {FC, PropsWithChildren} from 'react';
 import {Platform, Pressable, StyleSheet} from 'react-native';
-import {useGroupContactInfo} from '../hooks/useGroupContactInfo';
+import {useGroupName} from '../hooks/useGroupName';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {colors} from '../theme/colors';
 import {GroupAvatarStack} from './GroupAvatarStack';
@@ -34,7 +34,7 @@ export const GroupHeader: FC<GroupHeaderProps> = ({
   onGroupPress,
 }) => {
   const {goBack} = useTypedNavigation();
-  const {data, groupDisplayName} = useGroupContactInfo(peerAddresses);
+  const groupDisplayName = useGroupName(peerAddresses);
 
   return (
     <HeaderContainer>
@@ -61,7 +61,10 @@ export const GroupHeader: FC<GroupHeaderProps> = ({
           </HStack> */}
         </VStack>
         <Pressable onPress={onGroupPress}>
-          <GroupAvatarStack style={{paddingRight: 30}} data={data} />
+          <GroupAvatarStack
+            style={{paddingRight: 30}}
+            addresses={peerAddresses}
+          />
         </Pressable>
       </HStack>
     </HeaderContainer>
