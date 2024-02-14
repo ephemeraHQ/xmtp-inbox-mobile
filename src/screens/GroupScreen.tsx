@@ -41,7 +41,7 @@ const getTimestamp = (timestamp: number) => {
 };
 
 const useData = (id: string) => {
-  const {data: messages} = useGroupMessages(id);
+  const {data: messages, refetch, isRefetching} = useGroupMessages(id);
   const {data: addresses} = useGroupParticipantsQuery(id);
   const {client} = useClient();
   const {group} = useGroup(id);
@@ -50,6 +50,8 @@ const useData = (id: string) => {
     name: group?.id,
     myAddress: client?.address,
     messages,
+    refetch,
+    isRefetching,
     group,
     client,
     addresses,
@@ -74,7 +76,8 @@ const getInitialConsentState = (
 export const GroupScreen = () => {
   const {params} = useRoute();
   const {id} = params as {id: string};
-  const {myAddress, messages, addresses, group, client} = useData(id);
+  const {myAddress, messages, addresses, group, client, refetch, isRefetching} =
+    useData(id);
   const [showReply, setShowReply] = useState(false);
   const [showGroupModal, setShowGroupModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -189,6 +192,8 @@ export const GroupScreen = () => {
                 data={messages}
                 renderItem={renderItem}
                 ListFooterComponent={<Box height={'100px'} />}
+                onRefresh={refetch}
+                refreshing={isRefetching}
               />
             </Box>
             {consent !== 'unknown' ? (

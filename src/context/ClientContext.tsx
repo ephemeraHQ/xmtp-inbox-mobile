@@ -60,7 +60,7 @@ export const ClientProvider: FC<PropsWithChildren> = ({children}) => {
           env: AppConfig.XMTP_ENV,
         })
           .then(newClient => {
-            setClient(newClient);
+            setClient(newClient as Client<SupportedContentTypes>);
             setLoading(false);
           })
           .catch(() => {
