@@ -5,6 +5,7 @@ on:
 jobs:
   android:
     runs-on: ubuntu-latest
+    environment: Dev
     steps:
       - uses: actions/checkout@v2
         with:
@@ -14,6 +15,15 @@ jobs:
           java-version: '17'
           distribution: 'zulu'
       - uses: actions/setup-node@v3
+      - name: Create .env file
+        run: |
+          echo XMTP_ENV=${{ env.XMTP_ENV }} >> .env
+          echo THRID_WEB_CLIENT_ID=${{ secrets.THRID_WEB_CLIENT_ID }} >> .env
+          echo AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} >> .env
+          echo AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} >> .env
+          echo AWS_REGION=${{ secrets.AWS_REGION }} >> .env
+          echo AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }} >> .env
+          echo AWS_S3_FOLDER=${{ secrets.AWS_S3_FOLDER }} >> .env
       - run: yarn
       - run: cd android && ./gradlew assembleRelease
       - name: Archive code coverage results
