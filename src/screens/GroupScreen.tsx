@@ -1,7 +1,7 @@
-import {useRoute} from '@react-navigation/native';
+import {useFocusEffect, useRoute} from '@react-navigation/native';
 import {DecodedMessage, RemoteAttachmentContent} from '@xmtp/react-native-sdk';
 import {Box, FlatList, HStack, Pressable, VStack} from 'native-base';
-import React, {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {KeyboardAvoidingView, ListRenderItem, Platform} from 'react-native';
 import {Asset} from 'react-native-image-picker';
 import {ConversationInput} from '../components/ConversationInput';
@@ -95,6 +95,12 @@ export const GroupScreen = () => {
     //   setConsent(currentConsent);
     // });
   }, [group]);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch]),
+  );
 
   const sendMessage = useCallback(
     async (payload: {text?: string; asset?: Asset}) => {
