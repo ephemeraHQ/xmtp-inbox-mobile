@@ -1,7 +1,7 @@
 import {BlurView} from '@react-native-community/blur';
 import {
   WalletConfig,
-  coinbaseWallet,
+  // coinbaseWallet,
   localWallet,
   metamaskWallet,
   useAddress,
@@ -29,7 +29,7 @@ const handleWalletInfo = () => {
 };
 
 const metamaskConfig = metamaskWallet();
-const coinbaseWalletConfig = coinbaseWallet();
+// const coinbaseWalletConfig = coinbaseWallet();
 const walletConnectConfig = walletConnect();
 const localWalletConfig = localWallet();
 
@@ -124,12 +124,12 @@ export const OnboardingConnectWalletScreen = () => {
             icon={'metamask'}
             testId={TestIds.ONBOARDING_CONNECT_METAMASK_OPTION_BUTTON}
           />
-          <WalletOptionButton
+          {/* <WalletOptionButton
             onPress={() => handleConnect(coinbaseWalletConfig)}
             title={translate('coinbase_wallet')}
             icon={'coinbase-wallet'}
             testId={TestIds.ONBOARDING_CONNECT_COINBASE_OPTION_BUTTON}
-          />
+          /> */}
           <WalletOptionButton
             onPress={() => handleConnect(localWalletConfig)}
             title={translate('guest_wallet')}
