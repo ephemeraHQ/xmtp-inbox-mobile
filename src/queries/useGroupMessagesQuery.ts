@@ -6,13 +6,13 @@ import {withRequestLogger} from '../utils/logger';
 import {QueryKeys} from './QueryKeys';
 
 export const useGroupMessagesQuery = (id: string) => {
-  const {group} = useGroup(id);
+  const {data: group} = useGroup(id);
 
   return useQuery<DecodedMessage<SupportedContentTypes>[]>({
     queryKey: [QueryKeys.GroupMessages, id],
     queryFn: async () => {
       if (!group) {
-        throw new Error('Group not found');
+        return [];
       }
       await withRequestLogger(group.sync(), {
         name: 'group_sync',

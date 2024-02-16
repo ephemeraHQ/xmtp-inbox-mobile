@@ -1,27 +1,18 @@
-import {Group} from '@xmtp/react-native-sdk/build/lib/Group';
-import {useEffect, useState} from 'react';
-import {SupportedContentTypes} from '../consts/ContentTypes';
+import {useQuery} from '@tanstack/react-query';
+import {QueryKeys} from '../queries/QueryKeys';
 import {useClient} from './useClient';
 
 export const useGroup = (id: string) => {
-  if (!id) {
-    throw new Error('useGroup requires an id');
-  }
   const {client} = useClient();
-  const [group, setGroup] = useState<Group<SupportedContentTypes> | null>(null);
 
-  useEffect(() => {
-    const getGroup = async () => {
+  return useQuery({
+    queryKey: [client?.address, QueryKeys.Group, id],
+    queryFn: async () => {
       const groups = await client?.conversations.listGroups();
-      const foundGroup = groups?.find(c => c.id === id);
-      if (foundGroup) {
-        setGroup(foundGroup);
-      }
-    };
-    getGroup();
-  }, [client, id]);
-
-  return {
-    group,
-  };
+      return groups || [];
+    },
+    select: data => {
+      return data.find(c => c.id === id);
+    },
+  });
 };
