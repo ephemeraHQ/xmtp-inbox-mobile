@@ -1,7 +1,7 @@
 import {useDisconnect, useSigner} from '@thirdweb-dev/react-native';
 import {Client} from '@xmtp/react-native-sdk';
 import {VStack} from 'native-base';
-import {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Alert, DeviceEventEmitter, Image} from 'react-native';
 import {Button} from '../components/common/Button';
 import {Icon} from '../components/common/Icon';

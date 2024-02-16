@@ -12,6 +12,7 @@ import {Text} from './common/Text';
 interface GroupHeaderProps {
   peerAddresses: string[];
   onGroupPress: () => void;
+  groupId: string;
 }
 
 const HeaderContainer: FC<PropsWithChildren> = ({children}) => {
@@ -32,9 +33,10 @@ const HeaderContainer: FC<PropsWithChildren> = ({children}) => {
 export const GroupHeader: FC<GroupHeaderProps> = ({
   peerAddresses,
   onGroupPress,
+  groupId,
 }) => {
   const {goBack} = useTypedNavigation();
-  const groupDisplayName = useGroupName(peerAddresses);
+  const groupDisplayName = useGroupName(peerAddresses, groupId);
 
   return (
     <HeaderContainer>
@@ -49,16 +51,13 @@ export const GroupHeader: FC<GroupHeaderProps> = ({
           <Icon name="chevron-left-thick" size={24} />
         </Pressable>
 
-        <VStack flex={1} paddingLeft={2} alignItems={'flex-end'}>
-          <Text typography="text-lg/heavy" numberOfLines={1}>
+        <VStack flex={1} paddingLeft={2}>
+          <Text
+            typography="text-lg/heavy"
+            numberOfLines={1}
+            textAlign={'center'}>
             {groupDisplayName}
           </Text>
-          {/* <HStack alignItems={'center'}>
-            <Icon name="ethereum" size={16} />
-            <Text typography="text-xs/mono medium" color={colors.textSecondary}>
-              {formatAddress(peerAddress)}
-            </Text>
-          </HStack> */}
         </VStack>
         <Pressable onPress={onGroupPress}>
           <GroupAvatarStack

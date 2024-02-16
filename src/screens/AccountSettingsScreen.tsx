@@ -28,7 +28,12 @@ import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
 import {ScreenNames} from '../navigation/ScreenNames';
 import {clearClientKeys} from '../services/encryptedStorage';
-import {clearAll} from '../services/mmkvStorage';
+import {
+  clearAll,
+  getEnsAvatar,
+  saveEnsAvatar,
+  saveEnsName,
+} from '../services/mmkvStorage';
 import {blues, colors, greens, reds} from '../theme/colors';
 import {formatAddress} from '../utils/formatAddress';
 
@@ -64,6 +69,12 @@ const useData = () => {
       display: ens ?? '',
       type: 'ENS',
     });
+    if (address) {
+      saveEnsName(address, ens);
+      if (avatarUrl) {
+        saveEnsAvatar(avatarUrl, ens);
+      }
+    }
   }
 
   if (AppConfig.LENS_ENABLED) {
@@ -88,7 +99,7 @@ const useData = () => {
     },
   ];
   return {
-    avatarUrl,
+    avatarUrl: getEnsAvatar(address ?? '') ?? avatarUrl,
     name: ens ?? (address ? formatAddress(address) : ''),
     addresses,
     wallets,
@@ -175,13 +186,15 @@ export const AccountSettingsScreen = () => {
           {
             text: translate('disconnect_wallet'),
             onPress: async () => {
-              if (!address) return;
+              if (!address) {
+                return;
+              }
               await clearClientKeys(address as `0x${string}`);
               setClient(null);
-              // handleLink('https://www.google.com')
               disconnect()
                 .then(() => {})
                 .catch();
+              clearAll();
             },
           },
         ],
@@ -309,9 +322,7 @@ export const AccountSettingsScreen = () => {
           address={address ?? ''}
         />
         <Button
-          onLongPress={() =>
-            __DEV__ ? Clipboard.setString(client?.address ?? '') : {}
-          }
+          onLongPress={() => Clipboard.setString(client?.address ?? '')}
           onPress={() => {
             if (AppConfig.MULTI_WALLET) {
               setWalletsShown(true);
@@ -333,6 +344,7 @@ export const AccountSettingsScreen = () => {
         <HStack flexWrap={'wrap'} justifyContent={'center'}>
           {addresses.map(address => (
             <Pill
+              key={address.display}
               size="sm"
               text={address.display}
               leftIconName={getIconName(address.type)}

@@ -18,6 +18,9 @@ enum MMKVKeys {
   // Conversations
   TOPIC_ADDRESSES = 'TOPIC_ADDRESSES',
   IMAGE_CACHE = 'IMAGE_CACHE',
+
+  // Groups
+  GROUP_NAME = 'GROUP_NAME',
 }
 
 const storage = new MMKV();
@@ -43,7 +46,7 @@ export const clearEnsName = (address: string) => {
 
 //#region Ens Avatar
 export const getEnsAvatarKey = (address: string) => {
-  return `${MMKVKeys.ENS_AVATAR}_${address}`;
+  return `${MMKVKeys.ENS_AVATAR}_${address.toLowerCase()}`;
 };
 
 export const saveEnsAvatar = (address: string, ensAvatar: string) => {
@@ -61,7 +64,7 @@ export const clearEnsAvatar = (address: string) => {
 
 //#region
 export const getMessageRequestsCountKey = (address: string) => {
-  return `${MMKVKeys.MESSAGE_REQUESTS_COUNT}_${address}`;
+  return `${MMKVKeys.MESSAGE_REQUESTS_COUNT}_${address.toLowerCase()}`;
 };
 
 export const saveMessageRequestsCount = (
@@ -82,7 +85,9 @@ export const clearMessageRequestsCount = (address: string) => {
 
 //#region Draft Text
 export const getDraftTextKey = (address: string, topic: string) => {
-  return `${MMKVKeys.DRAFT_TEXT}_${address}_${topic}`;
+  return `${
+    MMKVKeys.DRAFT_TEXT
+  }_${address.toLowerCase()}_${topic.toLowerCase()}`;
 };
 
 export const saveDraftText = (
@@ -105,7 +110,9 @@ export const clearDraftText = (address: string, topic: string) => {
 
 //#region Draft Image
 export const getDraftImageKey = (address: string, topic: string) => {
-  return `${MMKVKeys.DRAFT_IMAGE}_${address}_${topic}`;
+  return `${
+    MMKVKeys.DRAFT_IMAGE
+  }_${address.toLowerCase()}_${topic.toLowerCase()}`;
 };
 
 export const saveDraftImage = (
@@ -127,7 +134,9 @@ export const clearDraftImage = (address: string, topic: string) => {
 
 //#region Consent
 export const getConsentKey = (address: string, peerAddress: string) => {
-  return `${MMKVKeys.CONSENT}_${address}_${peerAddress}`;
+  return `${
+    MMKVKeys.CONSENT
+  }_${address.toLowerCase()}_${peerAddress.toLowerCase()}`;
 };
 
 export const saveConsent = (
@@ -149,7 +158,7 @@ export const clearConsent = (address: string, peerAddress: string) => {
 
 //#region Topic Addresses
 export const getTopicAddressesKey = (topic: string) => {
-  return `${MMKVKeys.TOPIC_ADDRESSES}_${topic}`;
+  return `${MMKVKeys.TOPIC_ADDRESSES}_${topic.toLowerCase()}`;
 };
 
 export const saveTopicAddresses = (topic: string, topicAddresses: string[]) => {
@@ -189,3 +198,27 @@ export const clearImageCache = (uri: string) => {
   return storage.delete(getImageCacheKey(uri));
 };
 // #endregion
+
+// #region Group Name
+
+export const getGroupNameKey = (address: string, groupId: string) => {
+  return `${MMKVKeys.GROUP_NAME}_${address}_${groupId}`;
+};
+
+export const saveGroupName = (
+  address: string,
+  groupId: string,
+  groupName: string,
+) => {
+  return storage.set(getGroupNameKey(address, groupId), groupName);
+};
+
+export const getGroupName = (address: string, groupId: string) => {
+  return storage.getString(getGroupNameKey(address, groupId));
+};
+
+export const clearGroupName = (address: string, groupId: string) => {
+  return storage.delete(getGroupNameKey(address, groupId));
+};
+
+// #endregion Group Name

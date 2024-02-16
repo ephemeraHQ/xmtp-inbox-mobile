@@ -1,11 +1,13 @@
 import {Group} from '@xmtp/react-native-sdk/build/lib/Group';
-import {HStack, Pressable, VStack} from 'native-base';
-import React, {FC, useCallback} from 'react';
-import {DeviceEventEmitter} from 'react-native';
+import {HStack, Input, Pressable, VStack} from 'native-base';
+import React, {FC, useCallback, useState} from 'react';
+import {Alert, DeviceEventEmitter} from 'react-native';
 import {AppConfig} from '../../consts/AppConfig';
 import {EventEmitterEvents} from '../../consts/EventEmitters';
+import {useClient} from '../../hooks/useClient';
 import {useContactInfo} from '../../hooks/useContactInfo';
 import {translate} from '../../i18n';
+import {getGroupName, saveGroupName} from '../../services/mmkvStorage';
 import {colors} from '../../theme/colors';
 import {AvatarWithFallback} from '../AvatarWithFallback';
 import {Button} from '../common/Button';
@@ -32,7 +34,7 @@ const GroupParticipant: React.FC<{
       justifyContent={'center'}
       marginY={AppConfig.LENS_ENABLED ? 0 : 2}>
       <HStack alignItems={'center'}>
-        <Text typography="text-xl/bold" textAlign={'center'}>
+        <Text typography="text-title/bold" textAlign={'center'}>
           {displayName}
         </Text>
         <AvatarWithFallback
@@ -77,33 +79,70 @@ export const GroupInfoModal: FC<GroupInfoModalProps> = ({
   onPlusPress,
   group,
 }) => {
+  const {client} = useClient();
+  const [editing, setEditing] = useState(false);
+  const [groupName, setGroupName] = useState('');
   const onRemovePress = useCallback(
     async (address: string) => {
-      await group.removeMembers([address]);
-      DeviceEventEmitter.emit(
-        `${EventEmitterEvents.GROUP_CHANGED}_${group.id}`,
-      );
-      hide();
+      try {
+        await group.removeMembers([address]);
+        DeviceEventEmitter.emit(
+          `${EventEmitterEvents.GROUP_CHANGED}_${group.id}`,
+        );
+        hide();
+      } catch (err: any) {
+        Alert.alert(translate('error_group_remove'), err?.message);
+        console.error(err);
+      }
     },
     [group, hide],
   );
 
+  const onBlur = useCallback(() => {
+    if (!groupName) {
+      return;
+    }
+    saveGroupName(client?.address ?? '', group.id, groupName);
+    setEditing(false);
+    setGroupName('');
+  }, [client?.address, group.id, groupName]);
+
   return (
     <Modal onBackgroundPress={hide} isOpen={shown}>
       <VStack alignItems={'center'} justifyContent={'center'}>
-        <HStack w={'100%'} alignItems={'center'} justifyContent={'center'}>
-          <Text typography="text-title/bold" textAlign={'center'}>
-            {translate('group')}
-          </Text>
-          <Pressable onPress={onPlusPress} alignSelf={'flex-end'}>
-            <Icon
-              name={'plus-circle'}
-              type={'mini'}
-              color={colors.actionPrimary}
-              style={{marginLeft: 8}}
-            />
-          </Pressable>
-        </HStack>
+        {editing ? (
+          <Input
+            value={groupName}
+            onChangeText={setGroupName}
+            onBlur={onBlur}
+            autoFocus
+            placeholder={translate('group_name')}
+            rightElement={
+              <Pressable onPress={onBlur}>
+                <Icon
+                  name={'check'}
+                  type={'mini'}
+                  color={colors.actionPrimary}
+                />
+              </Pressable>
+            }
+          />
+        ) : (
+          <HStack w={'100%'} alignItems={'center'} justifyContent={'center'}>
+            <Text typography="text-xl/bold" textAlign={'center'}>
+              {getGroupName(client?.address ?? '', group.id) ??
+                translate('group')}
+            </Text>
+            <Pressable onPress={() => setEditing(true)} alignSelf={'flex-end'}>
+              <Icon
+                name={'pencil-square'}
+                type={'mini'}
+                color={colors.actionPrimary}
+                style={{marginLeft: 8}}
+              />
+            </Pressable>
+          </HStack>
+        )}
         {addresses?.map(address => (
           <GroupParticipant
             key={address}
@@ -111,6 +150,9 @@ export const GroupInfoModal: FC<GroupInfoModalProps> = ({
             onRemove={onRemovePress}
           />
         ))}
+        <Button onPress={onPlusPress} width={'200px'}>
+          {translate('add_to_group')}
+        </Button>
       </VStack>
     </Modal>
   );

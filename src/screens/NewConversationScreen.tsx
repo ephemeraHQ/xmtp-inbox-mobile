@@ -1,7 +1,8 @@
 import {useRoute} from '@react-navigation/native';
 import {useQueryClient} from '@tanstack/react-query';
 import {Box} from 'native-base';
-import {useCallback} from 'react';
+import React, {useCallback} from 'react';
+import {Alert, Platform} from 'react-native';
 import {Asset} from 'react-native-image-picker';
 import {ConversationHeader} from '../components/ConversationHeader';
 import {ConversationInput} from '../components/ConversationInput';
@@ -25,6 +26,11 @@ export const NewConversationScreen = () => {
     async (message: {text?: string; asset?: Asset}) => {
       // TODO: Error Handling
       if (addresses.length !== 1) {
+        const canMessage = await client?.canGroupMessage(addresses);
+        if (!canMessage && Platform.OS === 'android') {
+          Alert.alert('You do not have permission to message this group');
+          return;
+        }
         client?.conversations
           ?.newGroup(addresses)
           .then(group => {
@@ -55,6 +61,11 @@ export const NewConversationScreen = () => {
             console.log('error on new', err);
           });
       } else {
+        const canMessage = await client?.canMessage(addresses[0]);
+        if (!canMessage) {
+          Alert.alert('You do not have permission to message this group');
+          return;
+        }
         client?.conversations
           ?.newConversation(addresses[0])
           .then(conversation => {
@@ -64,7 +75,7 @@ export const NewConversationScreen = () => {
           });
       }
     },
-    [addresses, client?.address, client?.conversations, queryClient, replace],
+    [addresses, client, queryClient, replace],
   );
 
   return (
@@ -75,7 +86,11 @@ export const NewConversationScreen = () => {
       }}>
       <Box flexGrow={1} paddingBottom={'20px'}>
         {addresses.length > 1 ? (
-          <GroupHeader peerAddresses={addresses} onGroupPress={() => {}} />
+          <GroupHeader
+            peerAddresses={addresses}
+            onGroupPress={() => {}}
+            groupId="new_convo"
+          />
         ) : (
           <ConversationHeader
             peerAddress={addresses[0]}

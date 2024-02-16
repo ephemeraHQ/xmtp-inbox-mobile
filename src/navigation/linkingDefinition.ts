@@ -3,7 +3,7 @@ import {ScreenNames} from './ScreenNames';
 import {RootStackParams} from './StackParams';
 
 export const linkingDefinition: LinkingOptions<RootStackParams> = {
-  prefixes: ['xmtp://'],
+  prefixes: ['xmtp-chat://'],
   config: {
     screens: {
       [ScreenNames.OnboardingConnectWallet]: 'onboarding_connect_wallet',
@@ -11,7 +11,12 @@ export const linkingDefinition: LinkingOptions<RootStackParams> = {
       [ScreenNames.Account]: 'account',
       [ScreenNames.ConversationList]: 'conversation_list',
       [ScreenNames.Conversation]: 'conversation/:topic',
-      [ScreenNames.NewConversation]: 'new_conversation/:address',
+      [ScreenNames.NewConversation]: {
+        path: 'new_conversation/:addresses',
+        parse: {
+          addresses: addresses => addresses.split(','),
+        },
+      },
       [ScreenNames.Discover]: 'discover',
       [ScreenNames.Search]: 'search',
       [ScreenNames.QRCode]: 'qr_code',

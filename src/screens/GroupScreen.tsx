@@ -13,15 +13,16 @@ import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
 import {AddGroupParticipantModal} from '../components/modals/AddGroupParticipantModal';
 import {GroupInfoModal} from '../components/modals/GroupInfoModal';
-import {SupportedContentTypes} from '../consts/ContentTypes';
+import {ContentTypes, SupportedContentTypes} from '../consts/ContentTypes';
 import {useClient} from '../hooks/useClient';
 import {useGroup} from '../hooks/useGroup';
 import {useGroupMessages} from '../hooks/useGroupMessages';
 import {translate} from '../i18n';
 import {useGroupParticipantsQuery} from '../queries/useGroupParticipantsQuery';
-import {getConsent, saveConsent} from '../services/mmkvStorage';
+import {getConsent, getEnsName, saveConsent} from '../services/mmkvStorage';
 import {AWSHelper} from '../services/s3';
 import {colors} from '../theme/colors';
+import {formatAddress} from '../utils/formatAddress';
 
 const getTimestamp = (timestamp: number) => {
   // If today, return hours and minutes if not return date
@@ -145,12 +146,30 @@ export const GroupScreen = () => {
       <Pressable>
         <Box marginLeft={6} marginRight={6} marginY={2} flexShrink={1}>
           <VStack>
+            {!isMe && (
+              <VStack justifyItems={'flex-end'}>
+                <Text
+                  color={colors.primaryN200}
+                  textAlign={'end'}
+                  typography="text-xs/semi-bold"
+                  alignSelf={'flex-start'}>
+                  {getEnsName(item.senderAddress) ??
+                    formatAddress(item.senderAddress)}
+                </Text>
+              </VStack>
+            )}
             <ConversationMessageContent message={item} isMe={isMe} />
             <Text
               flexShrink={1}
               color={colors.primaryN200}
               typography="text-xs/semi-bold"
-              alignSelf={isMe ? 'flex-end' : 'flex-start'}>
+              alignSelf={
+                item.contentTypeId === ContentTypes.GroupMembershipChange
+                  ? 'center'
+                  : isMe
+                  ? 'flex-end'
+                  : 'flex-start'
+              }>
               {getTimestamp(item.sent)}
             </Text>
           </VStack>
@@ -184,6 +203,7 @@ export const GroupScreen = () => {
         }}>
         <Box backgroundColor={colors.backgroundPrimary} paddingBottom={10}>
           <GroupHeader
+            groupId={group?.id ?? ''}
             peerAddresses={addresses ?? []}
             onGroupPress={() => setShowGroupModal(true)}
           />

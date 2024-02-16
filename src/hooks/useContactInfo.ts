@@ -1,6 +1,12 @@
 import {useSupportedChains, useWalletContext} from '@thirdweb-dev/react-native';
 import {useEffect, useState} from 'react';
-import {getEnsAvatar, getEnsName, saveEnsName} from '../services/mmkvStorage';
+import {
+  clearEnsAvatar,
+  getEnsAvatar,
+  getEnsName,
+  saveEnsAvatar,
+  saveEnsName,
+} from '../services/mmkvStorage';
 import {formatAddress} from '../utils/formatAddress';
 import {getEnsInfo} from '../utils/getEnsInfo';
 
@@ -31,6 +37,12 @@ export const useContactInfo = (address: string) => {
     getEnsInfo(address, supportedChains, clientId)
       .then(({ens, avatarUrl}) => {
         if (ens) {
+          saveEnsName(address, ens);
+          if (avatarUrl) {
+            saveEnsAvatar(address, avatarUrl);
+          } else {
+            clearEnsAvatar(address);
+          }
           setState({
             displayName: ens ?? formatAddress(address),
             loading: false,

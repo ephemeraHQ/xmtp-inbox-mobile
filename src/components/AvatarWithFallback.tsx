@@ -18,11 +18,13 @@ export const AvatarWithFallback: FC<AvatarWithFallbackProps> = ({
 }) => {
   if (avatarUri) {
     return (
-      <Avatar
-        width={`${size}px`}
-        height={`${size}px`}
-        source={{uri: avatarUri}}
-      />
+      <Box style={style}>
+        <Avatar
+          width={`${size}px`}
+          height={`${size}px`}
+          source={{uri: avatarUri}}
+        />
+      </Box>
     );
   }
   if (address) {
