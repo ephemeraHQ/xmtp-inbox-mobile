@@ -178,10 +178,10 @@ export const AccountSettingsScreen = () => {
               if (!address) return;
               await clearClientKeys(address as `0x${string}`);
               setClient(null);
-              // handleLink('https://www.google.com')
               disconnect()
                 .then(() => {})
                 .catch();
+              clearAll();
             },
           },
         ],

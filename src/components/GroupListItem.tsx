@@ -24,7 +24,7 @@ export const GroupListItem: FC<GroupListItemProps> = ({
 }) => {
   const {data: addresses} = useGroupParticipantsQuery(group?.id);
   const {navigate} = useTypedNavigation();
-  const groupName = useGroupName(addresses ?? []);
+  const groupName = useGroupName(addresses ?? [], group?.id);
 
   return (
     <Pressable

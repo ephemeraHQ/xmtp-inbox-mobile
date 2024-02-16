@@ -2,6 +2,7 @@ import {Group} from '@xmtp/react-native-sdk/build/lib/Group';
 import {Box, FlatList, HStack, Input, Pressable, VStack} from 'native-base';
 import React, {FC, useCallback, useMemo, useState} from 'react';
 import {
+  Alert,
   DeviceEventEmitter,
   ListRenderItem,
   useWindowDimensions,
@@ -73,9 +74,16 @@ export const AddGroupParticipantModal: FC<GroupInfoModalProps> = ({
   const contacts = useContacts();
 
   const onAdd = useCallback(async () => {
-    await group.addMembers(participants);
-    DeviceEventEmitter.emit(`${EventEmitterEvents.GROUP_CHANGED}_${group.id}`);
-    hide();
+    try {
+      await group.addMembers(participants);
+      DeviceEventEmitter.emit(
+        `${EventEmitterEvents.GROUP_CHANGED}_${group.id}`,
+      );
+      hide();
+    } catch (err: any) {
+      Alert.alert(translate('error_group_adding'), err?.message);
+      console.error(err);
+    }
   }, [participants, group, hide]);
 
   const onItemPress = useCallback(

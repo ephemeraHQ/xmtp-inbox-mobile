@@ -2,6 +2,7 @@ import {getAddress, isAddress} from 'ethers/lib/utils';
 import {Box, HStack, Input, Pressable, SectionList, VStack} from 'native-base';
 import React, {FC, useCallback, useEffect, useMemo, useState} from 'react';
 import {SectionListRenderItem} from 'react-native';
+import {useEnsAddress} from 'wagmi';
 import {AvatarWithFallback} from '../components/AvatarWithFallback';
 import {Button} from '../components/common/Button';
 import {Icon} from '../components/common/Icon';
@@ -14,11 +15,12 @@ import {useContactInfo} from '../hooks/useContactInfo';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
 import {ScreenNames} from '../navigation/ScreenNames';
-import {getConsent} from '../services/mmkvStorage';
+import {getConsent, getEnsNameKey} from '../services/mmkvStorage';
 import {colors} from '../theme/colors';
 import {formatAddress} from '../utils/formatAddress';
 
 interface Contact {
+  displayName: string;
   address: string;
   isConnected?: boolean;
   topic?: string;
@@ -34,6 +36,8 @@ const useData = () => {
       client?.conversations?.list().then(list => {
         const recentConvos = list.slice(0, 3).map(it => {
           return {
+            displayName:
+              getEnsNameKey(it.peerAddress) ?? formatAddress(it.peerAddress),
             address: it.peerAddress,
             isConnected: getConsent(it.clientAddress, it.peerAddress),
             topic: it.topic,
@@ -56,6 +60,9 @@ const useData = () => {
       list?.forEach(async item => {
         if (item.permissionType === 'allowed') {
           contactList.push({
+            displayName:
+              getEnsNameKey(item.value) ??
+              formatAddress(getAddress(item.value)),
             address: getAddress(item.value),
             isConnected: true,
             topic: convoMap.get(item.value),
@@ -140,7 +147,11 @@ export const SearchScreen = () => {
     goBack();
     navigate(ScreenNames.NewConversation, {addresses: participants});
   }, [participants, navigate, goBack]);
-
+  const {data: ensAddress} = useEnsAddress({
+    name: searchText,
+    chainId: 1,
+    // provider: useChain(1),
+  });
   const isValidAddress = useMemo(() => isAddress(searchText), [searchText]);
 
   const items = useMemo(() => {
@@ -173,16 +184,24 @@ export const SearchScreen = () => {
         contact.address.toLowerCase().includes(searchText.toLowerCase()),
     );
 
+    const searchData = [];
+    if (isValidAddress) {
+      searchData.push({
+        displayName: formatAddress(searchText),
+        address: searchText,
+      });
+    }
+    if (ensAddress) {
+      searchData.push({
+        displayName: searchText,
+        address: ensAddress,
+      });
+    }
+
     return [
       {
         title: '',
-        data: searchText
-          ? [
-              {
-                address: searchText,
-              },
-            ]
-          : [],
+        data: searchData,
       },
       {
         title: translate('recents'),
@@ -193,7 +212,7 @@ export const SearchScreen = () => {
         data: filteredContacts,
       },
     ];
-  }, [recents, contacts, searchText]);
+  }, [recents, contacts, isValidAddress, ensAddress, searchText]);
 
   const renderItem: SectionListRenderItem<Contact, {title: string}> = ({
     item,
