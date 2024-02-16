@@ -71,5 +71,7 @@
   "discover": "Discover",
 
   "valid_address": "Valid Ethereum Address",
-  "message_requests_from_new_addresses": "Message requests from addresses you’ve never interacted with show up here"
+  "message_requests_from_new_addresses": "Message requests from addresses you’ve never interacted with show up here",
+
+  "wallet_error": "Wallet Error"
 }

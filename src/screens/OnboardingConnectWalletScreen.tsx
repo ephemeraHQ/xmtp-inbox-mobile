@@ -1,5 +1,6 @@
 import {BlurView} from '@react-native-community/blur';
 import {
+  WalletConfig,
   coinbaseWallet,
   localWallet,
   metamaskWallet,
@@ -8,8 +9,8 @@ import {
   walletConnect,
 } from '@thirdweb-dev/react-native';
 import {VStack} from 'native-base';
-import React, {useEffect, useState} from 'react';
-import {Image, Linking} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Alert, Image, Linking} from 'react-native';
 import {WalletOptionButton} from '../components/WalletOptionButton';
 import {Button} from '../components/common/Button';
 import {Icon} from '../components/common/Icon';
@@ -42,6 +43,18 @@ export const OnboardingConnectWalletScreen = () => {
       navigate(ScreenNames.OnboardingEnableIdentity);
     }
   }, [address, navigate]);
+
+  const handleConnect = useCallback(
+    async (config: WalletConfig<any>) => {
+      try {
+        await connect(config);
+        setShowModal(false);
+      } catch (error: any) {
+        Alert.alert(translate('wallet_error'), error?.message);
+      }
+    },
+    [connect],
+  );
 
   return (
     <>
@@ -93,37 +106,25 @@ export const OnboardingConnectWalletScreen = () => {
             {translate('you_can_connect_or_create')}
           </Text>
           <WalletOptionButton
-            onPress={async () => {
-              await connect(walletConnectConfig);
-              setShowModal(false);
-            }}
+            onPress={() => handleConnect(walletConnectConfig)}
             title={translate('walletconnect')}
             icon={'walletconnect'}
             testId={TestIds.ONBOARDING_CONNECT_WALLET_CONNECT_OPTION_BUTTON}
           />
           <WalletOptionButton
-            onPress={async () => {
-              await connect(metamaskConfig);
-              setShowModal(false);
-            }}
+            onPress={() => handleConnect(metamaskConfig)}
             title={translate('metamask')}
             icon={'metamask'}
             testId={TestIds.ONBOARDING_CONNECT_METAMASK_OPTION_BUTTON}
           />
           <WalletOptionButton
-            onPress={async () => {
-              await connect(coinbaseWalletConfig);
-              setShowModal(false);
-            }}
+            onPress={() => handleConnect(coinbaseWalletConfig)}
             title={translate('coinbase_wallet')}
             icon={'coinbase-wallet'}
             testId={TestIds.ONBOARDING_CONNECT_COINBASE_OPTION_BUTTON}
           />
           <WalletOptionButton
-            onPress={async () => {
-              await connect(localWalletConfig);
-              setShowModal(false);
-            }}
+            onPress={() => handleConnect(localWalletConfig)}
             title={translate('guest_wallet')}
             icon={'wallet'}
             testId={TestIds.ONBOARDING_CONNECT_GUEST_OPTION_BUTTON}

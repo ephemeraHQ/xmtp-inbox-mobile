@@ -1,8 +1,8 @@
 import {useDisconnect, useSigner} from '@thirdweb-dev/react-native';
 import {Client} from '@xmtp/react-native-sdk';
 import {VStack} from 'native-base';
-import React, {useCallback, useEffect, useState} from 'react';
-import {DeviceEventEmitter, Image} from 'react-native';
+import {useCallback, useEffect, useState} from 'react';
+import {Alert, DeviceEventEmitter, Image} from 'react-native';
 import {Button} from '../components/common/Button';
 import {Icon} from '../components/common/Icon';
 import {Screen} from '../components/common/Screen';
@@ -69,8 +69,9 @@ export const OnboardingEnableIdentityScreen = () => {
         const address = await signer.getAddress();
         saveClientKeys(address as `0x${string}`, keys);
         setClient(client);
-      } catch (e) {
+      } catch (e: any) {
         console.log('Error creating client', e);
+        Alert.alert('Error creating client', e?.message);
       }
     };
     startClientCreation();
