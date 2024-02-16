@@ -1,7 +1,7 @@
 import {useRoute} from '@react-navigation/native';
 import {useQueryClient} from '@tanstack/react-query';
 import {Box} from 'native-base';
-import React, {useCallback} from 'react';
+import {useCallback} from 'react';
 import {Asset} from 'react-native-image-picker';
 import {ConversationHeader} from '../components/ConversationHeader';
 import {ConversationInput} from '../components/ConversationInput';
@@ -29,23 +29,27 @@ export const NewConversationScreen = () => {
           ?.newGroup(addresses)
           .then(group => {
             // The client is not notified of a group they create, so we add it to the list here
-            group.send(message as {text: string}).then(() => {
-              queryClient.setQueryData<ListMessages>(
-                [QueryKeys.List, client?.address],
-                prev => {
-                  return [
-                    {
-                      group,
-                      display: message.text ?? 'Image',
-                      lastMessageTime: Date.now(),
-                      isRequest: false,
-                    },
-                    ...(prev ?? []),
-                  ];
-                },
-              );
-            });
-            replace(ScreenNames.Group, {id: group.id});
+            group
+              .send(message as {text: string})
+              .then(() => {
+                queryClient.setQueryData<ListMessages>(
+                  [QueryKeys.List, client?.address],
+                  prev => {
+                    return [
+                      {
+                        group,
+                        display: message.text ?? 'Image',
+                        lastMessageTime: Date.now(),
+                        isRequest: false,
+                      },
+                      ...(prev ?? []),
+                    ];
+                  },
+                );
+              })
+              .finally(() => {
+                replace(ScreenNames.Group, {id: group.id});
+              });
           })
           .catch(err => {
             console.log('error on new', err);

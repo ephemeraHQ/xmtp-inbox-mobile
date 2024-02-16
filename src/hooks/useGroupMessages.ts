@@ -13,7 +13,7 @@ export const useGroupMessages = (id: string) => {
   useEffect(() => {
     const cancelStream = group?.streamGroupMessages(async message => {
       queryClient.setQueryData<DecodedMessage<SupportedContentTypes>[]>(
-        [QueryKeys.GroupMessages, id],
+        [QueryKeys.GroupMessages, group?.id],
         prevMessages => [message, ...(prevMessages ?? [])],
       );
       if (message.contentTypeId === ContentTypes.GroupMembershipChange) {
@@ -28,7 +28,7 @@ export const useGroupMessages = (id: string) => {
     return () => {
       cancelStream?.();
     };
-  }, [group, queryClient, id]);
+  }, [group, queryClient]);
 
   return useGroupMessagesQuery(id);
 };

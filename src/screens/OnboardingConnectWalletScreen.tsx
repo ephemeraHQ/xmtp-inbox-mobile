@@ -11,6 +11,7 @@ import {
 import {VStack} from 'native-base';
 import React, {useCallback, useEffect, useState} from 'react';
 import {Alert, Image, Linking} from 'react-native';
+import Config from 'react-native-config';
 import {WalletOptionButton} from '../components/WalletOptionButton';
 import {Button} from '../components/common/Button';
 import {Icon} from '../components/common/Icon';
@@ -43,6 +44,12 @@ export const OnboardingConnectWalletScreen = () => {
       navigate(ScreenNames.OnboardingEnableIdentity);
     }
   }, [address, navigate]);
+
+  useEffect(() => {
+    if (!Config.THRID_WEB_CLIENT_ID) {
+      Alert.alert('Error', 'Please set the THRID_WEB_CLIENT_ID in .env file');
+    }
+  }, []);
 
   const handleConnect = useCallback(
     async (config: WalletConfig<any>) => {
