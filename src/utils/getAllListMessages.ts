@@ -44,7 +44,7 @@ export const getAllListMessages = async (client?: Client<any> | null) => {
               name: 'conversation_consent',
             }),
           ]);
-          const content = messages[0].content();
+          const content = messages?.[0]?.content();
           return {
             conversation,
             display:
@@ -60,11 +60,11 @@ export const getAllListMessages = async (client?: Client<any> | null) => {
           const messages = await withRequestLogger(group.messages(), {
             name: 'group_messages',
           });
-          const content = messages?.[0].content();
+          const content = messages?.[0]?.content();
           const display =
             typeof content === 'string'
               ? content
-              : messages?.[0].fallback ?? '';
+              : messages?.[0]?.fallback ?? '';
           return {
             group,
             display,

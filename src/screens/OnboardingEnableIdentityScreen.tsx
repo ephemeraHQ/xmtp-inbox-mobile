@@ -51,7 +51,6 @@ export const OnboardingEnableIdentityScreen = () => {
   useEffect(() => {
     const startClientCreation = async () => {
       if (!signer) {
-        Alert.alert('Error', 'No signer found');
         return;
       }
       try {
@@ -59,11 +58,11 @@ export const OnboardingEnableIdentityScreen = () => {
           enableAlphaMls: true,
           env: AppConfig.XMTP_ENV,
           preEnableIdentityCallback: async () => {
+            setStep('ENABLE_IDENTITY');
             await enableIdentityPromise();
           },
           preCreateIdentityCallback: async () => {
             await createIdentityPromise();
-            setStep('ENABLE_IDENTITY');
           },
           codecs: supportedContentTypes,
         });
