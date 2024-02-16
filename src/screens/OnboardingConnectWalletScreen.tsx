@@ -1,39 +1,35 @@
-import {BlurView} from '@react-native-community/blur';
+import { BlurView } from '@react-native-community/blur';
 import {
   WalletConfig,
-  coinbaseWallet,
   localWallet,
   metamaskWallet,
   useAddress,
   useConnect,
-  walletConnect,
 } from '@thirdweb-dev/react-native';
-import {VStack} from 'native-base';
-import React, {useCallback, useEffect, useState} from 'react';
-import {Alert, Image, Linking} from 'react-native';
-import {WalletOptionButton} from '../components/WalletOptionButton';
-import {Button} from '../components/common/Button';
-import {Icon} from '../components/common/Icon';
-import {Modal} from '../components/common/Modal';
-import {Screen} from '../components/common/Screen';
-import {Text} from '../components/common/Text';
-import {TestIds} from '../consts/TestIds';
-import {useTypedNavigation} from '../hooks/useTypedNavigation';
-import {translate} from '../i18n';
-import {ScreenNames} from '../navigation/ScreenNames';
-import {colors} from '../theme/colors';
+import { VStack } from 'native-base';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Alert, Image, Linking } from 'react-native';
+import { WalletOptionButton } from '../components/WalletOptionButton';
+import { Button } from '../components/common/Button';
+import { Icon } from '../components/common/Icon';
+import { Modal } from '../components/common/Modal';
+import { Screen } from '../components/common/Screen';
+import { Text } from '../components/common/Text';
+import { TestIds } from '../consts/TestIds';
+import { useTypedNavigation } from '../hooks/useTypedNavigation';
+import { translate } from '../i18n';
+import { ScreenNames } from '../navigation/ScreenNames';
+import { colors } from '../theme/colors';
 
 const handleWalletInfo = () => {
   Linking.openURL('https://ethereum.org/en/wallets/find-wallet');
 };
 
 const metamaskConfig = metamaskWallet();
-const coinbaseWalletConfig = coinbaseWallet();
-const walletConnectConfig = walletConnect();
 const localWalletConfig = localWallet();
 
 export const OnboardingConnectWalletScreen = () => {
-  const {navigate} = useTypedNavigation();
+  const { navigate } = useTypedNavigation();
   const address = useAddress();
   const connect = useConnect();
   const [showModal, setShowModal] = useState(false);
@@ -61,13 +57,13 @@ export const OnboardingConnectWalletScreen = () => {
       <Screen testId={TestIds.ONBOARDING_CONNECT_WALLET_SCREEN}>
         <Image
           source={require('../../assets/images/XmtpOrangeLogo.png')}
-          style={{justifyContent: 'center', alignItems: 'center'}}
+          style={{ justifyContent: 'center', alignItems: 'center' }}
         />
         <BlurView
           blurType="light"
           blurAmount={10}
           blurRadius={10}
-          style={{height: 125, marginTop: -80, width: '100%'}}
+          style={{ height: 125, marginTop: -80, width: '100%' }}
         />
         <VStack
           position={'absolute'}
@@ -106,22 +102,10 @@ export const OnboardingConnectWalletScreen = () => {
             {translate('you_can_connect_or_create')}
           </Text>
           <WalletOptionButton
-            onPress={() => handleConnect(walletConnectConfig)}
-            title={translate('walletconnect')}
-            icon={'walletconnect'}
-            testId={TestIds.ONBOARDING_CONNECT_WALLET_CONNECT_OPTION_BUTTON}
-          />
-          <WalletOptionButton
             onPress={() => handleConnect(metamaskConfig)}
             title={translate('metamask')}
             icon={'metamask'}
             testId={TestIds.ONBOARDING_CONNECT_METAMASK_OPTION_BUTTON}
-          />
-          <WalletOptionButton
-            onPress={() => handleConnect(coinbaseWalletConfig)}
-            title={translate('coinbase_wallet')}
-            icon={'coinbase-wallet'}
-            testId={TestIds.ONBOARDING_CONNECT_COINBASE_OPTION_BUTTON}
           />
           <WalletOptionButton
             onPress={() => handleConnect(localWalletConfig)}
