@@ -1,7 +1,7 @@
 import {useFocusEffect, useRoute} from '@react-navigation/native';
 import {DecodedMessage, RemoteAttachmentContent} from '@xmtp/react-native-sdk';
 import {Box, FlatList, HStack, Pressable, VStack} from 'native-base';
-import {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {KeyboardAvoidingView, ListRenderItem, Platform} from 'react-native';
 import {Asset} from 'react-native-image-picker';
 import {ConversationInput} from '../components/ConversationInput';
@@ -44,7 +44,7 @@ const useData = (id: string) => {
   const {data: messages, refetch, isRefetching} = useGroupMessages(id);
   const {data: addresses} = useGroupParticipantsQuery(id);
   const {client} = useClient();
-  const {group} = useGroup(id);
+  const {data: group} = useGroup(id);
 
   return {
     name: group?.id,

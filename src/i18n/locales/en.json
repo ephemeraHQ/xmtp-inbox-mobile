@@ -73,5 +73,9 @@
   "valid_address": "Valid Ethereum Address",
   "message_requests_from_new_addresses": "Message requests from addresses you’ve never interacted with show up here",
 
-  "wallet_error": "Wallet Error"
+  "wallet_error": "Wallet Error",
+  "group_add_single": "%{initiatedByAddress} added %{address}",
+  "group_add_plural": "%{initiatedByAddress} added %{addressCount} members",
+  "group_remove_single": "%{initiatedByAddress} removed %{address}",
+  "group_remove_plural": "%{initiatedByAddress} removed %{addressCount} members"
 }

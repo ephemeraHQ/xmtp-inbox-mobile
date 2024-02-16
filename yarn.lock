@@ -9515,6 +9515,25 @@
   resolved "https://registry.yarnpkg.com/@xmldom/xmldom/-/xmldom-0.7.13.tgz#ff34942667a4e19a9f4a0996a76814daac364cf3"
   integrity sha512-lm2GW5PkosIzccsaZIz7tp8cPADSIlIHWDFTR1N0SzfinhhYgeIQjFMz4rYzanCScr3DqQLeomUDArp6MWKm+g==
 
+"@xmtp/frames-client@^0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@xmtp/frames-client/-/frames-client-0.3.2.tgz#6c860e11cbf7a63aa956543b4941ee72738ed211"
+  integrity sha512-61rxA7YcNUUKndQ9e5X44LNVwWJCrrZR6sBGOWLckfMK00LqRasoiLgom1PlR34c17a59PPZmagxoNQ2QCto7A==
+  dependencies:
+    "@noble/hashes" "^1.3.3"
+    "@xmtp/proto" "3.41.0-beta.5"
+    long "^5.2.3"
+
+"@xmtp/proto@3.41.0-beta.5":
+  version "3.41.0-beta.5"
+  resolved "https://registry.yarnpkg.com/@xmtp/proto/-/proto-3.41.0-beta.5.tgz#fe6d2f4f0a37e69c18c516ed0796a48fb16574db"
+  integrity sha512-vx5zqLpAVPjTEdyqY/woXrgvWMKjbTwwco+x9WE+T1iVlv+472yp2DwFJRLpfeQByC1cHl7XQyuO2Q+8t8HL4Q==
+  dependencies:
+    long "^5.2.0"
+    protobufjs "^7.0.0"
+    rxjs "^7.8.0"
+    undici "^5.8.1"
+
 "@xmtp/proto@^3.25.0":
   version "3.41.0"
   resolved "https://registry.yarnpkg.com/@xmtp/proto/-/proto-3.41.0.tgz#e21d28278f4ead3db2d719732bdd89875356ad72"
@@ -9525,10 +9544,10 @@
     rxjs "^7.8.0"
     undici "^5.8.1"
 
-"@xmtp/react-native-sdk@1.27.0-beta.14":
-  version "1.27.0-beta.14"
-  resolved "https://registry.yarnpkg.com/@xmtp/react-native-sdk/-/react-native-sdk-1.27.0-beta.14.tgz#b70a5e379f38e315caebc0440c4dc3a1fef35498"
-  integrity sha512-L6ljcYa+2vqjDavdZmi/scioup3KAsgHI8t7WdTcTxLq8fRxTjzw8cJPC/2mHD7bCnjOKa+3IdNtSQbHZh4NGQ==
+"@xmtp/react-native-sdk@1.27.0-beta.16":
+  version "1.27.0-beta.16"
+  resolved "https://registry.yarnpkg.com/@xmtp/react-native-sdk/-/react-native-sdk-1.27.0-beta.16.tgz#2d3114471b5b4219041924b7024c8357d00fdf4c"
+  integrity sha512-GJ1Q5DiuEwRcfMOatcuJvACd/sRRnwDuSojkOSnkiyIGEh17rc6yMDRD999QyngHNM0tXB0jr84aHANBbOXmEg==
   dependencies:
     "@ethersproject/bytes" "^5.7.0"
     "@msgpack/msgpack" "^3.0.0-beta2"
@@ -15178,7 +15197,7 @@ logkitty@^0.7.1:
   resolved "https://registry.yarnpkg.com/@nozbe/lokijs/-/lokijs-1.5.12-wmelon6.tgz#e457d934d614d5df80105c86314252a6e614df9b"
   integrity sha512-GXsaqY8qTJ6xdCrGyno2t+ON2aj6PrUDdvhbrkxK/0Fp12C4FGvDg1wS+voLU9BANYHEnr7KRWfItDZnQkjoAg==
 
-long@^5.0.0, long@^5.2.0:
+long@^5.0.0, long@^5.2.0, long@^5.2.3:
   version "5.2.3"
   resolved "https://registry.yarnpkg.com/long/-/long-5.2.3.tgz#a3ba97f3877cf1d778eccbcb048525ebb77499e1"
   integrity sha512-lcHwpNoggQTObv5apGNCTdJrO69eHOZMi4BNC+rTLER8iHAqGrUVeLh/irVIM7zTw2bOXA8T6uNPeujwOLg/2Q==

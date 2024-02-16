@@ -7,7 +7,7 @@ import {useGroupMessagesQuery} from '../queries/useGroupMessagesQuery';
 import {useGroup} from './useGroup';
 
 export const useGroupMessages = (id: string) => {
-  const {group} = useGroup(id);
+  const {data: group} = useGroup(id);
   const queryClient = useQueryClient();
 
   useEffect(() => {

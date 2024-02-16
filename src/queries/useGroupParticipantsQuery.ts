@@ -7,7 +7,7 @@ import {withRequestLogger} from '../utils/logger';
 import {QueryKeys} from './QueryKeys';
 
 export const useGroupParticipantsQuery = (id: string) => {
-  const {group} = useGroup(id);
+  const {data: group} = useGroup(id);
   const queryClient = useQueryClient();
 
   useEffect(() => {
