@@ -48,7 +48,6 @@ const TextMessage = ({
     );
   }
 
-  console.log('frameData', frameData);
   return (
     <Container
       backgroundColor={isMe ? colors.actionPrimary : colors.backgroundSecondary}
