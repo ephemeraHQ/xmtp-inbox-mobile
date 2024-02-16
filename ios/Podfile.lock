@@ -1222,7 +1222,7 @@ PODS:
     - GzipSwift
     - LibXMTP (= 0.4.1-beta3)
     - web3.swift
-  - XMTPReactNative (1.27.0-beta.12):
+  - XMTPReactNative (1.27.0-beta.14):
     - ExpoModulesCore
     - MessagePacker
     - secp256k1.swift
@@ -1636,7 +1636,7 @@ SPEC CHECKSUMS:
   WatermelonDB: 842d22ba555425aa9f3ce551239a001200c539bc
   web3.swift: 2263d1e12e121b2c42ffb63a5a7beb1acaf33959
   XMTP: 1957e318059e8723bc1e76b1723c1eeb98e7760b
-  XMTPReactNative: 1ba992c0cb88a3a19bb4dc2c74dda376efa683ad
+  XMTPReactNative: 18de4b2e87433918e825ab4a7cac1bd122da659b
   Yoga: e64aa65de36c0832d04e8c7bd614396c77a80047
 
 PODFILE CHECKSUM: c765268d8eab018a5f4619e1d00ca4dab437bc4f

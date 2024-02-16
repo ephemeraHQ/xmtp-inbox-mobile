@@ -51,6 +51,7 @@ export const OnboardingEnableIdentityScreen = () => {
   useEffect(() => {
     const startClientCreation = async () => {
       if (!signer) {
+        Alert.alert('Error', 'No signer found');
         return;
       }
       try {
@@ -62,6 +63,7 @@ export const OnboardingEnableIdentityScreen = () => {
           },
           preCreateIdentityCallback: async () => {
             await createIdentityPromise();
+            setStep('ENABLE_IDENTITY');
           },
           codecs: supportedContentTypes,
         });
@@ -79,7 +81,6 @@ export const OnboardingEnableIdentityScreen = () => {
 
   const handleCreateIdentity = useCallback(() => {
     DeviceEventEmitter.emit(EventEmitterEvents.CREATE_IDENTITY);
-    setStep('ENABLE_IDENTITY');
   }, []);
 
   const handleEnableIdentity = useCallback(() => {

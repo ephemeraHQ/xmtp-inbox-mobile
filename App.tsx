@@ -4,7 +4,6 @@ import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {Ethereum} from '@thirdweb-dev/chains';
 import {
   ThirdwebProvider,
-  coinbaseWallet,
   localWallet,
   metamaskWallet,
   walletConnect,
@@ -71,7 +70,7 @@ function App(): React.JSX.Element {
         supportedWallets={[
           localWallet(),
           metamaskWallet(),
-          coinbaseWallet(),
+          // coinbaseWallet(),
           walletConnect({recommended: true}),
         ]}>
         <NativeBaseProvider theme={theme}>
