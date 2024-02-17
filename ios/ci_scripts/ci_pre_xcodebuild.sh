@@ -12,4 +12,7 @@ echo "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}" > "../../.env"
 echo "###===== Run Yarn Install"
 yarn install
 
+echo "###===== Temporary Debug Env File Output"
+cat ../../.env
+
 exit 0
