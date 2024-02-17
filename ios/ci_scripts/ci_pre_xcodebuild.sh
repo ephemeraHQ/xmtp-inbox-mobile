@@ -11,8 +11,12 @@ AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
 AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
 EOF
 
-echo "####===== Temporary ENV Debug"
-cat ../../.env
+# Debug output for ENV variables
+# Note: Values are encrypted in CI host.
+# Output will result as: XMTP_ENV=****
+#
+# echo "####===== Temporary ENV Debug"
+# cat ../../.env
 
 echo "####===== Run Yarn Install"
 yarn install
