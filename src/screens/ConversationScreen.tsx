@@ -3,7 +3,12 @@ import {useQueryClient} from '@tanstack/react-query';
 import {DecodedMessage, RemoteAttachmentContent} from '@xmtp/react-native-sdk';
 import {Box, FlatList, HStack, Pressable, VStack} from 'native-base';
 import React, {useCallback, useEffect, useState} from 'react';
-import {KeyboardAvoidingView, ListRenderItem, Platform} from 'react-native';
+import {
+  Alert,
+  KeyboardAvoidingView,
+  ListRenderItem,
+  Platform,
+} from 'react-native';
 import {Asset} from 'react-native-image-picker';
 import {ConversationHeader} from '../components/ConversationHeader';
 import {ConversationInput} from '../components/ConversationInput';
@@ -118,9 +123,13 @@ export const ConversationScreen = () => {
         return;
       }
       if (payload.text) {
-        conversation?.send(payload.text);
-      }
-      if (payload.asset) {
+        conversation
+          ?.send(payload.text)
+          .then(() => {})
+          .catch(err => {
+            Alert.alert('Error', err.message);
+          });
+      } else if (payload.asset) {
         client
           ?.encryptAttachment({
             fileUri: payload.asset.uri ?? '',

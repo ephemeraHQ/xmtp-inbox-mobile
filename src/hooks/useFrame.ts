@@ -3,18 +3,18 @@ import {useMutation} from 'wagmi';
 import {QueryKeys} from '../queries/QueryKeys';
 import {useFramesClient} from './useFramesClient';
 
+const urlRegex = /(https?:\/\/[^\s]+)/g;
+
 export const useFrame = (messageText: string) => {
   const {data: client} = useFramesClient();
   const {data: frameData} = useQuery({
     queryKey: [QueryKeys.Frame, messageText],
     queryFn: async () => {
-      console.log('messageText', messageText, !client);
       if (!client || !messageText || messageText.length === 0) {
         return null;
       }
       // extract a url from message text
-      const url = messageText.match(/(https?:\/\/[^\s]+)/g);
-      console.log('url', url);
+      const url = messageText.match(urlRegex);
       if (!url?.[0]) {
         return null;
       }
@@ -33,7 +33,6 @@ export const useFrame = (messageText: string) => {
           buttons.push(data?.extractedTags[key]);
         }
       });
-      console.log('postUrl', postUrl, data);
       return {
         image,
         postUrl,
@@ -41,6 +40,7 @@ export const useFrame = (messageText: string) => {
         buttons,
       };
     },
+    enabled: Boolean(client),
   });
 
   const {mutateAsync, data} = useMutation({
@@ -49,14 +49,12 @@ export const useFrame = (messageText: string) => {
       if (!client || !frameData) {
         return null;
       }
-      console.log('frameData1', frameData);
       const signedPayload = await client.signFrameAction({
         frameUrl: frameData.url,
         buttonIndex,
         conversationTopic: 'foo',
         participantAccountAddresses: ['amal', 'bola'],
       });
-      console.log('signedPayload', signedPayload);
       const response = await client.proxy.post(
         frameData.postUrl,
         signedPayload,
@@ -72,7 +70,6 @@ export const useFrame = (messageText: string) => {
           buttons.push(response?.extractedTags[key]);
         }
       });
-      console.log('postUrl', postUrl, data);
       return {
         image,
         postUrl,
