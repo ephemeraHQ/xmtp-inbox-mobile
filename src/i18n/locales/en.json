@@ -1,5 +1,4 @@
 {
-  "show_collectibles_publicly": "Show collectibles publicly",
   "notifications": "Notifications",
   "privacy": "Privacy",
   "support": "Support",
@@ -20,8 +19,6 @@
   "no": "No",
   "yes": "Yes",
   "start": "Start",
-
-  "xmtp_app_directory": "XMTP App Directory",
 
   "recents": "Recents",
   "contacts": "Contacts",
@@ -68,8 +65,6 @@
   "get_groups": "Get Groups",
   "get_contacts": "Get Contacts",
   "group_name": "Group Name",
-
-  "discover": "Discover",
 
   "valid_address": "Valid Ethereum Address",
   "message_requests_from_new_addresses": "Message requests from addresses you’ve never interacted with show up here",

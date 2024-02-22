@@ -71,8 +71,8 @@ const useData = () => {
     });
     if (address) {
       saveEnsName(address, ens);
-      if (avatarUrl) {
-        saveEnsAvatar(avatarUrl, ens);
+      if (avatarUrl && address) {
+        saveEnsAvatar(address, avatarUrl);
       }
     }
   }
@@ -123,7 +123,7 @@ interface ListItem {
   onPress: () => void;
 }
 
-type Section = 'TOGGLE' | 'CONTACT' | 'DELETE';
+type Section = 'TOGGLE' | 'DELETE';
 
 export const AccountSettingsScreen = () => {
   const {navigate, goBack} = useTypedNavigation();
@@ -150,27 +150,9 @@ export const AccountSettingsScreen = () => {
         section: 'TOGGLE',
         data: [
           {
-            text: translate('show_collectibles_publicly'),
-            onPress: toggleShowCollectibles,
-            value: false,
-          },
-          {
             text: translate('notifications'),
             onPress: toggleNotifications,
             value: true,
-          },
-        ],
-      },
-      {
-        section: 'CONTACT',
-        data: [
-          {
-            text: translate('privacy'),
-            onPress: () => handleLink('https://www.google.com'),
-          },
-          {
-            text: translate('support'),
-            onPress: () => handleLink('https://www.google.com'),
           },
         ],
       },

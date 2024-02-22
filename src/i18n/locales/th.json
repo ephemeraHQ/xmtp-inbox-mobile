@@ -1,5 +1,4 @@
 {
-  "show_collectibles_publicly": "แสดงของสะสมแบบสาธารณะ",
   "notifications": "การแจ้งเตือน",
   "privacy": "ความเป็นส่วนตัว",
   "support": "สนับสนุน",
@@ -20,8 +19,6 @@
   "no": "ไม่",
   "yes": "ใช่",
   "start": "เริ่ม",
-
-  "xmtp_app_directory": "ไดเร็กทอรีแอป XMTP",
 
   "recents": "ล่าสุด",
   "contacts": "รายชื่อติดต่อ",
@@ -66,7 +63,5 @@
   "group_members_queries": "คิวรีสมาชิกกลุ่ม",
   "get_conversations": "รับการสนทนา",
   "get_groups": "รับกลุ่ม",
-  "get_contacts": "รับรายชื่อติดต่อ",
-
-  "discover": "ค้นพบ"
+  "get_contacts": "รับรายชื่อติดต่อ"
 }

@@ -38,7 +38,7 @@ export const useContactInfo = (address: string) => {
       .then(({ens, avatarUrl}) => {
         if (ens) {
           saveEnsName(address, ens);
-          if (avatarUrl) {
+          if (avatarUrl && address) {
             saveEnsAvatar(address, avatarUrl);
           } else {
             clearEnsAvatar(address);

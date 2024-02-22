@@ -11,7 +11,6 @@ export enum ScreenNames {
   Conversation = 'conversation',
   Group = 'group',
   NewConversation = 'new_conversation',
-  Discover = 'discover',
   Search = 'search',
   QRCode = 'qr_code',
   UserProfiles = 'user_profiles',
