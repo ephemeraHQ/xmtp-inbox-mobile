@@ -9,7 +9,6 @@ import {} from 'ethers';
 import {Box, FlatList, HStack, SectionList, Switch, VStack} from 'native-base';
 import React, {useCallback, useMemo, useState} from 'react';
 import {
-  Linking,
   ListRenderItem,
   Platform,
   Pressable,
@@ -34,7 +33,7 @@ import {
   saveEnsAvatar,
   saveEnsName,
 } from '../services/mmkvStorage';
-import {blues, colors, greens, reds} from '../theme/colors';
+import {colors, greens, reds} from '../theme/colors';
 import {formatAddress} from '../utils/formatAddress';
 
 interface Address {
@@ -132,16 +131,9 @@ export const AccountSettingsScreen = () => {
   const [walletsShown, setWalletsShown] = useState(false);
   const disconnect = useDisconnect();
   const address = useAddress();
-  const toggleShowCollectibles = useCallback(() => {
-    return null;
-  }, []);
 
   const toggleNotifications = useCallback(() => {
     return null;
-  }, []);
-
-  const handleLink = useCallback((url: string) => {
-    return Linking.openURL(url);
   }, []);
 
   const listItems = useMemo((): {section: Section; data: ListItem[]}[] => {
@@ -182,26 +174,14 @@ export const AccountSettingsScreen = () => {
         ],
       },
     ];
-  }, [
-    toggleShowCollectibles,
-    toggleNotifications,
-    handleLink,
-    disconnect,
-    address,
-    setClient,
-  ]);
+  }, [toggleNotifications, disconnect, address, setClient]);
 
   const renderItem: SectionListRenderItem<ListItem, {section: Section}> = ({
     section,
     item,
     index,
   }) => {
-    const color =
-      section.section === 'TOGGLE'
-        ? greens[100]
-        : section.section === 'CONTACT'
-        ? blues[100]
-        : reds[100];
+    const color = section.section === 'TOGGLE' ? greens[100] : reds[100];
     const isTop = index === 0;
     const isBottom = index === section.data.length - 1;
 
