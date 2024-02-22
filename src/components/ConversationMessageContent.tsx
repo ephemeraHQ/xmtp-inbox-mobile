@@ -5,6 +5,7 @@ import {
 } from '@xmtp/react-native-sdk';
 import {Container, Image} from 'native-base';
 import React, {FC} from 'react';
+import {useWindowDimensions} from 'react-native';
 import {ContentTypes, SupportedContentTypes} from '../consts/ContentTypes';
 import {useFrame} from '../hooks/useFrame';
 import {translate} from '../i18n';
@@ -26,6 +27,7 @@ const TextMessage = ({
   isMe: boolean;
   message: DecodedMessage<SupportedContentTypes>;
 }) => {
+  const {width} = useWindowDimensions();
   const {frameData, postFrame} = useFrame(message.content() as string);
   if (!frameData) {
     return (
@@ -60,12 +62,16 @@ const TextMessage = ({
       <Image
         source={{uri: frameData.image}}
         alt="frame image"
-        height={200}
-        width={200}
+        height={150}
+        width={width / 2}
       />
-      {frameData.buttons.map((it, id) => (
-        <Button onPress={() => postFrame(id + 1)}>{it}</Button>
-      ))}
+      <Container flexWrap={'wrap'} flexDirection={'row'} width={'100%'}>
+        {frameData.buttons.map((it, id) => (
+          <Button key={String(it)} onPress={() => postFrame(id + 1)}>
+            {it}
+          </Button>
+        ))}
+      </Container>
     </Container>
   );
 };

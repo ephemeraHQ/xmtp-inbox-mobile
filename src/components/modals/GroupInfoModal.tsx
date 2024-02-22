@@ -3,6 +3,7 @@ import {HStack, Input, Pressable, VStack} from 'native-base';
 import React, {FC, useCallback, useState} from 'react';
 import {Alert, DeviceEventEmitter} from 'react-native';
 import {AppConfig} from '../../consts/AppConfig';
+import {SupportedContentTypes} from '../../consts/ContentTypes';
 import {EventEmitterEvents} from '../../consts/EventEmitters';
 import {useClient} from '../../hooks/useClient';
 import {useContactInfo} from '../../hooks/useContactInfo';
@@ -20,7 +21,7 @@ export interface GroupInfoModalProps {
   hide: () => void;
   addresses: string[];
   onPlusPress: () => void;
-  group: Group<any>;
+  group?: Group<SupportedContentTypes>;
 }
 
 const GroupParticipant: React.FC<{
@@ -85,9 +86,9 @@ export const GroupInfoModal: FC<GroupInfoModalProps> = ({
   const onRemovePress = useCallback(
     async (address: string) => {
       try {
-        await group.removeMembers([address]);
+        await group?.removeMembers([address]);
         DeviceEventEmitter.emit(
-          `${EventEmitterEvents.GROUP_CHANGED}_${group.id}`,
+          `${EventEmitterEvents.GROUP_CHANGED}_${group?.id}`,
         );
         hide();
       } catch (err: any) {
@@ -102,10 +103,10 @@ export const GroupInfoModal: FC<GroupInfoModalProps> = ({
     if (!groupName) {
       return;
     }
-    saveGroupName(client?.address ?? '', group.id, groupName);
+    saveGroupName(client?.address ?? '', group?.id ?? '', groupName);
     setEditing(false);
     setGroupName('');
-  }, [client?.address, group.id, groupName]);
+  }, [client?.address, group?.id, groupName]);
 
   return (
     <Modal onBackgroundPress={hide} isOpen={shown}>
@@ -130,7 +131,7 @@ export const GroupInfoModal: FC<GroupInfoModalProps> = ({
         ) : (
           <HStack w={'100%'} alignItems={'center'} justifyContent={'center'}>
             <Text typography="text-xl/bold" textAlign={'center'}>
-              {getGroupName(client?.address ?? '', group.id) ??
+              {(!!group && getGroupName(client?.address ?? '', group?.id)) ??
                 translate('group')}
             </Text>
             <Pressable onPress={() => setEditing(true)} alignSelf={'flex-end'}>

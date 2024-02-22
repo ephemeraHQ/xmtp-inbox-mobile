@@ -12,10 +12,14 @@ export const getAllListMessages = async (client?: Client<any> | null) => {
     if (!client) {
       return [];
     }
-    const consentList = await withRequestLogger(
-      client.contacts.refreshConsentList(),
-      {name: 'consent'},
-    );
+    const [consentList] = await Promise.all([
+      withRequestLogger(client.contacts.refreshConsentList(), {
+        name: 'consent',
+      }),
+      withRequestLogger(client.conversations.syncGroups(), {
+        name: 'group_sync',
+      }),
+    ]);
 
     consentList.forEach(async item => {
       saveConsent(
@@ -23,9 +27,6 @@ export const getAllListMessages = async (client?: Client<any> | null) => {
         item.value,
         item.permissionType === 'allowed',
       );
-    });
-    await withRequestLogger(client.conversations.syncGroups(), {
-      name: 'group_sync',
     });
 
     const [convos, groups] = await Promise.all([
