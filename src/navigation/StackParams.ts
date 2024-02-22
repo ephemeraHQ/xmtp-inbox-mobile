@@ -15,7 +15,6 @@ export type AuthenticatedStackParams = {
   [ScreenNames.Conversation]: {topic: string};
   [ScreenNames.Group]: {id: string};
   [ScreenNames.NewConversation]: {addresses: string[]};
-  [ScreenNames.Discover]: undefined;
   [ScreenNames.Search]: undefined;
   [ScreenNames.QRCode]: undefined;
   [ScreenNames.UserProfiles]: {address: string};

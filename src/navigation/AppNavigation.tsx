@@ -7,7 +7,6 @@ import {AccountSettingsScreen} from '../screens/AccountSettingsScreen';
 import {ConversationListScreen} from '../screens/ConversationListScreen';
 import {ConversationScreen} from '../screens/ConversationScreen';
 import {DevScreen} from '../screens/DevScreen';
-import {DiscoverScreen} from '../screens/DiscoverScreen';
 import {GroupScreen} from '../screens/GroupScreen';
 import {LoadingScreen} from '../screens/LoadingScreen';
 import {NewConversationScreen} from '../screens/NewConversationScreen';
@@ -87,10 +86,6 @@ export const AppNavigation = () => {
           <AuthenticatedStack.Screen
             name={ScreenNames.Group}
             component={GroupScreen}
-          />
-          <AuthenticatedStack.Screen
-            name={ScreenNames.Discover}
-            component={DiscoverScreen}
           />
           <AuthenticatedStack.Screen
             name={ScreenNames.NewConversation}

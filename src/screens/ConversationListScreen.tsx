@@ -81,10 +81,6 @@ const ListHeader: FC<ListHeaderProps> = ({
   const {data} = useENS();
   const {avatarUrl} = data ?? {};
 
-  const handleDiscoverPress = useCallback(() => {
-    navigate(ScreenNames.Discover);
-  }, [navigate]);
-
   const handleAccountPress = useCallback(() => {
     navigate(ScreenNames.Account);
   }, [navigate]);
@@ -145,9 +141,6 @@ const ListHeader: FC<ListHeaderProps> = ({
             </Button>
           </Box>
         </Box>
-        <Pressable onPress={handleDiscoverPress}>
-          <Icon name="sparkles" size={24} color={'#0F172A'} />
-        </Pressable>
       </HStack>
       {list === 'MESSAGE_REQUESTS' ? (
         <Box

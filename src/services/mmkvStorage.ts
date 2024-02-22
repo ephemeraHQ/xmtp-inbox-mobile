@@ -46,7 +46,7 @@ export const clearEnsName = (address: string) => {
 
 //#region Ens Avatar
 export const getEnsAvatarKey = (address: string) => {
-  return `${MMKVKeys.ENS_AVATAR}_${address.toLowerCase()}`;
+  return `${MMKVKeys.ENS_AVATAR}_${address?.toLowerCase()}`;
 };
 
 export const saveEnsAvatar = (address: string, ensAvatar: string) => {

@@ -17,7 +17,6 @@ export const linkingDefinition: LinkingOptions<RootStackParams> = {
           addresses: addresses => addresses.split(','),
         },
       },
-      [ScreenNames.Discover]: 'discover',
       [ScreenNames.Search]: 'search',
       [ScreenNames.QRCode]: 'qr_code',
       [ScreenNames.UserProfiles]: 'user_profiles',
