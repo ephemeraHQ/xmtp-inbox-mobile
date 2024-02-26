@@ -1,12 +1,6 @@
 import {useSupportedChains, useWalletContext} from '@thirdweb-dev/react-native';
 import {useEffect, useState} from 'react';
-import {
-  clearEnsAvatar,
-  getEnsAvatar,
-  getEnsName,
-  saveEnsAvatar,
-  saveEnsName,
-} from '../services/mmkvStorage';
+import {mmkvStorage} from '../services/mmkvStorage';
 import {formatAddress} from '../utils/formatAddress';
 import {getEnsInfo} from '../utils/getEnsInfo';
 
@@ -26,8 +20,8 @@ export const useContactInfo = (address: string) => {
   const {clientId} = useWalletContext();
 
   useEffect(() => {
-    const cachedName = getEnsName(address);
-    const cachedAvatar = getEnsAvatar(address);
+    const cachedName = mmkvStorage.getEnsName(address);
+    const cachedAvatar = mmkvStorage.getEnsAvatar(address);
     setState({
       avatarUrl: cachedAvatar ?? null,
       displayName: cachedName ?? formatAddress(address),
@@ -37,11 +31,11 @@ export const useContactInfo = (address: string) => {
     getEnsInfo(address, supportedChains, clientId)
       .then(({ens, avatarUrl}) => {
         if (ens) {
-          saveEnsName(address, ens);
+          mmkvStorage.saveEnsName(address, ens);
           if (avatarUrl && address) {
-            saveEnsAvatar(address, avatarUrl);
+            mmkvStorage.saveEnsAvatar(address, avatarUrl);
           } else {
-            clearEnsAvatar(address);
+            mmkvStorage.clearEnsAvatar(address);
           }
           setState({
             displayName: ens ?? formatAddress(address),
@@ -61,7 +55,7 @@ export const useContactInfo = (address: string) => {
 
   useEffect(() => {
     if (state.displayName) {
-      saveEnsName(address, state.displayName);
+      mmkvStorage.saveEnsName(address, state.displayName);
     }
   }, [state.displayName, address]);
 

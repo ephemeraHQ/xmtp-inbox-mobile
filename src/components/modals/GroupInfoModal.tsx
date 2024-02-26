@@ -8,7 +8,7 @@ import {EventEmitterEvents} from '../../consts/EventEmitters';
 import {useClient} from '../../hooks/useClient';
 import {useContactInfo} from '../../hooks/useContactInfo';
 import {translate} from '../../i18n';
-import {getGroupName, saveGroupName} from '../../services/mmkvStorage';
+import {mmkvStorage} from '../../services/mmkvStorage';
 import {colors} from '../../theme/colors';
 import {AvatarWithFallback} from '../AvatarWithFallback';
 import {Button} from '../common/Button';
@@ -103,7 +103,11 @@ export const GroupInfoModal: FC<GroupInfoModalProps> = ({
     if (!groupName) {
       return;
     }
-    saveGroupName(client?.address ?? '', group?.id ?? '', groupName);
+    mmkvStorage.saveGroupName(
+      client?.address ?? '',
+      group?.id ?? '',
+      groupName,
+    );
     setEditing(false);
     setGroupName('');
   }, [client?.address, group?.id, groupName]);
@@ -131,7 +135,8 @@ export const GroupInfoModal: FC<GroupInfoModalProps> = ({
         ) : (
           <HStack w={'100%'} alignItems={'center'} justifyContent={'center'}>
             <Text typography="text-xl/bold" textAlign={'center'}>
-              {(!!group && getGroupName(client?.address ?? '', group?.id)) ??
+              {(!!group &&
+                mmkvStorage.getGroupName(client?.address ?? '', group?.id)) ??
                 translate('group')}
             </Text>
             <Pressable onPress={() => setEditing(true)} alignSelf={'flex-end'}>

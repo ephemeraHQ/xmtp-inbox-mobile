@@ -9,13 +9,7 @@ import {
 import {Icon} from '../components/common/Icon';
 import {AppConfig} from '../consts/AppConfig';
 import {translate} from '../i18n';
-import {
-  // clearDraftImage,
-  clearDraftText,
-  getDraftText,
-  // saveDraftImage,
-  saveDraftText,
-} from '../services/mmkvStorage';
+import {mmkvStorage} from '../services/mmkvStorage';
 import {colors} from '../theme/colors';
 
 interface ConversationInputProps {
@@ -31,7 +25,9 @@ export const ConversationInput: FC<ConversationInputProps> = ({
 }) => {
   const [focused, setFocus] = useState<boolean>(false);
   const [text, setText] = useState<string>(
-    currentAddress && id ? getDraftText(currentAddress, id) ?? '' : '',
+    currentAddress && id
+      ? mmkvStorage.getDraftText(currentAddress, id) ?? ''
+      : '',
   );
   const [asset, setAssetUri] = useState<Asset | null>();
   // currentAddress && topic
@@ -40,10 +36,10 @@ export const ConversationInput: FC<ConversationInputProps> = ({
 
   useEffect(() => {
     if (text && currentAddress && id) {
-      saveDraftText(currentAddress, id, text);
+      mmkvStorage.saveDraftText(currentAddress, id, text);
     }
     if (!text && currentAddress && id) {
-      clearDraftText(currentAddress, id);
+      mmkvStorage.clearDraftText(currentAddress, id);
     }
   }, [currentAddress, text, id]);
 

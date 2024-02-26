@@ -4,7 +4,7 @@ import {
   ListGroup,
   ListMessages,
 } from '../models/ListMessages';
-import {saveConsent} from '../services/mmkvStorage';
+import {mmkvStorage} from '../services/mmkvStorage';
 import {withRequestLogger} from './logger';
 
 export const getAllListMessages = async (client?: Client<any> | null) => {
@@ -22,7 +22,7 @@ export const getAllListMessages = async (client?: Client<any> | null) => {
     ]);
 
     consentList.forEach(async item => {
-      saveConsent(
+      mmkvStorage.saveConsent(
         client.address,
         item.value,
         item.permissionType === 'allowed',
