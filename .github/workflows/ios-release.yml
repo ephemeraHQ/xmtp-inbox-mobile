@@ -2,7 +2,8 @@ name: Release to TestFlight
 on:
  push:
   branches:
-   - main
+    - main
+ pull_request:    
 
 jobs:
   rebase:
@@ -24,5 +25,4 @@ jobs:
         run: git rebase main
 
       - name: Force push changes
-        run: |
-          git push --force-with-lease origin testflight 
+        run: git push --force-with-lease origin testflight
