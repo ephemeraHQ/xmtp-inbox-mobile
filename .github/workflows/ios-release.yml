@@ -1,0 +1,28 @@
+name: Release to TestFlight
+on:
+ push:
+  branches:
+   - main
+
+jobs:
+  rebase:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v2
+        with:
+          ref: main
+
+      - name: Fetch testflight branch
+        run: git fetch origin testflight:testflight
+
+      - name: Checkout testflight
+        run: git checkout testflight
+
+      - name: Rebase testflight onto main
+        run: git rebase main
+
+      - name: Force push changes
+        run: |
+          git push --force-with-lease origin testflight 
