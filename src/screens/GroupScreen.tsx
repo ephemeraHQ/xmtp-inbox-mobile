@@ -1,5 +1,5 @@
 import {useFocusEffect, useRoute} from '@react-navigation/native';
-import {DecodedMessage, RemoteAttachmentContent} from '@xmtp/react-native-sdk';
+import {RemoteAttachmentContent} from '@xmtp/react-native-sdk';
 import {Box, FlatList, HStack, Pressable, VStack} from 'native-base';
 import React, {useCallback, useEffect, useState} from 'react';
 import {KeyboardAvoidingView, ListRenderItem, Platform} from 'react-native';
@@ -13,7 +13,7 @@ import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
 import {AddGroupParticipantModal} from '../components/modals/AddGroupParticipantModal';
 import {GroupInfoModal} from '../components/modals/GroupInfoModal';
-import {ContentTypes, SupportedContentTypes} from '../consts/ContentTypes';
+import {ContentTypes} from '../consts/ContentTypes';
 import {useClient} from '../hooks/useClient';
 import {useGroup} from '../hooks/useGroup';
 import {useGroupMessages} from '../hooks/useGroupMessages';
@@ -23,6 +23,8 @@ import {mmkvStorage} from '../services/mmkvStorage';
 import {AWSHelper} from '../services/s3';
 import {colors} from '../theme/colors';
 import {formatAddress} from '../utils/formatAddress';
+
+const keyExtractor = (item: string) => item;
 
 const getTimestamp = (timestamp: number) => {
   // If today, return hours and minutes if not return date
@@ -85,6 +87,7 @@ export const GroupScreen = () => {
   const [consent, setConsent] = useState<'allowed' | 'denied' | 'unknown'>(
     getInitialConsentState(myAddress ?? '', group?.id ?? ''),
   );
+  const {ids, entities} = messages ?? {};
 
   useEffect(() => {
     if (!group) {
@@ -136,11 +139,13 @@ export const GroupScreen = () => {
     [client, group],
   );
 
-  const renderItem: ListRenderItem<DecodedMessage<SupportedContentTypes>> = ({
-    item,
-  }) => {
+  const renderItem: ListRenderItem<string> = ({item}) => {
+    const message = entities?.[item];
+    if (!message) {
+      return null;
+    }
     const isMe =
-      item.senderAddress?.toLocaleLowerCase() ===
+      message.senderAddress?.toLocaleLowerCase() ===
       myAddress?.toLocaleLowerCase();
     return (
       <Pressable>
@@ -153,24 +158,24 @@ export const GroupScreen = () => {
                   textAlign={'end'}
                   typography="text-xs/semi-bold"
                   alignSelf={'flex-start'}>
-                  {mmkvStorage.getEnsName(item.senderAddress) ??
-                    formatAddress(item.senderAddress)}
+                  {mmkvStorage.getEnsName(message.senderAddress) ??
+                    formatAddress(message.senderAddress)}
                 </Text>
               </VStack>
             )}
-            <ConversationMessageContent message={item} isMe={isMe} />
+            <ConversationMessageContent message={message} isMe={isMe} />
             <Text
               flexShrink={1}
               color={colors.primaryN200}
               typography="text-xs/semi-bold"
               alignSelf={
-                item.contentTypeId === ContentTypes.GroupMembershipChange
+                message.contentTypeId === ContentTypes.GroupMembershipChange
                   ? 'center'
                   : isMe
                   ? 'flex-end'
                   : 'flex-start'
               }>
-              {getTimestamp(item.sent)}
+              {getTimestamp(message.sent)}
             </Text>
           </VStack>
         </Box>
@@ -213,9 +218,9 @@ export const GroupScreen = () => {
             keyboardVerticalOffset={10}>
             <Box flex={1}>
               <FlatList
-                keyExtractor={item => item.id}
+                keyExtractor={keyExtractor}
                 inverted
-                data={messages}
+                data={ids}
                 renderItem={renderItem}
                 ListFooterComponent={<Box height={'100px'} />}
                 onRefresh={refetch}

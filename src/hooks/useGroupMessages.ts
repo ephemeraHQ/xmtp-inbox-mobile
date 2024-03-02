@@ -1,9 +1,11 @@
 import {useQueryClient} from '@tanstack/react-query';
-import {DecodedMessage} from '@xmtp/react-native-sdk';
 import {useEffect} from 'react';
-import {ContentTypes, SupportedContentTypes} from '../consts/ContentTypes';
+import {ContentTypes} from '../consts/ContentTypes';
 import {QueryKeys} from '../queries/QueryKeys';
-import {useGroupMessagesQuery} from '../queries/useGroupMessagesQuery';
+import {
+  GroupMessagesQueryRequestData,
+  useGroupMessagesQuery,
+} from '../queries/useGroupMessagesQuery';
 import {useGroup} from './useGroup';
 
 export const useGroupMessages = (id: string) => {
@@ -12,7 +14,7 @@ export const useGroupMessages = (id: string) => {
 
   useEffect(() => {
     const cancelStream = group?.streamGroupMessages(async message => {
-      queryClient.setQueryData<DecodedMessage<SupportedContentTypes>[]>(
+      queryClient.setQueryData<GroupMessagesQueryRequestData>(
         [QueryKeys.GroupMessages, group?.id],
         prevMessages => [message, ...(prevMessages ?? [])],
       );

@@ -1,18 +1,14 @@
-import {useQuery} from '@tanstack/react-query';
-import {QueryKeys} from '../queries/QueryKeys';
-import {useClient} from './useClient';
+import {useMemo} from 'react';
+import {useGroupsQuery} from '../queries/useGroupsQuery';
 
 export const useGroup = (id: string) => {
-  const {client} = useClient();
+  const groupsQuery = useGroupsQuery();
 
-  return useQuery({
-    queryKey: [client?.address, QueryKeys.Group, id],
-    queryFn: async () => {
-      const groups = await client?.conversations.listGroups();
-      return groups || [];
-    },
-    select: data => {
-      return data.find(c => c.id === id);
-    },
-  });
+  return useMemo(() => {
+    const {data, ...rest} = groupsQuery;
+    const {entities} = data ?? {};
+
+    const groupData = entities?.[id];
+    return {data: groupData, ...rest};
+  }, [groupsQuery, id]);
 };

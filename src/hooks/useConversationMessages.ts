@@ -1,33 +1,28 @@
-import {DecodedMessage} from '@xmtp/react-native-sdk';
-import {useEffect, useState} from 'react';
-import {SupportedContentTypes} from '../consts/ContentTypes';
+import {useQueryClient} from '@tanstack/react-query';
+import {useEffect} from 'react';
+import {QueryKeys} from '../queries/QueryKeys';
+import {
+  ConversationMessagesQueryRequestData,
+  useConversationMessagesQuery,
+} from '../queries/useConversationMessagesQuery';
 import {useConversation} from './useConversation';
 
 export const useConversationMessages = (topic: string) => {
-  const [messages, setMessages] = useState<
-    DecodedMessage<SupportedContentTypes>[]
-  >([]);
-  const {conversation} = useConversation(topic);
+  const {data: conversation} = useConversation(topic);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     let cancelStream: (() => void) | undefined;
-    const getMessages = async () => {
-      if (conversation) {
-        cancelStream = conversation.streamMessages(async message => {
-          setMessages(prevMessages => [message, ...prevMessages]);
-        });
-
-        const initialMessages = await conversation.messages();
-        setMessages(initialMessages);
-      }
-    };
-    getMessages();
+    cancelStream = conversation?.streamMessages(async message => {
+      queryClient.setQueryData<ConversationMessagesQueryRequestData>(
+        [QueryKeys.ConversationMessages, conversation.topic],
+        prevMessages => [message, ...(prevMessages ?? [])],
+      );
+    });
     return () => {
       cancelStream?.();
     };
-  }, [conversation]);
+  }, [conversation, queryClient]);
 
-  return {
-    messages,
-  };
+  return useConversationMessagesQuery(topic);
 };
