@@ -26,12 +26,7 @@ import {useConversation} from '../hooks/useConversation';
 import {useConversationMessages} from '../hooks/useConversationMessages';
 import {translate} from '../i18n';
 import {QueryKeys} from '../queries/QueryKeys';
-import {
-  getConsent,
-  getTopicAddresses,
-  saveConsent,
-  saveTopicAddresses,
-} from '../services/mmkvStorage';
+import {mmkvStorage} from '../services/mmkvStorage';
 import {AWSHelper} from '../services/s3';
 import {colors} from '../theme/colors';
 
@@ -56,14 +51,14 @@ const useData = (topic: string) => {
   const {messages} = useConversationMessages(topic);
   const {client} = useClient();
   const {conversation} = useConversation(topic);
-  const cachedPeerAddress = getTopicAddresses(topic)?.[0];
+  const cachedPeerAddress = mmkvStorage.getTopicAddresses(topic)?.[0];
   const {displayName, avatarUrl} = useContactInfo(
     conversation?.peerAddress || '',
   );
 
   useEffect(() => {
     if (topic && conversation?.peerAddress) {
-      saveTopicAddresses(topic, [conversation?.peerAddress]);
+      mmkvStorage.saveTopicAddresses(topic, [conversation?.peerAddress]);
     }
   }, [conversation?.peerAddress, topic]);
 
@@ -79,7 +74,7 @@ const useData = (topic: string) => {
 };
 
 const getInitialConsentState = (address: string, peerAddress: string) => {
-  const cachedConsent = getConsent(address, peerAddress);
+  const cachedConsent = mmkvStorage.getConsent(address, peerAddress);
   if (cachedConsent === undefined) {
     return 'unknown';
   }
@@ -114,7 +109,11 @@ export const ConversationScreen = () => {
     if (consent === 'unknown') {
       return;
     }
-    saveConsent(client?.address ?? '', address ?? '', consent === 'allowed');
+    mmkvStorage.saveConsent(
+      client?.address ?? '',
+      address ?? '',
+      consent === 'allowed',
+    );
   }, [address, client?.address, consent]);
 
   const sendMessage = useCallback(
@@ -182,7 +181,7 @@ export const ConversationScreen = () => {
       client?.contacts.allow([address]);
     }
     setConsent('allowed');
-    saveConsent(myAddress ?? '', address ?? '', true);
+    mmkvStorage.saveConsent(myAddress ?? '', address ?? '', true);
     queryClient.invalidateQueries({
       queryKey: [QueryKeys.List, client?.address],
     });
@@ -193,7 +192,7 @@ export const ConversationScreen = () => {
       client?.contacts.deny([address]);
     }
     setConsent('denied');
-    saveConsent(myAddress ?? '', address ?? '', false);
+    mmkvStorage.saveConsent(myAddress ?? '', address ?? '', false);
   }, [address, client?.contacts, myAddress]);
 
   return (

@@ -23,202 +23,222 @@ enum MMKVKeys {
   GROUP_NAME = 'GROUP_NAME',
 }
 
-const storage = new MMKV();
+class MMKVStorage {
+  storage = new MMKV();
 
-//#region Ens Name
-export const getEnsNameKey = (address: string) => {
-  return `${MMKVKeys.ENS_NAME}_${address}`;
-};
+  //#region Ens Name
+  private getEnsNameKey = (address: string) => {
+    return `${MMKVKeys.ENS_NAME}_${address}`;
+  };
 
-export const saveEnsName = (address: string, ensName: string) => {
-  return storage.set(getEnsNameKey(address), ensName);
-};
+  saveEnsName = (address: string, ensName: string) => {
+    return this.storage.set(this.getEnsNameKey(address), ensName);
+  };
 
-export const getEnsName = (address: string) => {
-  return storage.getString(getEnsNameKey(address));
-};
+  getEnsName = (address: string) => {
+    return this.storage.getString(this.getEnsNameKey(address));
+  };
 
-export const clearEnsName = (address: string) => {
-  //
-  return storage.delete(getEnsNameKey(address));
-};
-//#endregion Ens Name
+  clearEnsName = (address: string) => {
+    return this.storage.delete(this.getEnsNameKey(address));
+  };
 
-//#region Ens Avatar
-export const getEnsAvatarKey = (address: string) => {
-  return `${MMKVKeys.ENS_AVATAR}_${address?.toLowerCase()}`;
-};
+  //#endregion Ens Name
 
-export const saveEnsAvatar = (address: string, ensAvatar: string) => {
-  return storage.set(getEnsAvatarKey(address), ensAvatar);
-};
+  //#region Ens Avatar
+  private getEnsAvatarKey = (address: string) => {
+    return `${MMKVKeys.ENS_AVATAR}_${address?.toLowerCase()}`;
+  };
 
-export const getEnsAvatar = (address: string) => {
-  return storage.getString(getEnsAvatarKey(address));
-};
+  saveEnsAvatar = (address: string, ensAvatar: string) => {
+    if (!address) {
+      return;
+    }
+    if (!ensAvatar) {
+      return this.clearEnsAvatar(address);
+    }
+    return this.storage.set(this.getEnsAvatarKey(address), ensAvatar);
+  };
 
-export const clearEnsAvatar = (address: string) => {
-  return storage.delete(getEnsAvatarKey(address));
-};
-//#endregion Ens Avatar
+  getEnsAvatar = (address: string) => {
+    if (!address) {
+      return;
+    }
+    return this.storage.getString(this.getEnsAvatarKey(address));
+  };
 
-//#region
-export const getMessageRequestsCountKey = (address: string) => {
-  return `${MMKVKeys.MESSAGE_REQUESTS_COUNT}_${address.toLowerCase()}`;
-};
+  clearEnsAvatar = (address: string) => {
+    return this.storage.delete(this.getEnsAvatarKey(address));
+  };
 
-export const saveMessageRequestsCount = (
-  address: string,
-  messageRequestsCount: number,
-) => {
-  return storage.set(getMessageRequestsCountKey(address), messageRequestsCount);
-};
+  //#endregion Ens Avatar
 
-export const getMessageRequestsCount = (address: string) => {
-  return storage.getNumber(getMessageRequestsCountKey(address));
-};
+  //#region
+  private getMessageRequestsCountKey = (address: string) => {
+    return `${MMKVKeys.MESSAGE_REQUESTS_COUNT}_${address.toLowerCase()}`;
+  };
 
-export const clearMessageRequestsCount = (address: string) => {
-  return storage.delete(getMessageRequestsCountKey(address));
-};
-//#endregion
+  saveMessageRequestsCount = (
+    address: string,
+    messageRequestsCount: number,
+  ) => {
+    return this.storage.set(
+      this.getMessageRequestsCountKey(address),
+      messageRequestsCount,
+    );
+  };
 
-//#region Draft Text
-export const getDraftTextKey = (address: string, topic: string) => {
-  return `${
-    MMKVKeys.DRAFT_TEXT
-  }_${address.toLowerCase()}_${topic.toLowerCase()}`;
-};
+  getMessageRequestsCount = (address: string) => {
+    return this.storage.getNumber(this.getMessageRequestsCountKey(address));
+  };
 
-export const saveDraftText = (
-  address: string,
-  topic: string,
-  draftText: string,
-) => {
-  return storage.set(getDraftTextKey(address, topic), draftText);
-};
+  clearMessageRequestsCount = (address: string) => {
+    return this.storage.delete(this.getMessageRequestsCountKey(address));
+  };
 
-export const getDraftText = (address: string, topic: string) => {
-  return storage.getString(getDraftTextKey(address, topic));
-};
+  //#endregion
 
-export const clearDraftText = (address: string, topic: string) => {
-  return storage.delete(getDraftTextKey(address, topic));
-};
+  //#region Draft Text
 
-//#endregion Draft Text
+  private getDraftTextKey = (address: string, topic: string) => {
+    return `${
+      MMKVKeys.DRAFT_TEXT
+    }_${address.toLowerCase()}_${topic.toLowerCase()}`;
+  };
 
-//#region Draft Image
-export const getDraftImageKey = (address: string, topic: string) => {
-  return `${
-    MMKVKeys.DRAFT_IMAGE
-  }_${address.toLowerCase()}_${topic.toLowerCase()}`;
-};
+  saveDraftText = (address: string, topic: string, draftText: string) => {
+    return this.storage.set(this.getDraftTextKey(address, topic), draftText);
+  };
 
-export const saveDraftImage = (
-  address: string,
-  topic: string,
-  draftImageUri: string,
-) => {
-  return storage.set(getDraftImageKey(address, topic), draftImageUri);
-};
+  getDraftText = (address: string, topic: string) => {
+    return this.storage.getString(this.getDraftTextKey(address, topic));
+  };
 
-export const getDraftImage = (address: string, topic: string) => {
-  return storage.getString(getDraftImageKey(address, topic));
-};
+  clearDraftText = (address: string, topic: string) => {
+    return this.storage.delete(this.getDraftTextKey(address, topic));
+  };
 
-export const clearDraftImage = (address: string, topic: string) => {
-  return storage.delete(getDraftImageKey(address, topic));
-};
-//#endregion Draft Image
+  //#endregion Draft Text
 
-//#region Consent
-export const getConsentKey = (address: string, peerAddress: string) => {
-  return `${
-    MMKVKeys.CONSENT
-  }_${address.toLowerCase()}_${peerAddress.toLowerCase()}`;
-};
+  //#region Draft Image
 
-export const saveConsent = (
-  address: string,
-  peerAddress: string,
-  consent: boolean,
-) => {
-  return storage.set(getConsentKey(address, peerAddress), consent);
-};
+  private getDraftImageKey = (address: string, topic: string) => {
+    return `${
+      MMKVKeys.DRAFT_IMAGE
+    }_${address.toLowerCase()}_${topic.toLowerCase()}`;
+  };
 
-export const getConsent = (address: string, peerAddress: string) => {
-  return storage.getBoolean(getConsentKey(address, peerAddress));
-};
+  saveDraftImage = (address: string, topic: string, draftImageUri: string) => {
+    return this.storage.set(
+      this.getDraftImageKey(address, topic),
+      draftImageUri,
+    );
+  };
 
-export const clearConsent = (address: string, peerAddress: string) => {
-  return storage.delete(getConsentKey(address, peerAddress));
-};
-//#endregion Consent
+  getDraftImage = (address: string, topic: string) => {
+    return this.storage.getString(this.getDraftImageKey(address, topic));
+  };
 
-//#region Topic Addresses
-export const getTopicAddressesKey = (topic: string) => {
-  return `${MMKVKeys.TOPIC_ADDRESSES}_${topic.toLowerCase()}`;
-};
+  clearDraftImage = (address: string, topic: string) => {
+    return this.storage.delete(this.getDraftImageKey(address, topic));
+  };
 
-export const saveTopicAddresses = (topic: string, topicAddresses: string[]) => {
-  return storage.set(getTopicAddressesKey(topic), topicAddresses.join(','));
-};
+  //#endregion Draft Image
 
-export const getTopicAddresses = (topic: string): string[] => {
-  return storage.getString(getTopicAddressesKey(topic))?.split(',') ?? [];
-};
+  //#region Consent
 
-export const clearTopicAddresses = (topic: string) => {
-  return storage.delete(getTopicAddressesKey(topic));
-};
+  private getConsentKey = (address: string, peerAddress: string) => {
+    return `${
+      MMKVKeys.CONSENT
+    }_${address.toLowerCase()}_${peerAddress.toLowerCase()}`;
+  };
 
-//#region Clear All
+  saveConsent = (address: string, peerAddress: string, consent: boolean) => {
+    return this.storage.set(this.getConsentKey(address, peerAddress), consent);
+  };
 
-export const clearAll = () => {
-  return storage.clearAll();
-};
+  getConsent = (address: string, peerAddress: string) => {
+    return this.storage.getBoolean(this.getConsentKey(address, peerAddress));
+  };
 
-//#endregion Clear All
+  clearConsent = (address: string, peerAddress: string) => {
+    return this.storage.delete(this.getConsentKey(address, peerAddress));
+  };
 
-// #region Image cache
-export const getImageCacheKey = (uri: string) => {
-  return `${MMKVKeys.IMAGE_CACHE}_${uri}`;
-};
+  //#endregion Consent
 
-export const saveImageCache = (uri: string, decryptedPath: string) => {
-  return storage.set(getImageCacheKey(uri), decryptedPath);
-};
+  //#region Topic Addresses
 
-export const getImageCache = (uri: string) => {
-  return storage.getString(getImageCacheKey(uri));
-};
+  private getTopicAddressesKey = (topic: string) => {
+    return `${MMKVKeys.TOPIC_ADDRESSES}_${topic.toLowerCase()}`;
+  };
 
-export const clearImageCache = (uri: string) => {
-  return storage.delete(getImageCacheKey(uri));
-};
-// #endregion
+  saveTopicAddresses = (topic: string, topicAddresses: string[]) => {
+    return this.storage.set(
+      this.getTopicAddressesKey(topic),
+      topicAddresses.join(','),
+    );
+  };
 
-// #region Group Name
+  getTopicAddresses = (topic: string): string[] => {
+    return (
+      this.storage.getString(this.getTopicAddressesKey(topic))?.split(',') ?? []
+    );
+  };
 
-export const getGroupNameKey = (address: string, groupId: string) => {
-  return `${MMKVKeys.GROUP_NAME}_${address}_${groupId}`;
-};
+  clearTopicAddresses = (topic: string) => {
+    return this.storage.delete(this.getTopicAddressesKey(topic));
+  };
 
-export const saveGroupName = (
-  address: string,
-  groupId: string,
-  groupName: string,
-) => {
-  return storage.set(getGroupNameKey(address, groupId), groupName);
-};
+  //#region Clear All
 
-export const getGroupName = (address: string, groupId: string) => {
-  return storage.getString(getGroupNameKey(address, groupId));
-};
+  clearAll = () => {
+    return this.storage.clearAll();
+  };
 
-export const clearGroupName = (address: string, groupId: string) => {
-  return storage.delete(getGroupNameKey(address, groupId));
-};
+  //#endregion Clear All
+
+  // #region Image cache
+
+  private getImageCacheKey = (uri: string) => {
+    return `${MMKVKeys.IMAGE_CACHE}_${uri}`;
+  };
+
+  saveImageCache = (uri: string, decryptedPath: string) => {
+    return this.storage.set(this.getImageCacheKey(uri), decryptedPath);
+  };
+
+  getImageCache = (uri: string) => {
+    return this.storage.getString(this.getImageCacheKey(uri));
+  };
+
+  clearImageCache = (uri: string) => {
+    return this.storage.delete(this.getImageCacheKey(uri));
+  };
+
+  // #endregion
+
+  // #region Group Name
+
+  private getGroupNameKey = (address: string, groupId: string) => {
+    return `${MMKVKeys.GROUP_NAME}_${address}_${groupId}`;
+  };
+
+  saveGroupName = (address: string, groupId: string, groupName: string) => {
+    return this.storage.set(this.getGroupNameKey(address, groupId), groupName);
+  };
+
+  getGroupName = (address: string, groupId: string) => {
+    return this.storage.getString(this.getGroupNameKey(address, groupId));
+  };
+
+  clearGroupName = (address: string, groupId: string) => {
+    return this.storage.delete(this.getGroupNameKey(address, groupId));
+  };
+
+  //#endregion Group Name
+}
+
+export const mmkvStorage = new MMKVStorage();
 
 // #endregion Group Name

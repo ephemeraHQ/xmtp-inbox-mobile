@@ -15,7 +15,7 @@ import {useContactInfo} from '../hooks/useContactInfo';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
 import {ScreenNames} from '../navigation/ScreenNames';
-import {getConsent, getEnsNameKey} from '../services/mmkvStorage';
+import {mmkvStorage} from '../services/mmkvStorage';
 import {colors} from '../theme/colors';
 import {formatAddress} from '../utils/formatAddress';
 
@@ -37,9 +37,13 @@ const useData = () => {
         const recentConvos = list.slice(0, 3).map(it => {
           return {
             displayName:
-              getEnsNameKey(it.peerAddress) ?? formatAddress(it.peerAddress),
+              mmkvStorage.getEnsName(it.peerAddress) ??
+              formatAddress(it.peerAddress),
             address: it.peerAddress,
-            isConnected: getConsent(it.clientAddress, it.peerAddress),
+            isConnected: mmkvStorage.getConsent(
+              it.clientAddress,
+              it.peerAddress,
+            ),
             topic: it.topic,
           };
         });
@@ -61,7 +65,7 @@ const useData = () => {
         if (item.permissionType === 'allowed') {
           contactList.push({
             displayName:
-              getEnsNameKey(item.value) ??
+              mmkvStorage.getEnsName(item.value) ??
               formatAddress(getAddress(item.value)),
             address: getAddress(item.value),
             isConnected: true,

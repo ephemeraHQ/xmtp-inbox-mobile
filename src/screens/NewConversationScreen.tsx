@@ -13,7 +13,7 @@ import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {ListMessages} from '../models/ListMessages';
 import {ScreenNames} from '../navigation/ScreenNames';
 import {QueryKeys} from '../queries/QueryKeys';
-import {saveConsent} from '../services/mmkvStorage';
+import {mmkvStorage} from '../services/mmkvStorage';
 
 export const NewConversationScreen = () => {
   const {replace} = useTypedNavigation();
@@ -69,7 +69,7 @@ export const NewConversationScreen = () => {
         client?.conversations
           ?.newConversation(addresses[0])
           .then(conversation => {
-            saveConsent(client?.address, addresses[0], true);
+            mmkvStorage.saveConsent(client?.address, addresses[0], true);
             conversation.send(message as {text: string});
             replace(ScreenNames.Conversation, {topic: conversation.topic});
           });

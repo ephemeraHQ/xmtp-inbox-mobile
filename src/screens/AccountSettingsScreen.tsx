@@ -27,12 +27,7 @@ import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
 import {ScreenNames} from '../navigation/ScreenNames';
 import {clearClientKeys} from '../services/encryptedStorage';
-import {
-  clearAll,
-  getEnsAvatar,
-  saveEnsAvatar,
-  saveEnsName,
-} from '../services/mmkvStorage';
+import {mmkvStorage} from '../services/mmkvStorage';
 import {colors, greens, reds} from '../theme/colors';
 import {formatAddress} from '../utils/formatAddress';
 
@@ -69,9 +64,9 @@ const useData = () => {
       type: 'ENS',
     });
     if (address) {
-      saveEnsName(address, ens);
+      mmkvStorage.saveEnsName(address, ens);
       if (avatarUrl && address) {
-        saveEnsAvatar(address, avatarUrl);
+        mmkvStorage.saveEnsAvatar(address, avatarUrl);
       }
     }
   }
@@ -98,7 +93,7 @@ const useData = () => {
     },
   ];
   return {
-    avatarUrl: getEnsAvatar(address ?? '') ?? avatarUrl,
+    avatarUrl: mmkvStorage.getEnsAvatar(address ?? '') ?? avatarUrl,
     name: ens ?? (address ? formatAddress(address) : ''),
     addresses,
     wallets,
@@ -154,7 +149,7 @@ export const AccountSettingsScreen = () => {
           {
             text: translate('clear_local_data'),
             onPress: () => {
-              clearAll();
+              mmkvStorage.clearAll();
             },
           },
           {
@@ -168,7 +163,7 @@ export const AccountSettingsScreen = () => {
               disconnect()
                 .then(() => {})
                 .catch();
-              clearAll();
+              mmkvStorage.clearAll();
             },
           },
         ],

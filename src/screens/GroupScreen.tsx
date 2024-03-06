@@ -19,7 +19,7 @@ import {useGroup} from '../hooks/useGroup';
 import {useGroupMessages} from '../hooks/useGroupMessages';
 import {translate} from '../i18n';
 import {useGroupParticipantsQuery} from '../queries/useGroupParticipantsQuery';
-import {getConsent, getEnsName, saveConsent} from '../services/mmkvStorage';
+import {mmkvStorage} from '../services/mmkvStorage';
 import {AWSHelper} from '../services/s3';
 import {colors} from '../theme/colors';
 import {formatAddress} from '../utils/formatAddress';
@@ -63,7 +63,7 @@ const getInitialConsentState = (
   addresses: string,
   groupId: string,
 ): 'allowed' | 'denied' | 'unknown' => {
-  const cachedConsent = getConsent(addresses, groupId);
+  const cachedConsent = mmkvStorage.getConsent(addresses, groupId);
   // if (cachedConsent === undefined) {
   //   return 'unknown';
   // }
@@ -153,7 +153,7 @@ export const GroupScreen = () => {
                   textAlign={'end'}
                   typography="text-xs/semi-bold"
                   alignSelf={'flex-start'}>
-                  {getEnsName(item.senderAddress) ??
+                  {mmkvStorage.getEnsName(item.senderAddress) ??
                     formatAddress(item.senderAddress)}
                 </Text>
               </VStack>
@@ -183,7 +183,7 @@ export const GroupScreen = () => {
       client?.contacts.allow(addresses);
     }
     setConsent('allowed');
-    saveConsent(myAddress ?? '', id ?? '', true);
+    mmkvStorage.saveConsent(myAddress ?? '', id ?? '', true);
   }, [addresses, client?.contacts, myAddress, id]);
 
   const onBlock = useCallback(() => {
@@ -191,7 +191,7 @@ export const GroupScreen = () => {
       client?.contacts.deny(addresses);
     }
     setConsent('denied');
-    saveConsent(myAddress ?? '', id ?? '', false);
+    mmkvStorage.saveConsent(myAddress ?? '', id ?? '', false);
   }, [addresses, client?.contacts, id, myAddress]);
 
   return (
