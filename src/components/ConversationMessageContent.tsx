@@ -3,22 +3,67 @@ import {
   GroupChangeContent,
   RemoteAttachmentContent,
 } from '@xmtp/react-native-sdk';
-import {Container, Image} from 'native-base';
-import React, {FC} from 'react';
-import {useWindowDimensions} from 'react-native';
+import {Button, Container} from 'native-base';
+import React, {
+  FC,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useState,
+} from 'react';
+import {Pressable, useWindowDimensions} from 'react-native';
+import FastImage from 'react-native-fast-image';
 import {ContentTypes, SupportedContentTypes} from '../consts/ContentTypes';
+import {ConversationContext} from '../context/ConversationContext';
 import {useFrame} from '../hooks/useFrame';
 import {translate} from '../i18n';
 import {colors} from '../theme/colors';
 import {formatAddress} from '../utils/formatAddress';
 import {ImageMessage} from './ImageMessage';
-import {Button} from './common/Button';
+import {Button as AppButton} from './common/Button';
 import {Text} from './common/Text';
 
 interface ConversationMessageContentProps {
   message: DecodedMessage<SupportedContentTypes>;
   isMe: boolean;
 }
+
+const OptionsContainer: FC<
+  PropsWithChildren<{isMe: boolean; messageId: string}>
+> = ({children, isMe, messageId}) => {
+  const [shown, setShown] = useState(false);
+  const {setReaction, setReply} = useContext(ConversationContext);
+
+  const handleReactPress = useCallback(() => {
+    setReaction(messageId);
+  }, [setReaction, messageId]);
+
+  const handleReplyPress = useCallback(() => {
+    setReply(messageId);
+  }, [setReply, messageId]);
+
+  return (
+    <Pressable onPress={() => setShown(prev => !prev)}>
+      <Container
+        flexShrink={1}
+        alignSelf={isMe ? 'flex-end' : 'flex-start'}
+        alignItems={isMe ? 'flex-end' : 'flex-start'}
+        borderRadius={'16px'}>
+        {children}
+        {shown && (
+          <Button.Group isAttached flexWrap={'wrap'}>
+            <AppButton onPress={handleReplyPress} variant={'ghost'}>
+              Reply
+            </AppButton>
+            <AppButton onPress={handleReactPress} variant={'ghost'}>
+              React
+            </AppButton>
+          </Button.Group>
+        )}
+      </Container>
+    </Pressable>
+  );
+};
 
 const TextMessage = ({
   isMe,
@@ -35,7 +80,6 @@ const TextMessage = ({
         backgroundColor={
           isMe ? colors.actionPrimary : colors.backgroundSecondary
         }
-        alignSelf={isMe ? 'flex-end' : 'flex-start'}
         borderRadius={'16px'}
         borderBottomRightRadius={isMe ? 0 : '16px'}
         borderTopLeftRadius={isMe ? '16px' : 0}
@@ -52,26 +96,31 @@ const TextMessage = ({
 
   return (
     <Container
-      backgroundColor={isMe ? colors.actionPrimary : colors.backgroundSecondary}
       alignSelf={isMe ? 'flex-end' : 'flex-start'}
       borderRadius={'16px'}
       borderBottomRightRadius={isMe ? 0 : '16px'}
       borderTopLeftRadius={isMe ? '16px' : 0}
       paddingY={3}
       paddingX={5}>
-      <Image
+      <FastImage
         source={{uri: frameData.image}}
-        alt="frame image"
-        height={150}
-        width={width / 2}
+        style={{height: 150, width: width / 2, borderRadius: 10}}
       />
-      <Container flexWrap={'wrap'} flexDirection={'row'} width={'100%'}>
+      <Button.Group
+        paddingTop={1}
+        width={width / 2}
+        isAttached
+        flexWrap={'wrap'}>
         {frameData.buttons.map((it, id) => (
-          <Button key={String(it)} onPress={() => postFrame(id + 1)}>
+          <AppButton
+            variant={'outline'}
+            key={String(it)}
+            flex={1}
+            onPress={() => postFrame(id + 1)}>
             {it}
-          </Button>
+          </AppButton>
         ))}
-      </Container>
+      </Button.Group>
     </Container>
   );
 };
@@ -80,14 +129,26 @@ export const ConversationMessageContent: FC<
   ConversationMessageContentProps
 > = ({message, isMe}) => {
   if (message.contentTypeId === ContentTypes.Text) {
-    return <TextMessage isMe={isMe} message={message} />;
+    return (
+      <OptionsContainer isMe={isMe} messageId={message.id}>
+        <TextMessage isMe={isMe} message={message} />
+      </OptionsContainer>
+    );
   }
 
   if (message.contentTypeId === ContentTypes.RemoteStaticAttachment) {
     return (
-      <Container alignSelf={isMe ? 'flex-end' : 'flex-start'}>
-        <ImageMessage content={message.content() as RemoteAttachmentContent} />
-      </Container>
+      <OptionsContainer isMe={isMe} messageId={message.id}>
+        <Container
+          borderRadius={'16px'}
+          borderBottomRightRadius={isMe ? 0 : '16px'}
+          borderTopLeftRadius={isMe ? '16px' : 0}
+          paddingY={3}>
+          <ImageMessage
+            content={message.content() as RemoteAttachmentContent}
+          />
+        </Container>
+      </OptionsContainer>
     );
   }
 

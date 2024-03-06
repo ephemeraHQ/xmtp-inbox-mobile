@@ -141,6 +141,7 @@ const ListHeader: FC<ListHeaderProps> = ({
             </Button>
           </Box>
         </Box>
+        <Box width={10} />
       </HStack>
       {list === 'MESSAGE_REQUESTS' ? (
         <Box

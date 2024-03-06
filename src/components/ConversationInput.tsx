@@ -7,7 +7,6 @@ import {
   launchImageLibrary,
 } from 'react-native-image-picker';
 import {Icon} from '../components/common/Icon';
-import {AppConfig} from '../consts/AppConfig';
 import {translate} from '../i18n';
 import {mmkvStorage} from '../services/mmkvStorage';
 import {colors} from '../theme/colors';
@@ -87,37 +86,32 @@ export const ConversationInput: FC<ConversationInputProps> = ({
 
   return (
     <VStack flexShrink={1}>
-      {AppConfig.IMAGE_UPLOAD_ENABLED && (
-        <HStack alignItems={'flex-end'} backgroundColor={'transparent'}>
-          <Pressable onPress={handleImageUploadPress}>
-            <Icon name="photo" size={40} color={colors.actionPrimary} />
-          </Pressable>
-          <Pressable onPress={handleCameraPress}>
-            <Icon name="camera" size={40} color={colors.actionPrimary} />
-          </Pressable>
-          {asset ? (
-            <Box>
-              <Box position={'absolute'} zIndex={10} right={0}>
-                <Pressable onPress={() => setAssetUri(null)}>
-                  <Icon
-                    name="x-circle"
-                    size={25}
-                    color={colors.actionPrimary}
-                  />
-                </Pressable>
-              </Box>
-              <Image
-                source={{uri: asset.uri}}
-                height={'80px'}
-                width={'80px'}
-                borderRadius={10}
-                marginBottom={'3px'}
-                alt={translate('conversation_image_alt')}
-              />
+      <HStack alignItems={'flex-end'} backgroundColor={'transparent'}>
+        <Pressable onPress={handleImageUploadPress}>
+          <Icon name="photo" size={40} color={colors.actionPrimary} />
+        </Pressable>
+        <Pressable onPress={handleCameraPress}>
+          <Icon name="camera" size={40} color={colors.actionPrimary} />
+        </Pressable>
+        {asset ? (
+          <Box>
+            <Box position={'absolute'} zIndex={10} right={0}>
+              <Pressable onPress={() => setAssetUri(null)}>
+                <Icon name="x-circle" size={25} color={colors.actionPrimary} />
+              </Pressable>
             </Box>
-          ) : null}
-        </HStack>
-      )}
+            <Image
+              source={{uri: asset.uri}}
+              height={'80px'}
+              width={'80px'}
+              borderRadius={10}
+              marginBottom={'3px'}
+              alt={translate('conversation_image_alt')}
+            />
+          </Box>
+        ) : null}
+      </HStack>
+
       <HStack
         borderColor={focused ? colors.actionPrimary : colors.textSecondary}
         borderWidth={2}

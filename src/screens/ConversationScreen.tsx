@@ -1,8 +1,8 @@
 import {useRoute} from '@react-navigation/native';
 import {useQueryClient} from '@tanstack/react-query';
-import {DecodedMessage, RemoteAttachmentContent} from '@xmtp/react-native-sdk';
+import {RemoteAttachmentContent} from '@xmtp/react-native-sdk';
 import {Box, FlatList, HStack, Pressable, VStack} from 'native-base';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -19,7 +19,10 @@ import {Icon} from '../components/common/Icon';
 import {Modal} from '../components/common/Modal';
 import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
-import {SupportedContentTypes} from '../consts/ContentTypes';
+import {
+  ConversationContext,
+  ConversationContextValue,
+} from '../context/ConversationContext';
 import {useClient} from '../hooks/useClient';
 import {useContactInfo} from '../hooks/useContactInfo';
 import {useConversation} from '../hooks/useConversation';
@@ -29,6 +32,8 @@ import {QueryKeys} from '../queries/QueryKeys';
 import {mmkvStorage} from '../services/mmkvStorage';
 import {AWSHelper} from '../services/s3';
 import {colors} from '../theme/colors';
+
+const keyExtractor = (item: string) => item;
 
 const getTimestamp = (timestamp: number) => {
   // If today, return hours and minutes if not return date
@@ -48,9 +53,9 @@ const getTimestamp = (timestamp: number) => {
 };
 
 const useData = (topic: string) => {
-  const {messages} = useConversationMessages(topic);
+  const {data: messages} = useConversationMessages(topic);
   const {client} = useClient();
-  const {conversation} = useConversation(topic);
+  const {data: conversation} = useConversation(topic);
   const cachedPeerAddress = mmkvStorage.getTopicAddresses(topic)?.[0];
   const {displayName, avatarUrl} = useContactInfo(
     conversation?.peerAddress || '',
@@ -89,12 +94,14 @@ export const ConversationScreen = () => {
   const {topic} = params as {topic: string};
   const {name, myAddress, messages, address, conversation, client} =
     useData(topic);
-  const [showReply, setShowReply] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [consent, setConsent] = useState<'allowed' | 'denied' | 'unknown'>(
     getInitialConsentState(myAddress ?? '', address ?? ''),
   );
+  const {ids, entities} = messages ?? {};
   const queryClient = useQueryClient();
+  const [replyId, setReplyId] = useState<string | null>(null);
+  const [reactId, setReactId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!conversation) {
@@ -153,22 +160,24 @@ export const ConversationScreen = () => {
     [client, conversation],
   );
 
-  const renderItem: ListRenderItem<DecodedMessage<SupportedContentTypes>> = ({
-    item,
-  }) => {
-    const isMe = item.senderAddress === myAddress;
+  const renderItem: ListRenderItem<string> = ({item}) => {
+    const message = entities?.[item];
+    if (!message) {
+      return null;
+    }
+    const isMe = message.senderAddress === myAddress;
 
     return (
       <Pressable>
         <Box marginLeft={6} marginRight={6} marginY={2} flexShrink={1}>
           <VStack>
-            <ConversationMessageContent message={item} isMe={isMe} />
+            <ConversationMessageContent message={message} isMe={isMe} />
             <Text
               flexShrink={1}
               color={colors.primaryN200}
               typography="text-xs/semi-bold"
               alignSelf={isMe ? 'flex-end' : 'flex-start'}>
-              {getTimestamp(item.sent)}
+              {getTimestamp(message.sent)}
             </Text>
           </VStack>
         </Box>
@@ -195,8 +204,39 @@ export const ConversationScreen = () => {
     mmkvStorage.saveConsent(myAddress ?? '', address ?? '', false);
   }, [address, client?.contacts, myAddress]);
 
+  const setReply = useCallback(
+    (id: string) => {
+      setReplyId(id);
+    },
+    [setReplyId],
+  );
+
+  const setReaction = useCallback(
+    (id: string) => {
+      setReactId(id);
+    },
+    [setReactId],
+  );
+
+  const clearReply = useCallback(() => {
+    setReplyId(null);
+  }, [setReplyId]);
+
+  const clearReaction = useCallback(() => {
+    setReactId(null);
+  }, [setReactId]);
+
+  const conversationProviderValue = useMemo((): ConversationContextValue => {
+    return {
+      setReply,
+      setReaction,
+      clearReply,
+      clearReaction,
+    };
+  }, [setReply, setReaction, clearReply, clearReaction]);
+
   return (
-    <>
+    <ConversationContext.Provider value={conversationProviderValue}>
       <Screen
         includeTopPadding={false}
         containerStlye={{
@@ -213,9 +253,9 @@ export const ConversationScreen = () => {
             keyboardVerticalOffset={10}>
             <Box flex={1}>
               <FlatList
-                keyExtractor={item => item.id}
+                keyExtractor={keyExtractor}
                 inverted
-                data={messages}
+                data={ids}
                 renderItem={renderItem}
                 ListFooterComponent={<Box height={'100px'} />}
               />
@@ -250,8 +290,22 @@ export const ConversationScreen = () => {
 
       <Drawer
         title="Test"
-        isOpen={showReply}
-        onBackgroundPress={() => setShowReply(false)}>
+        isOpen={Boolean(replyId)}
+        onBackgroundPress={clearReply}>
+        <VStack w={'100%'} alignItems={'flex-start'}>
+          <Box
+            backgroundColor={'white'}
+            paddingX={'4px'}
+            paddingY={'6px'}
+            marginRight={'12px'}>
+            <Text>Test</Text>
+          </Box>
+        </VStack>
+      </Drawer>
+      <Drawer
+        title="Test"
+        isOpen={Boolean(reactId)}
+        onBackgroundPress={clearReaction}>
         <VStack w={'100%'} alignItems={'flex-start'}>
           <Box
             backgroundColor={'white'}
@@ -289,6 +343,6 @@ export const ConversationScreen = () => {
           </Button>
         </VStack>
       </Modal>
-    </>
+    </ConversationContext.Provider>
   );
 };
