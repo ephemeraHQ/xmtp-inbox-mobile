@@ -9,6 +9,8 @@ yarn
 Build the iOS App
 
 ```
+bundle install
+bundle exec pod install --project-directory=ios
 yarn ios
 ```
 
