@@ -28,7 +28,9 @@ export const useGroupMessages = (id: string) => {
       }
     });
     return () => {
-      cancelStream?.();
+      cancelStream?.then(callback => {
+        callback();
+      });
     };
   }, [group, queryClient]);
 

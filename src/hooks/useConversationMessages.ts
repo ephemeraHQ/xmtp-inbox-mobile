@@ -12,7 +12,7 @@ export const useConversationMessages = (topic: string) => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    let cancelStream: (() => void) | undefined;
+    let cancelStream: Promise<() => void> | undefined;
     cancelStream = conversation?.streamMessages(async message => {
       queryClient.setQueryData<ConversationMessagesQueryRequestData>(
         [QueryKeys.ConversationMessages, conversation.topic],
@@ -20,7 +20,9 @@ export const useConversationMessages = (topic: string) => {
       );
     });
     return () => {
-      cancelStream?.();
+      cancelStream?.then(callback => {
+        callback();
+      });
     };
   }, [conversation, queryClient]);
 
