@@ -13,7 +13,11 @@ jobs:
           fetch-depth: 0
       - name: Select Xcode 15.1
         run: ls /Applications/ && sudo xcode-select -switch /Applications/Xcode_15.1.app # Switch Xcode version
+      # Force cocoapods version 14.4
       - uses: actions/setup-node@v3
-      - run: yarn
+      - name: Install Bundle
+        run: bundle install
+      - run: bundle exec yarn
+      - run: bundle exec pod install --project-directory=ios
       - name: Build iOS App
         run: yarn ios --no-packager --mode Release

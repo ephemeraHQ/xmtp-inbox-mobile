@@ -75,5 +75,6 @@
   "group_remove_single": "%{initiatedByAddress} removed %{address}",
   "group_remove_plural": "%{initiatedByAddress} removed %{addressCount} members",
   "error_group_remove": "An error occurred removing from group",
-  "error_group_adding": "An error occurred adding to group"
+  "error_group_adding": "An error occurred adding to group",
+  "reply": "Reply"
 }
