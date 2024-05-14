@@ -15,6 +15,11 @@ interface ConversationListItemProps {
   lastMessageTime: number;
 }
 
+/**
+ *
+ * @deprecated only leaving v3 for now
+ *
+ */
 export const ConversationListItem: FC<ConversationListItemProps> = ({
   conversation,
   display,
@@ -26,8 +31,8 @@ export const ConversationListItem: FC<ConversationListItemProps> = ({
   return (
     <Pressable
       onPress={() => {
-        navigate(ScreenNames.Conversation, {
-          topic: conversation.topic,
+        navigate(ScreenNames.Group, {
+          id: conversation.topic,
         });
       }}>
       <HStack space={[2, 3]} alignItems={'center'} w={'100%'} padding={'16px'}>

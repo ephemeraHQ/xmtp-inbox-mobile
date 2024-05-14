@@ -7,6 +7,9 @@ export interface ListItem {
   isRequest: boolean;
 }
 
+/**
+ * @deprecated only leaving v3 for now
+ */
 export interface ListConversation extends ListItem {
   conversation: Conversation<any>;
 }
@@ -15,4 +18,4 @@ export interface ListGroup extends ListItem {
   group: Group<any>;
 }
 
-export type ListMessages = (ListConversation | ListGroup)[];
+export type ListMessages = ListGroup[];

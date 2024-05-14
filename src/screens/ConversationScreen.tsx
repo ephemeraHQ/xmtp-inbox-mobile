@@ -89,6 +89,11 @@ const getInitialConsentState = (address: string, peerAddress: string) => {
   return 'denied';
 };
 
+/**
+ *
+ * @deprecated This screen is not used anymore
+ * keeping it for reference in case we want UI of 1 to 1 chats to be different
+ */
 export const ConversationScreen = () => {
   const {params} = useRoute();
   const {topic} = params as {topic: string};

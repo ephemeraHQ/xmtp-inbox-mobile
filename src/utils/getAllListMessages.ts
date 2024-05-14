@@ -1,9 +1,5 @@
 import {Client} from '@xmtp/react-native-sdk';
-import {
-  ListConversation,
-  ListGroup,
-  ListMessages,
-} from '../models/ListMessages';
+import {ListGroup, ListMessages} from '../models/ListMessages';
 import {mmkvStorage} from '../services/mmkvStorage';
 import {withRequestLogger} from './logger';
 
@@ -29,34 +25,13 @@ export const getAllListMessages = async (client?: Client<any> | null) => {
       );
     });
 
-    const [convos, groups] = await Promise.all([
-      withRequestLogger(client.conversations.list(), {name: 'list'}),
-      withRequestLogger(client.conversations.listGroups(), {name: 'groups'}),
-    ]);
+    const groups = await withRequestLogger(client.conversations.listGroups(), {
+      name: 'groups',
+    });
 
-    const allMessages: PromiseSettledResult<ListConversation | ListGroup>[] =
-      await Promise.allSettled([
-        ...convos.map(async conversation => {
-          const [messages, consent] = await Promise.all([
-            withRequestLogger(conversation.messages(1), {
-              name: 'conversation_messages',
-            }),
-            withRequestLogger(conversation.consentState(), {
-              name: 'conversation_consent',
-            }),
-          ]);
-          const content = messages?.[0]?.content();
-          return {
-            conversation,
-            display:
-              typeof content === 'string'
-                ? content
-                : messages[0].fallback ?? '',
-            lastMessageTime: messages[0].sent,
-            isRequest: consent !== 'allowed',
-          };
-        }),
-        ...groups.map(async group => {
+    const allMessages: PromiseSettledResult<ListGroup>[] =
+      await Promise.allSettled(
+        groups.map(async group => {
           await group.sync();
           const messages = await withRequestLogger(group.messages(), {
             name: 'group_messages',
@@ -73,7 +48,7 @@ export const getAllListMessages = async (client?: Client<any> | null) => {
             isRequest: false,
           };
         }),
-      ]);
+      );
 
     // Remove the rejected promises and return the list of messages using .reduce
     const allMessagesFiltered = allMessages.reduce<ListMessages>(

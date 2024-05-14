@@ -8,7 +8,6 @@ export enum ScreenNames {
   // Auth Stack
   Account = 'account',
   ConversationList = 'conversation_list',
-  Conversation = 'conversation',
   Group = 'group',
   NewConversation = 'new_conversation',
   Search = 'search',

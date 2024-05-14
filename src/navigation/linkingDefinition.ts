@@ -10,7 +10,6 @@ export const linkingDefinition: LinkingOptions<RootStackParams> = {
       [ScreenNames.OnboardingEnableIdentity]: 'onboarding_enable_identity',
       [ScreenNames.Account]: 'account',
       [ScreenNames.ConversationList]: 'conversation_list',
-      [ScreenNames.Conversation]: 'conversation/:topic',
       [ScreenNames.NewConversation]: {
         path: 'new_conversation/:addresses',
         parse: {
