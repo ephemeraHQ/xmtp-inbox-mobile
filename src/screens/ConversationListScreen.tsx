@@ -4,7 +4,6 @@ import {Box, Center, Fab, FlatList, HStack, VStack} from 'native-base';
 import React, {FC, useCallback, useMemo, useState} from 'react';
 import {ListRenderItem, Pressable} from 'react-native';
 import {AvatarWithFallback} from '../components/AvatarWithFallback';
-import {ConversationListItem} from '../components/ConversationListItem';
 import {GroupListItem} from '../components/GroupListItem';
 import {Button} from '../components/common/Button';
 import {Drawer} from '../components/common/Drawer';
@@ -16,18 +15,13 @@ import {useClient} from '../hooks/useClient';
 import {useListMessages} from '../hooks/useListMessages';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
-import {
-  ListConversation,
-  ListGroup,
-  ListMessages,
-} from '../models/ListMessages';
+import {ListGroup, ListMessages} from '../models/ListMessages';
 import {ScreenNames} from '../navigation/ScreenNames';
 import {colors} from '../theme/colors';
 
 const EmptyBackground = require('../../assets/images/Bg_asset.svg').default;
 
-const keyExtractor = (item: ListConversation | ListGroup) =>
-  'conversation' in item ? item.conversation?.topic : item.group?.id ?? '';
+const keyExtractor = (item: ListGroup) => item.group?.id ?? '';
 
 const useData = () => {
   const {client} = useClient();
@@ -219,27 +213,15 @@ export const ConversationListScreen = () => {
     [],
   );
 
-  const renderItem: ListRenderItem<ListConversation | ListGroup> = useCallback(
-    ({item}) => {
-      if ('conversation' in item) {
-        return (
-          <ConversationListItem
-            conversation={item.conversation}
-            display={item.display}
-            lastMessageTime={item.lastMessageTime}
-          />
-        );
-      }
-      return (
-        <GroupListItem
-          group={item.group}
-          display={item.display}
-          lastMessageTime={item.lastMessageTime}
-        />
-      );
-    },
-    [],
-  );
+  const renderItem: ListRenderItem<ListGroup> = useCallback(({item}) => {
+    return (
+      <GroupListItem
+        group={item.group}
+        display={item.display}
+        lastMessageTime={item.lastMessageTime}
+      />
+    );
+  }, []);
 
   return (
     <>

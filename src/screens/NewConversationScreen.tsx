@@ -13,7 +13,6 @@ import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {ListMessages} from '../models/ListMessages';
 import {ScreenNames} from '../navigation/ScreenNames';
 import {QueryKeys} from '../queries/QueryKeys';
-import {mmkvStorage} from '../services/mmkvStorage';
 
 export const NewConversationScreen = () => {
   const {replace} = useTypedNavigation();
@@ -25,55 +24,40 @@ export const NewConversationScreen = () => {
   const onSend = useCallback(
     async (message: {text?: string; asset?: Asset}) => {
       // TODO: Error Handling
-      if (addresses.length !== 1) {
-        const canMessage = await client?.canGroupMessage(addresses);
-        if (!canMessage && Platform.OS === 'android') {
-          Alert.alert('You do not have permission to message this group');
-          return;
-        }
-        client?.conversations
-          ?.newGroup(addresses)
-          .then(group => {
-            // The client is not notified of a group they create, so we add it to the list here
-            group
-              .send(message as {text: string})
-              .then(() => {
-                queryClient.setQueryData<ListMessages>(
-                  [QueryKeys.List, client?.address],
-                  prev => {
-                    return [
-                      {
-                        group,
-                        display: message.text ?? 'Image',
-                        lastMessageTime: Date.now(),
-                        isRequest: false,
-                      },
-                      ...(prev ?? []),
-                    ];
-                  },
-                );
-              })
-              .finally(() => {
-                replace(ScreenNames.Group, {id: group.id});
-              });
-          })
-          .catch(err => {
-            console.log('error on new', err);
-          });
-      } else {
-        const canMessage = await client?.canMessage(addresses[0]);
-        if (!canMessage) {
-          Alert.alert('You do not have permission to message this group');
-          return;
-        }
-        client?.conversations
-          ?.newConversation(addresses[0])
-          .then(conversation => {
-            mmkvStorage.saveConsent(client?.address, addresses[0], true);
-            conversation.send(message as {text: string});
-            replace(ScreenNames.Conversation, {topic: conversation.topic});
-          });
+      const canMessage = await client?.canGroupMessage(addresses);
+      if (!canMessage && Platform.OS === 'android') {
+        Alert.alert('You do not have permission to message this group');
+        return;
       }
+      client?.conversations
+        ?.newGroup(addresses)
+        .then(group => {
+          // The client is not notified of a group they create, so we add it to the list here
+          group
+            .send(message as {text: string})
+            .then(() => {
+              queryClient.setQueryData<ListMessages>(
+                [QueryKeys.List, client?.address],
+                prev => {
+                  return [
+                    {
+                      group,
+                      display: message.text ?? 'Image',
+                      lastMessageTime: Date.now(),
+                      isRequest: false,
+                    },
+                    ...(prev ?? []),
+                  ];
+                },
+              );
+            })
+            .finally(() => {
+              replace(ScreenNames.Group, {id: group.id});
+            });
+        })
+        .catch(err => {
+          console.log('error on new', err);
+        });
     },
     [addresses, client, queryClient, replace],
   );

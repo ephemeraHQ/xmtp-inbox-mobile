@@ -12,7 +12,6 @@ export type OnboardingStackParams = {
 export type AuthenticatedStackParams = {
   [ScreenNames.Account]: undefined;
   [ScreenNames.ConversationList]: undefined;
-  [ScreenNames.Conversation]: {topic: string};
   [ScreenNames.Group]: {id: string};
   [ScreenNames.NewConversation]: {addresses: string[]};
   [ScreenNames.Search]: undefined;

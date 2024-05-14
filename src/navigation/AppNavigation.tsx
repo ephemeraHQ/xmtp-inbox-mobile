@@ -5,7 +5,6 @@ import {Platform} from 'react-native';
 import {useClientContext} from '../context/ClientContext';
 import {AccountSettingsScreen} from '../screens/AccountSettingsScreen';
 import {ConversationListScreen} from '../screens/ConversationListScreen';
-import {ConversationScreen} from '../screens/ConversationScreen';
 import {DevScreen} from '../screens/DevScreen';
 import {GroupScreen} from '../screens/GroupScreen';
 import {LoadingScreen} from '../screens/LoadingScreen';
@@ -78,10 +77,6 @@ export const AppNavigation = () => {
           <AuthenticatedStack.Screen
             name={ScreenNames.ConversationList}
             component={ConversationListScreen}
-          />
-          <AuthenticatedStack.Screen
-            name={ScreenNames.Conversation}
-            component={ConversationScreen}
           />
           <AuthenticatedStack.Screen
             name={ScreenNames.Group}
