@@ -17,7 +17,9 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.496.0",
+    "@ethersproject/shims": "^5.7.0",
     "@nozbe/watermelondb": "^0.27.1",
+    "@privy-io/expo": "^0.15.1",
     "@react-native-async-storage/async-storage": "^1.21.0",
     "@react-native-clipboard/clipboard": "^1.13.2",
     "@react-native-community/blur": "^4.3.2",
@@ -32,6 +34,12 @@
     "aws-sdk": "^2.1540.0",
     "ethers": "^5",
     "expo": ">=50.0.0-0 <51.0.0",
+    "expo-application": "~5.8.4",
+    "expo-constants": "~15.4.6",
+    "expo-crypto": "^13.0.2",
+    "expo-linking": "~6.2.2",
+    "expo-secure-store": "~12.8.1",
+    "expo-web-browser": "~12.8.2",
     "i18n-js": "^4.3.2",
     "native-base": "^3.4.28",
     "node-libs-browser": "^2.2.1",
@@ -56,6 +64,7 @@
     "react-native-screens": "^3.29.0",
     "react-native-svg": "^13.9.0",
     "react-native-url-polyfill": "^2.0.0",
+    "react-native-webview": "13.6.4",
     "wagmi": "^1.4.12"
   },
   "devDependencies": {

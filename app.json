@@ -1,4 +1,7 @@
 {
   "name": "XmtpMobileChat",
-  "displayName": "XmtpMobileChat"
+  "displayName": "XmtpMobileChat",
+  "plugins": [
+    "expo-secure-store"
+  ]
 }

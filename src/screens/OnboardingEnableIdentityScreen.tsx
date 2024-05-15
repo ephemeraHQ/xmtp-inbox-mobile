@@ -1,8 +1,11 @@
-import {useDisconnect, useSigner} from '@thirdweb-dev/react-native';
+import {useEmbeddedWallet} from '@privy-io/expo';
+import {useDisconnect} from '@thirdweb-dev/react-native';
 import {Client} from '@xmtp/react-native-sdk';
 import {VStack} from 'native-base';
 import React, {useCallback, useEffect, useState} from 'react';
 import {Alert, DeviceEventEmitter, Image} from 'react-native';
+import {createWalletClient, custom} from 'viem';
+import {mainnet} from 'viem/chains';
 import {Button} from '../components/common/Button';
 import {Icon} from '../components/common/Icon';
 import {Screen} from '../components/common/Screen';
@@ -45,16 +48,29 @@ export const OnboardingEnableIdentityScreen = () => {
   const [step, setStep] = useState<Step>('CREATE_IDENTITY');
   const {navigate} = useTypedNavigation();
   const disconnect = useDisconnect();
-  const signer = useSigner();
+  const wallet = useEmbeddedWallet();
   const {setClient} = useClientContext();
 
   useEffect(() => {
     const startClientCreation = async () => {
-      if (!signer) {
+      const provider = await wallet?.getProvider?.();
+      if (!provider) {
         return;
       }
       try {
-        const client = await Client.create(signer, {
+        await provider.request({
+          method: 'wallet_switchEthereumChain',
+          // Replace '0x1' with the chain ID of your desired network
+          params: [{chainId: '0x1'}],
+        });
+        // const ethersProvider = new ethers.providers.Web3Provider(provider);
+        // const signer = ethersProvider.getSigner();
+        const walletClient = createWalletClient({
+          // Replace this with your desired network that you imported from viem
+          chain: mainnet,
+          transport: custom(provider),
+        });
+        const client = await Client.create(walletClient, {
           enableAlphaMls: true,
           env: AppConfig.XMTP_ENV,
           preEnableIdentityCallback: async () => {
@@ -67,8 +83,7 @@ export const OnboardingEnableIdentityScreen = () => {
           codecs: supportedContentTypes,
         });
         const keys = await client.exportKeyBundle();
-        const address = await signer.getAddress();
-        saveClientKeys(address as `0x${string}`, keys);
+        saveClientKeys(client.address as `0x${string}`, keys);
         setClient(client);
       } catch (e: any) {
         console.log('Error creating client', e);
@@ -76,7 +91,7 @@ export const OnboardingEnableIdentityScreen = () => {
       }
     };
     startClientCreation();
-  }, [setClient, signer]);
+  }, [setClient, wallet]);
 
   const handleCreateIdentity = useCallback(() => {
     DeviceEventEmitter.emit(EventEmitterEvents.CREATE_IDENTITY);

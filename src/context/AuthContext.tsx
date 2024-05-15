@@ -1,4 +1,3 @@
-import {useAddress} from '@thirdweb-dev/react-native';
 import React, {
   FC,
   PropsWithChildren,
@@ -7,6 +6,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
+import {useClient} from '../hooks/useClient';
 import {getClientKeys} from '../services/encryptedStorage';
 
 type AuthedStatus = 'LOADING' | 'AUTHED' | 'UNAUTHED';
@@ -25,7 +25,8 @@ export const AuthContext = createContext<AuthContextValue>({
 
 export const AuthProvider: FC<PropsWithChildren> = ({children}) => {
   const [authStatus, setAuthStatus] = useState<AuthedStatus>('LOADING');
-  const address = useAddress();
+  const {client} = useClient();
+  const address = client?.address;
 
   useEffect(() => {
     if (!address) {

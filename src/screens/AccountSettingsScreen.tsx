@@ -5,7 +5,6 @@ import {
   useENS,
   useWallet,
 } from '@thirdweb-dev/react-native';
-import {} from 'ethers';
 import {Box, FlatList, HStack, SectionList, Switch, VStack} from 'native-base';
 import React, {useCallback, useMemo, useState} from 'react';
 import {

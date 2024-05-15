@@ -1,4 +1,4 @@
-import {useAddress, useConnectionStatus} from '@thirdweb-dev/react-native';
+import {usePrivy} from '@privy-io/expo';
 import {Client} from '@xmtp/react-native-sdk';
 import React, {
   FC,
@@ -35,21 +35,24 @@ export const ClientProvider: FC<PropsWithChildren> = ({children}) => {
     null,
   );
   const [loading, setLoading] = useState(true);
-  const address = useAddress();
-  const status = useConnectionStatus();
+  const {user, isReady} = usePrivy();
 
   useEffect(() => {
-    if (status === 'unknown' || status === 'connecting') {
+    if (!isReady) {
       return;
     }
-    if (status === 'disconnected') {
+    if (!user) {
       return setLoading(false);
     }
-    if (!address) {
-      // Address still shows as undefined even when connected
-      return;
+    const wallet = user.linked_accounts.find(account => {
+      return account.type === 'wallet';
+    });
+    if (!wallet) {
+      return setLoading(false);
     }
-    getClientKeys(address as `0x${string}`)
+    const address = wallet?.address as `0x${string}`;
+
+    getClientKeys(address)
       .then(keys => {
         if (!keys) {
           return setLoading(false);
@@ -71,7 +74,7 @@ export const ClientProvider: FC<PropsWithChildren> = ({children}) => {
       .catch(() => {
         return setLoading(false);
       });
-  }, [address, status]);
+  }, [isReady, user]);
 
   return (
     <ClientContext.Provider
