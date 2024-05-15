@@ -1,5 +1,4 @@
 import {useEmbeddedWallet} from '@privy-io/expo';
-import {useDisconnect} from '@thirdweb-dev/react-native';
 import {Client} from '@xmtp/react-native-sdk';
 import {VStack} from 'native-base';
 import React, {useCallback, useEffect, useState} from 'react';
@@ -14,6 +13,7 @@ import {AppConfig} from '../consts/AppConfig';
 import {supportedContentTypes} from '../consts/ContentTypes';
 import {EventEmitterEvents} from '../consts/EventEmitters';
 import {useClientContext} from '../context/ClientContext';
+import {useDisconnect} from '../hooks/useDisconnect';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
 import {ScreenNames} from '../navigation/ScreenNames';
@@ -60,13 +60,9 @@ export const OnboardingEnableIdentityScreen = () => {
       try {
         await provider.request({
           method: 'wallet_switchEthereumChain',
-          // Replace '0x1' with the chain ID of your desired network
           params: [{chainId: '0x1'}],
         });
-        // const ethersProvider = new ethers.providers.Web3Provider(provider);
-        // const signer = ethersProvider.getSigner();
         const walletClient = createWalletClient({
-          // Replace this with your desired network that you imported from viem
           chain: mainnet,
           transport: custom(provider),
         });

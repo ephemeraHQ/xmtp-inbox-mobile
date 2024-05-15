@@ -7,6 +7,8 @@ export type LoadingStackParams = {
 export type OnboardingStackParams = {
   [ScreenNames.OnboardingConnectWallet]: undefined;
   [ScreenNames.OnboardingEnableIdentity]: undefined;
+  [ScreenNames.OnboardingEmailEntry]: undefined;
+  [ScreenNames.OnboardingEmailCode]: {email: string};
 };
 
 export type AuthenticatedStackParams = {

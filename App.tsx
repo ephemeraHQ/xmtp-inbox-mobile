@@ -4,6 +4,7 @@ import {PrivyProvider} from '@privy-io/expo';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {NativeBaseProvider, extendTheme} from 'native-base';
 import React from 'react';
+import Config from 'react-native-config';
 import {ClientProvider} from './src/context/ClientContext';
 import {AppNavigation} from './src/navigation/AppNavigation';
 import {colors} from './src/theme/colors';
@@ -33,7 +34,7 @@ function App(): React.JSX.Element {
   };
   const theme = extendTheme({colors: newColorTheme});
   return (
-    <PrivyProvider appId="TODO:">
+    <PrivyProvider appId={Config.PRIVY_APP_ID}>
       <NativeBaseProvider theme={theme}>
         <QueryClientProvider client={queryClient}>
           <ClientProvider>

@@ -1,10 +1,5 @@
 import Clipboard from '@react-native-clipboard/clipboard';
-import {
-  useAddress,
-  useDisconnect,
-  useENS,
-  useWallet,
-} from '@thirdweb-dev/react-native';
+import {useENS, useWallet} from '@thirdweb-dev/react-native';
 import {Box, FlatList, HStack, SectionList, Switch, VStack} from 'native-base';
 import React, {useCallback, useMemo, useState} from 'react';
 import {
@@ -22,6 +17,8 @@ import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
 import {AppConfig} from '../consts/AppConfig';
 import {useClientContext} from '../context/ClientContext';
+import {useAddress} from '../hooks/useAddress';
+import {useDisconnect} from '../hooks/useDisconnect';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
 import {ScreenNames} from '../navigation/ScreenNames';

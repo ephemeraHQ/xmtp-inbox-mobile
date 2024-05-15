@@ -1,18 +1,10 @@
+import {useEmbeddedWallet} from '@privy-io/expo';
 import {BlurView} from '@react-native-community/blur';
-import {
-  WalletConfig,
-  // coinbaseWallet,
-  localWallet,
-  metamaskWallet,
-  useAddress,
-  useConnect,
-  walletConnect,
-} from '@thirdweb-dev/react-native';
 import {VStack} from 'native-base';
 import React, {useCallback, useEffect, useState} from 'react';
 import {Alert, Image, Linking} from 'react-native';
 import Config from 'react-native-config';
-import {WalletOptionButton} from '../components/WalletOptionButton';
+import {LoginOptionButton} from '../components/LoginOptionButton';
 import {Button} from '../components/common/Button';
 import {Icon} from '../components/common/Icon';
 import {Modal} from '../components/common/Modal';
@@ -28,22 +20,16 @@ const handleWalletInfo = () => {
   Linking.openURL('https://ethereum.org/en/wallets/find-wallet');
 };
 
-const metamaskConfig = metamaskWallet();
-// const coinbaseWalletConfig = coinbaseWallet();
-const walletConnectConfig = walletConnect();
-const localWalletConfig = localWallet();
-
 export const OnboardingConnectWalletScreen = () => {
   const {navigate} = useTypedNavigation();
-  const address = useAddress();
-  const connect = useConnect();
+  const wallet = useEmbeddedWallet();
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    if (address) {
+    if (wallet) {
       navigate(ScreenNames.OnboardingEnableIdentity);
     }
-  }, [address, navigate]);
+  }, [wallet, navigate]);
 
   useEffect(() => {
     if (!Config.THRID_WEB_CLIENT_ID) {
@@ -51,17 +37,10 @@ export const OnboardingConnectWalletScreen = () => {
     }
   }, []);
 
-  const handleConnect = useCallback(
-    async (config: WalletConfig<any>) => {
-      try {
-        await connect(config);
-        setShowModal(false);
-      } catch (error: any) {
-        Alert.alert(translate('wallet_error'), error?.message);
-      }
-    },
-    [connect],
-  );
+  const handleEmailClick = useCallback(() => {
+    setShowModal(false);
+    navigate(ScreenNames.OnboardingEmailEntry);
+  }, [navigate, setShowModal]);
 
   return (
     <>
@@ -112,30 +91,24 @@ export const OnboardingConnectWalletScreen = () => {
             paddingBottom={'24px'}>
             {translate('you_can_connect_or_create')}
           </Text>
-          <WalletOptionButton
-            onPress={() => handleConnect(walletConnectConfig)}
-            title={translate('walletconnect')}
+          <LoginOptionButton
+            onPress={handleEmailClick}
+            title={'Email'}
             icon={'walletconnect'}
             testId={TestIds.ONBOARDING_CONNECT_WALLET_CONNECT_OPTION_BUTTON}
           />
-          <WalletOptionButton
+          {/* <LoginOptionButton
             onPress={() => handleConnect(metamaskConfig)}
             title={translate('metamask')}
             icon={'metamask'}
             testId={TestIds.ONBOARDING_CONNECT_METAMASK_OPTION_BUTTON}
           />
-          {/* <WalletOptionButton
-            onPress={() => handleConnect(coinbaseWalletConfig)}
-            title={translate('coinbase_wallet')}
-            icon={'coinbase-wallet'}
-            testId={TestIds.ONBOARDING_CONNECT_COINBASE_OPTION_BUTTON}
-          /> */}
-          <WalletOptionButton
+          <LoginOptionButton
             onPress={() => handleConnect(localWalletConfig)}
             title={translate('guest_wallet')}
             icon={'wallet'}
             testId={TestIds.ONBOARDING_CONNECT_GUEST_OPTION_BUTTON}
-          />
+          /> */}
           <Button
             variant={'ghost'}
             onPress={handleWalletInfo}

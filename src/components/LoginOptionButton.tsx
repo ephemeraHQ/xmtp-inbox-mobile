@@ -4,14 +4,14 @@ import {Pressable} from 'react-native';
 import {Icon, IconName} from './common/Icon';
 import {Text} from './common/Text';
 
-interface WalletOptionButtonProps {
+interface LoginOptionButtonProps {
   onPress: () => void;
   title: string;
   icon: IconName;
   testId: string;
 }
 
-export const WalletOptionButton: FC<WalletOptionButtonProps> = ({
+export const LoginOptionButton: FC<LoginOptionButtonProps> = ({
   onPress,
   title,
   icon,

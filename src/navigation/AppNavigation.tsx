@@ -10,6 +10,8 @@ import {GroupScreen} from '../screens/GroupScreen';
 import {LoadingScreen} from '../screens/LoadingScreen';
 import {NewConversationScreen} from '../screens/NewConversationScreen';
 import {OnboardingConnectWalletScreen} from '../screens/OnboardingConnectWalletScreen';
+import {OnboardingEmailCodeScreen} from '../screens/OnboardingEmailCodeScreen';
+import {OnboardingEmailEntryScreen} from '../screens/OnboardingEmailEntryScreen';
 import {OnboardingEnableIdentityScreen} from '../screens/OnboardingEnableIdentityScreen';
 import {QrCodeScreen} from '../screens/QrCodeScreen';
 import {SearchScreen} from '../screens/SearchScreen';
@@ -56,6 +58,14 @@ export const AppNavigation = () => {
           <OnboardingStack.Screen
             name={ScreenNames.OnboardingEnableIdentity}
             component={OnboardingEnableIdentityScreen}
+          />
+          <OnboardingStack.Screen
+            name={ScreenNames.OnboardingEmailEntry}
+            component={OnboardingEmailEntryScreen}
+          />
+          <OnboardingStack.Screen
+            name={ScreenNames.OnboardingEmailCode}
+            component={OnboardingEmailCodeScreen}
           />
         </OnboardingStack.Navigator>
       )}
