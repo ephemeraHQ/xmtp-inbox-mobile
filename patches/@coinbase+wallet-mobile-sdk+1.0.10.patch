@@ -125,7 +125,7 @@ index 0000000..2da52fa
 +++ b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/incremental/debug/packageDebugResources/merger.xml
 @@ -0,0 +1,2 @@
 +<?xml version="1.0" encoding="utf-8"?>
-+<merger version="3"><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main" generated-set="main$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/debug/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug" generated-set="debug$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/debug/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="generated$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/build/generated/res/resValues/debug"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="generated" generated-set="generated$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/build/generated/res/resValues/debug"/></dataSet><mergedItems/></merger>
++<merger version="3"><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main" generated-set="main$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/debug/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug" generated-set="debug$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/debug/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="generated$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/build/generated/res/resValues/debug"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="generated" generated-set="generated$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/build/generated/res/resValues/debug"/></dataSet><mergedItems/></merger>
 \ No newline at end of file
 diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml
 new file mode 100644
@@ -134,7 +134,7 @@ index 0000000..8044516
 +++ b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml
 @@ -0,0 +1,2 @@
 +<?xml version="1.0" encoding="utf-8"?>
-+<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/jniLibs"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/debug/jniLibs"/></dataSet></merger>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/jniLibs"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/debug/jniLibs"/></dataSet></merger>
 \ No newline at end of file
 diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/incremental/mergeDebugShaders/merger.xml b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/incremental/mergeDebugShaders/merger.xml
 new file mode 100644
@@ -143,7 +143,7 @@ index 0000000..c11e90e
 +++ b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/incremental/mergeDebugShaders/merger.xml
 @@ -0,0 +1,2 @@
 +<?xml version="1.0" encoding="utf-8"?>
-+<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/shaders"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/debug/shaders"/></dataSet></merger>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/shaders"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/debug/shaders"/></dataSet></merger>
 \ No newline at end of file
 diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/incremental/packageDebugAssets/merger.xml b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/incremental/packageDebugAssets/merger.xml
 new file mode 100644
@@ -152,7 +152,7 @@ index 0000000..d01a1cb
 +++ b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/incremental/packageDebugAssets/merger.xml
 @@ -0,0 +1,2 @@
 +<?xml version="1.0" encoding="utf-8"?>
-+<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/assets"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/debug/assets"/></dataSet><dataSet config="generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/shader_assets/debug/out"/></dataSet></merger>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/assets"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/debug/assets"/></dataSet><dataSet config="generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/shader_assets/debug/out"/></dataSet></merger>
 \ No newline at end of file
 diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/local_only_symbol_list/debug/R-def.txt b/node_modules/@coinbase/wallet-mobile-sdk/android/build/intermediates/local_only_symbol_list/debug/R-def.txt
 new file mode 100644
@@ -175,13 +175,13 @@ index 0000000..abaea82
 +5    <uses-sdk android:minSdkVersion="23" />
 +6
 +7    <queries>
-+7-->/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:4:5-7:15
++7-->/Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:4:5-7:15
 +8        <package android:name="org.toshi" />
-+8-->/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:5:9-45
-+8-->/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:5:18-42
++8-->/Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:5:9-45
++8-->/Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:5:18-42
 +9        <package android:name="org.toshi.alpha" />
-+9-->/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:6:9-51
-+9-->/Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:6:18-48
++9-->/Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:6:9-51
++9-->/Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:6:18-48
 +10    </queries>
 +11
 +12</manifest>
@@ -580,31 +580,31 @@ index 0000000..108f4fe
 @@ -0,0 +1,27 @@
 +-- Merging decision tree log ---
 +manifest
-+ADDED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:1:1-8:12
-+INJECTED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:1:1-8:12
++ADDED from /Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:1:1-8:12
++INJECTED from /Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:1:1-8:12
 +	package
-+		ADDED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:2:5-49
-+		INJECTED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml
++		ADDED from /Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:2:5-49
++		INJECTED from /Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml
 +	xmlns:android
-+		ADDED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:1:11-69
++		ADDED from /Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:1:11-69
 +queries
-+ADDED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:4:5-7:15
++ADDED from /Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:4:5-7:15
 +package#org.toshi
-+ADDED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:5:9-45
++ADDED from /Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:5:9-45
 +	android:name
-+		ADDED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:5:18-42
++		ADDED from /Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:5:18-42
 +package#org.toshi.alpha
-+ADDED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:6:9-51
++ADDED from /Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:6:9-51
 +	android:name
-+		ADDED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:6:18-48
++		ADDED from /Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml:6:18-48
 +uses-sdk
-+INJECTED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml reason: use-sdk injection requested
-+INJECTED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml
-+INJECTED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml
++INJECTED from /Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml reason: use-sdk injection requested
++INJECTED from /Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml
++INJECTED from /Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml
 +	android:targetSdkVersion
-+		INJECTED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml
++		INJECTED from /Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml
 +	android:minSdkVersion
-+		INJECTED from /Users/alexrisch/ReactNative/XmtpMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml
++		INJECTED from /Users/alexrisch/ReactNative/EphemeraMobileChat/node_modules/@coinbase/wallet-mobile-sdk/android/src/main/AndroidManifest.xml
 diff --git a/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/META-INF/coinbase-wallet-mobile-sdk_debug.kotlin_module b/node_modules/@coinbase/wallet-mobile-sdk/android/build/tmp/kotlin-classes/debug/META-INF/coinbase-wallet-mobile-sdk_debug.kotlin_module
 new file mode 100644
 index 0000000..7f0eaf0

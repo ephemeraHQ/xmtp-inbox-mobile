@@ -1,4 +1,4 @@
-package com.xmtpmobilechat; // (1)
+package com.ephemera.mobilechat; // (1)
 
 import com.wix.detox.Detox;
 import com.wix.detox.config.DetoxConfig;
