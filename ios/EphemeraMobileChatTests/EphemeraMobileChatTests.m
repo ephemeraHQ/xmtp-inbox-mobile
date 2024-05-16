@@ -7,11 +7,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface XmtpMobileChatTests : XCTestCase
+@interface EphemeraMobileChatTests : XCTestCase
 
 @end
 
-@implementation XmtpMobileChatTests
+@implementation EphemeraMobileChatTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL (^)(UIView *view))test
 {

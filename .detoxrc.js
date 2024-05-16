@@ -13,16 +13,16 @@ module.exports = {
     'ios.debug': {
       type: 'ios.app',
       binaryPath:
-        'ios/build/Build/Products/Debug-iphonesimulator/XmtpMobileChat.app',
+        'ios/build/Build/Products/Debug-iphonesimulator/EphemeraMobileChat.app',
       build:
-        'xcodebuild -workspace ios/XmtpMobileChat.xcworkspace -scheme XmtpMobileChat -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build',
+        'xcodebuild -workspace ios/EphemeraMobileChat.xcworkspace -scheme EphemeraMobileChat -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build',
     },
     'ios.release': {
       type: 'ios.app',
       binaryPath:
-        'ios/build/Build/Products/Release-iphonesimulator/XmtpMobileChat.app',
+        'ios/build/Build/Products/Release-iphonesimulator/EphemeraMobileChat.app',
       build:
-        'xcodebuild -workspace ios/XmtpMobileChat.xcworkspace -scheme XmtpMobileChat -configuration Release -sdk iphonesimulator -derivedDataPath ios/build',
+        'xcodebuild -workspace ios/EphemeraMobileChat.xcworkspace -scheme EphemeraMobileChat -configuration Release -sdk iphonesimulator -derivedDataPath ios/build',
     },
     'android.debug': {
       type: 'android.apk',

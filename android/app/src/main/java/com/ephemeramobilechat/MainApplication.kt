@@ -1,4 +1,4 @@
-package com.xmtpmobilechat
+package com.ephemera.mobilechat
 import android.content.res.Configuration
 import expo.modules.ApplicationLifecycleDispatcher
 import expo.modules.ReactNativeHostWrapper
