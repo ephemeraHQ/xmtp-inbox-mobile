@@ -1,19 +1,19 @@
 import {useFocusEffect, useRoute} from '@react-navigation/native';
 import {RemoteAttachmentContent} from '@xmtp/react-native-sdk';
-import {Box, FlatList, HStack, Pressable, VStack} from 'native-base';
-import React, {useCallback, useEffect, useState} from 'react';
+import {Box, FlatList, HStack, VStack} from 'native-base';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {KeyboardAvoidingView, ListRenderItem, Platform} from 'react-native';
 import {Asset} from 'react-native-image-picker';
 import {ConversationInput} from '../components/ConversationInput';
-import {ConversationMessageContent} from '../components/ConversationMessageContent';
 import {GroupHeader} from '../components/GroupHeader';
+import {Message} from '../components/Message';
 import {Button} from '../components/common/Button';
 import {Drawer} from '../components/common/Drawer';
 import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
 import {AddGroupParticipantModal} from '../components/modals/AddGroupParticipantModal';
 import {GroupInfoModal} from '../components/modals/GroupInfoModal';
-import {ContentTypes} from '../consts/ContentTypes';
+import {GroupContext, GroupContextValue} from '../context/GroupContext';
 import {useClient} from '../hooks/useClient';
 import {useGroup} from '../hooks/useGroup';
 import {useGroupMessages} from '../hooks/useGroupMessages';
@@ -22,26 +22,8 @@ import {useGroupParticipantsQuery} from '../queries/useGroupParticipantsQuery';
 import {mmkvStorage} from '../services/mmkvStorage';
 import {AWSHelper} from '../services/s3';
 import {colors} from '../theme/colors';
-import {formatAddress} from '../utils/formatAddress';
 
 const keyExtractor = (item: string) => item;
-
-const getTimestamp = (timestamp: number) => {
-  // If today, return hours and minutes if not return date
-  const date = new Date(timestamp);
-  const now = new Date();
-  if (
-    date.getDate() === now.getDate() &&
-    date.getMonth() === now.getMonth() &&
-    date.getFullYear() === now.getFullYear()
-  ) {
-    return date.toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  }
-  return date.toLocaleDateString();
-};
 
 const useData = (id: string) => {
   const {data: messages, refetch, isRefetching} = useGroupMessages(id);
@@ -81,13 +63,15 @@ export const GroupScreen = () => {
   const {id} = params as {id: string};
   const {myAddress, messages, addresses, group, client, refetch, isRefetching} =
     useData(id);
-  const [showReply, setShowReply] = useState(false);
   const [showGroupModal, setShowGroupModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [consent, setConsent] = useState<'allowed' | 'denied' | 'unknown'>(
     getInitialConsentState(myAddress ?? '', group?.id ?? ''),
   );
-  const {ids, entities} = messages ?? {};
+  const [replyId, setReplyId] = useState<string | null>(null);
+  const [reactId, setReactId] = useState<string | null>(null);
+
+  const {ids, entities, reactionsEntities} = messages ?? {};
 
   useEffect(() => {
     if (!group) {
@@ -144,43 +128,12 @@ export const GroupScreen = () => {
     if (!message) {
       return null;
     }
+    const reactions = reactionsEntities?.[item] ?? new Map();
     const isMe =
       message.senderAddress?.toLocaleLowerCase() ===
       myAddress?.toLocaleLowerCase();
-    return (
-      <Pressable>
-        <Box marginLeft={6} marginRight={6} marginY={2} flexShrink={1}>
-          <VStack>
-            {!isMe && (
-              <VStack justifyItems={'flex-end'}>
-                <Text
-                  color={colors.primaryN200}
-                  textAlign={'end'}
-                  typography="text-xs/semi-bold"
-                  alignSelf={'flex-start'}>
-                  {mmkvStorage.getEnsName(message.senderAddress) ??
-                    formatAddress(message.senderAddress)}
-                </Text>
-              </VStack>
-            )}
-            <ConversationMessageContent message={message} isMe={isMe} />
-            <Text
-              flexShrink={1}
-              color={colors.primaryN200}
-              typography="text-xs/semi-bold"
-              alignSelf={
-                message.contentTypeId === ContentTypes.GroupMembershipChange
-                  ? 'center'
-                  : isMe
-                  ? 'flex-end'
-                  : 'flex-start'
-              }>
-              {getTimestamp(message.sent)}
-            </Text>
-          </VStack>
-        </Box>
-      </Pressable>
-    );
+
+    return <Message message={message} isMe={isMe} reactions={reactions} />;
   };
 
   const onConsent = useCallback(() => {
@@ -199,8 +152,31 @@ export const GroupScreen = () => {
     mmkvStorage.saveConsent(myAddress ?? '', id ?? '', false);
   }, [addresses, client?.contacts, id, myAddress]);
 
+  const setReply = useCallback(
+    (id: string) => {
+      setReplyId(id);
+    },
+    [setReplyId],
+  );
+
+  const clearReply = useCallback(() => {
+    setReplyId(null);
+  }, [setReplyId]);
+
+  const clearReaction = useCallback(() => {
+    setReactId(null);
+  }, [setReactId]);
+
+  const conversationProviderValue = useMemo((): GroupContextValue => {
+    return {
+      group: group ?? null,
+      setReplyId: setReply,
+      clearReplyId: clearReply,
+    };
+  }, [group, setReply, clearReply]);
+
   return (
-    <>
+    <GroupContext.Provider value={conversationProviderValue}>
       <Screen
         includeTopPadding={false}
         containerStlye={{
@@ -257,8 +233,22 @@ export const GroupScreen = () => {
 
       <Drawer
         title="Test"
-        isOpen={showReply}
-        onBackgroundPress={() => setShowReply(false)}>
+        isOpen={!!replyId}
+        onBackgroundPress={() => setReplyId(null)}>
+        <VStack w={'100%'} alignItems={'flex-start'}>
+          <Box
+            backgroundColor={'white'}
+            paddingX={'4px'}
+            paddingY={'6px'}
+            marginRight={'12px'}>
+            <Text>Test</Text>
+          </Box>
+        </VStack>
+      </Drawer>
+      <Drawer
+        title="Test"
+        isOpen={Boolean(reactId)}
+        onBackgroundPress={clearReaction}>
         <VStack w={'100%'} alignItems={'flex-start'}>
           <Box
             backgroundColor={'white'}
@@ -284,6 +274,6 @@ export const GroupScreen = () => {
         hide={() => setShowAddModal(false)}
         group={group!}
       />
-    </>
+    </GroupContext.Provider>
   );
 };

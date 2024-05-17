@@ -8279,10 +8279,10 @@
   resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-4.36.1.tgz#79f8c1a539d47c83104210be2388813a7af2e524"
   integrity sha512-DJSilV5+ytBP1FbFcEJovv4rnnm/CokuVvrBEtW/Va9DvuJ3HksbXUJEpI0aV1KtuL4ZoO9AVE6PyNLzF7tLeA==
 
-"@tanstack/query-core@5.18.1":
-  version "5.18.1"
-  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.18.1.tgz#b653ee354b7f4712d53565ccc5c6d8fb83ec866c"
-  integrity sha512-fYhrG7bHgSNbnkIJF2R4VUXb4lF7EBiQjKkDc5wOlB7usdQOIN4LxxHpDxyE3qjqIst1WBGvDtL48T0sHJGKCw==
+"@tanstack/query-core@5.36.1":
+  version "5.36.1"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.36.1.tgz#ae46f935c4752812a56c6815305061a3da82e7b8"
+  integrity sha512-BteWYEPUcucEu3NBcDAgKuI4U25R9aPrHSP6YSf2NvaD2pSlIQTdqOfLRsxH9WdRYg7k0Uom35Uacb6nvbIMJg==
 
 "@tanstack/query-persist-client-core@4.36.1":
   version "4.36.1"
@@ -8291,6 +8291,13 @@
   dependencies:
     "@tanstack/query-core" "4.36.1"
 
+"@tanstack/query-persist-client-core@5.36.1":
+  version "5.36.1"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-persist-client-core/-/query-persist-client-core-5.36.1.tgz#d81cd93f27c21a0c7cd32a2b52bbb9581f0d2443"
+  integrity sha512-GeiMlh46lElKcVx7vp/xbjo22sYHhEnZ8o977EwncDzb1DpCnqd8WFLoP0+u6BNCFGD3xuE7YjGUQU9PPp7oSQ==
+  dependencies:
+    "@tanstack/query-core" "5.36.1"
+
 "@tanstack/query-sync-storage-persister@^4.27.1":
   version "4.36.1"
   resolved "https://registry.yarnpkg.com/@tanstack/query-sync-storage-persister/-/query-sync-storage-persister-4.36.1.tgz#bf5d800d54416bc88f150792a53e25ed8aa8769f"
@@ -8298,12 +8305,27 @@
   dependencies:
     "@tanstack/query-persist-client-core" "4.36.1"
 
+"@tanstack/query-sync-storage-persister@^5.36.1":
+  version "5.36.1"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-sync-storage-persister/-/query-sync-storage-persister-5.36.1.tgz#11ddfeefaf4bc6ac21c9a8a369c5754fcd09cd10"
+  integrity sha512-BrAvrQCQSlnoRXKbSYhwrCZ43rkuv6ldUM1s0Cn64xEkyK+SnbqR2OZRo67bzMpR6lycUUZppybtvLe6JroSog==
+  dependencies:
+    "@tanstack/query-core" "5.36.1"
+    "@tanstack/query-persist-client-core" "5.36.1"
+
 "@tanstack/react-query-persist-client@^4.28.0":
   version "4.36.1"
   resolved "https://registry.yarnpkg.com/@tanstack/react-query-persist-client/-/react-query-persist-client-4.36.1.tgz#d96fa44cdc661534379623423da596a7b5dc13a7"
   integrity sha512-32I5b9aAu4NCiXZ7Te/KEQLfHbYeTNriVPrKYcvEThnZ9tlW01vLcSoxpUIsMYRsembvJUUAkzYBAiZHLOd6pQ==
   dependencies:
     "@tanstack/query-persist-client-core" "4.36.1"
+
+"@tanstack/react-query-persist-client@^5.36.2":
+  version "5.36.2"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query-persist-client/-/react-query-persist-client-5.36.2.tgz#f9f413aa3f27113701fbe8fc2ad30510103be37f"
+  integrity sha512-MEr95XKFL2rAnR9V7fsu1g47sGNhoKGplM1s23+uQzZUJNOeUqEhjWzhGFu56Ro0bwdgpGdxqdeudG82ogFf6Q==
+  dependencies:
+    "@tanstack/query-persist-client-core" "5.36.1"
 
 "@tanstack/react-query@^4.28.0", "@tanstack/react-query@^4.33.0":
   version "4.36.1"
@@ -8313,12 +8335,12 @@
     "@tanstack/query-core" "4.36.1"
     use-sync-external-store "^1.2.0"
 
-"@tanstack/react-query@^5.17.19":
-  version "5.18.1"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.18.1.tgz#fd4e7b87260e82c5277355ad64f0e431a9302e02"
-  integrity sha512-PdI07BbsahZ+04PxSuDQsQvBWe008eWFk/YYWzt8fvzt2sALUM0TpAJa/DFpqa7+SSo7j1EQR6Jx6znXNHyaXw==
+"@tanstack/react-query@^5.36.2":
+  version "5.36.2"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.36.2.tgz#1b7dc4c2fa0e48912335f0a157dd942cfa269326"
+  integrity sha512-bHNa+5dead+j6SA8WVlEOPxcGfteVFgdyFTCFcxBgjnPf0fFpHUc7aNZBCnvmPXqy/BeQa9zTuU9ectb7i8ZXA==
   dependencies:
-    "@tanstack/query-core" "5.18.1"
+    "@tanstack/query-core" "5.36.1"
 
 "@thirdweb-dev/auth@4.1.22":
   version "4.1.22"
@@ -9485,9 +9507,9 @@
     undici "^5.8.1"
 
 "@xmtp/proto@^3.25.0":
-  version "3.41.0"
-  resolved "https://registry.yarnpkg.com/@xmtp/proto/-/proto-3.41.0.tgz#e21d28278f4ead3db2d719732bdd89875356ad72"
-  integrity sha512-QzN82CRkAytfFHluNhXB9ODpLAf1Zx0YBqcdAjzqbFQHwWWa/B6qmcmseMH/lo0NEvQoe9dLovMOTGBwf8kjDw==
+  version "3.57.0"
+  resolved "https://registry.yarnpkg.com/@xmtp/proto/-/proto-3.57.0.tgz#42e491328b55d07ccaedf60ca2cef3133ea70664"
+  integrity sha512-zjU7IZ6wkJK96RVcwqPEPxBpBE84i66o2u5Fvme5SwRhR0eLF+8f6hhbXzQHDT1ahwmjvCSEIiMNTjyvoNlH7A==
   dependencies:
     long "^5.2.0"
     protobufjs "^7.0.0"

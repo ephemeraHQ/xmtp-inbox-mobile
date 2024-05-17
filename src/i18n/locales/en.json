@@ -68,6 +68,7 @@
 
   "valid_address": "Valid Ethereum Address",
   "message_requests_from_new_addresses": "Message requests from addresses you’ve never interacted with show up here",
+  "not_on_xmtp_group": "User can't be added to group because they are not on XMTP Group network",
 
   "wallet_error": "Wallet Error",
   "group_add_single": "%{initiatedByAddress} added %{address}",
