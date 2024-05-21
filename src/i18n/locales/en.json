@@ -28,6 +28,7 @@
   "connect_your_wallet": "Connect your wallet",
   "you_can_connect_or_create": "You can connect or create a wallet via Wallet Connect.",
   "whats_a_wallet": "What's a wallet?",
+  "no_private_keys_will_be_shared": "No private keys will be shared",
 
   "step_1_of_2": "Step 1 of 2",
   "create_your_xmtp_identity": "Create your XMTP identity",

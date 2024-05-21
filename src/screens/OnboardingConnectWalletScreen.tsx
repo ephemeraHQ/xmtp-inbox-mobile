@@ -1,4 +1,3 @@
-import {BlurView} from '@react-native-community/blur';
 import {
   WalletConfig,
   // coinbaseWallet,
@@ -8,10 +7,11 @@ import {
   useConnect,
   walletConnect,
 } from '@thirdweb-dev/react-native';
-import {VStack} from 'native-base';
+import {Box, VStack} from 'native-base';
 import React, {useCallback, useEffect, useState} from 'react';
-import {Alert, Image, Linking} from 'react-native';
+import {Alert, Image, Linking, StyleSheet} from 'react-native';
 import Config from 'react-native-config';
+import LinearGradient from 'react-native-linear-gradient';
 import {WalletOptionButton} from '../components/WalletOptionButton';
 import {Button} from '../components/common/Button';
 import {Icon} from '../components/common/Icon';
@@ -68,38 +68,60 @@ export const OnboardingConnectWalletScreen = () => {
 
   return (
     <>
-      <Screen testId={TestIds.ONBOARDING_CONNECT_WALLET_SCREEN}>
-        <Image
-          source={require('../../assets/images/XmtpOrangeLogo.png')}
-          style={{justifyContent: 'center', alignItems: 'center'}}
-        />
-        <BlurView
-          blurType="light"
-          blurAmount={10}
-          blurRadius={10}
-          style={{height: 125, marginTop: -80, width: '100%'}}
-        />
+      <Screen
+        includeTopPadding={false}
+        testId={TestIds.ONBOARDING_CONNECT_WALLET_SCREEN}>
+        <Box width={'100%'}>
+          <Image
+            source={require('../../assets/images/XmtpOrangeLogo.png')}
+            style={styles.image}
+            resizeMode="cover"
+          />
+          <LinearGradient
+            colors={['#FFFFFF00', '#FFFFFFFF', '#FFFFFFFF']}
+            style={styles.linearGradient}
+          />
+        </Box>
         <VStack
-          position={'absolute'}
           bottom={'1/6'}
           width={'100%'}
           flex={1}
-          paddingX={'24px'}>
-          <Text typography="text-4xl/bold">
+          paddingX={'24px'}
+          paddingTop={'80px'}>
+          <Text typography="text-4xl/bold" textAlign={'center'}>
             {translate('your_interoperable_web3_inbox')}
           </Text>
-          <Text>
+          <Text textAlign={'center'} paddingTop={2} paddingBottom={6}>
             {translate(
               'youre_just_a_few_steps_away_from_secure_wallet_to_wallet_messaging',
             )}
           </Text>
           <>
             <Button
-              rightIcon={<Icon name="arrow-right-circle" />}
+              rightIcon={
+                <Icon
+                  name="arrow-right-circle-thick"
+                  color={colors.backgroundPrimary}
+                  type="outline"
+                  size={24}
+                />
+              }
               testID={TestIds.ONBOARDING_CONNECT_WALLET_BUTTON}
               onPress={() => setShowModal(true)}>
-              {translate('connect_your_wallet')}
+              <Text
+                paddingY={2}
+                typography="text-lg/heavy"
+                color={colors.backgroundPrimary}>
+                {translate('connect_your_wallet')}
+              </Text>
             </Button>
+            <Text
+              paddingTop={4}
+              textAlign={'center'}
+              typography="text-sm/semibold"
+              color={colors.textTertiary}>
+              {translate('no_private_keys_will_be_shared')}
+            </Text>
           </>
         </VStack>
       </Screen>
@@ -159,3 +181,17 @@ export const OnboardingConnectWalletScreen = () => {
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  image: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+  },
+  linearGradient: {
+    width: '100%',
+    height: 125,
+    position: 'absolute',
+    top: 500,
+  },
+});

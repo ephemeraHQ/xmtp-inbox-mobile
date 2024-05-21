@@ -1,19 +1,25 @@
 import Clipboard from '@react-native-clipboard/clipboard';
+import {useFocusEffect} from '@react-navigation/native';
 import {
   useAddress,
   useDisconnect,
   useENS,
   useWallet,
 } from '@thirdweb-dev/react-native';
-import {} from 'ethers';
 import {Box, FlatList, HStack, SectionList, Switch, VStack} from 'native-base';
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
+  AppState,
   ListRenderItem,
   Platform,
   Pressable,
   SectionListRenderItem,
 } from 'react-native';
+import {
+  checkNotifications,
+  openSettings,
+  requestNotifications,
+} from 'react-native-permissions';
 import {AvatarWithFallback} from '../components/AvatarWithFallback';
 import {Button} from '../components/common/Button';
 import {Drawer} from '../components/common/Drawer';
@@ -126,10 +132,50 @@ export const AccountSettingsScreen = () => {
   const [walletsShown, setWalletsShown] = useState(false);
   const disconnect = useDisconnect();
   const address = useAddress();
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const appState = useRef(AppState.currentState);
+
+  const checkNotificationsCallback = useCallback(() => {
+    checkNotifications().then(({status}) => {
+      if (status === 'granted' || status === 'limited') {
+        setNotificationsEnabled(true);
+      }
+    });
+  }, [setNotificationsEnabled]);
 
   const toggleNotifications = useCallback(() => {
-    return null;
-  }, []);
+    if (notificationsEnabled) {
+      openSettings();
+    } else {
+      requestNotifications(['alert', 'sound']).then(({status}) => {
+        console.log('status', status);
+        if (status === 'granted' || status === 'limited') {
+          setNotificationsEnabled(true);
+        } else {
+          openSettings();
+        }
+      });
+    }
+  }, [notificationsEnabled]);
+
+  useFocusEffect(checkNotificationsCallback);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        checkNotificationsCallback();
+      }
+
+      appState.current = nextAppState;
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [checkNotificationsCallback]);
 
   const listItems = useMemo((): {section: Section; data: ListItem[]}[] => {
     return [
@@ -139,7 +185,7 @@ export const AccountSettingsScreen = () => {
           {
             text: translate('notifications'),
             onPress: toggleNotifications,
-            value: true,
+            value: notificationsEnabled,
           },
         ],
       },
@@ -169,7 +215,13 @@ export const AccountSettingsScreen = () => {
         ],
       },
     ];
-  }, [toggleNotifications, disconnect, address, setClient]);
+  }, [
+    toggleNotifications,
+    notificationsEnabled,
+    address,
+    setClient,
+    disconnect,
+  ]);
 
   const renderItem: SectionListRenderItem<ListItem, {section: Section}> = ({
     section,

@@ -21,6 +21,7 @@ enum MMKVKeys {
 
   // Groups
   GROUP_NAME = 'GROUP_NAME',
+  GROUP_ID_PUSH_SUBSCRIPTION = 'GROUP_ID_PUSH_SUBSCRIPTION',
 }
 
 export const mmkvstorage = new MMKV();
@@ -239,6 +240,29 @@ class MMKVStorage {
   };
 
   //#endregion Group Name
+
+  //#region Group Id Push Subscription
+  private getGroupIdPushSubscriptionKey = (groupId: string) => {
+    return `${MMKVKeys.GROUP_ID_PUSH_SUBSCRIPTION}_${groupId}`;
+  };
+
+  saveGroupIdPushSubscription = (
+    groupId: string,
+    pushSubscription: boolean,
+  ) => {
+    return this.storage.set(
+      this.getGroupIdPushSubscriptionKey(groupId),
+      pushSubscription,
+    );
+  };
+
+  getGroupIdPushSubscription = (groupId: string) => {
+    return this.storage.getBoolean(this.getGroupIdPushSubscriptionKey(groupId));
+  };
+
+  clearGroupIdPushSubscription = (groupId: string) => {
+    return this.storage.delete(this.getGroupIdPushSubscriptionKey(groupId));
+  };
 }
 
 export const mmkvStorage = new MMKVStorage();

@@ -1,8 +1,8 @@
 import {useDisconnect, useSigner} from '@thirdweb-dev/react-native';
 import {Client} from '@xmtp/react-native-sdk';
-import {VStack} from 'native-base';
-import React, {useCallback, useEffect, useState} from 'react';
-import {Alert, DeviceEventEmitter, Image} from 'react-native';
+import {StatusBar, VStack} from 'native-base';
+import {useCallback, useEffect, useState} from 'react';
+import {Alert, DeviceEventEmitter, Image, Platform} from 'react-native';
 import {Button} from '../components/common/Button';
 import {Icon} from '../components/common/Icon';
 import {Screen} from '../components/common/Screen';
@@ -15,6 +15,7 @@ import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
 import {ScreenNames} from '../navigation/ScreenNames';
 import {saveClientKeys} from '../services/encryptedStorage';
+import {PushNotificatons} from '../services/pushNotifications';
 import {colors} from '../theme/colors';
 
 type Step = 'CREATE_IDENTITY' | 'ENABLE_IDENTITY';
@@ -54,6 +55,11 @@ export const OnboardingEnableIdentityScreen = () => {
         return;
       }
       try {
+        // const keyBytes = new Uint8Array([
+        //   233, 120, 198, 96, 154, 65, 132, 17, 132, 96, 250, 40, 103, 35, 125,
+        //   64, 166, 83, 208, 224, 254, 44, 205, 227, 175, 49, 234, 129, 74, 252,
+        //   135, 145,
+        // ]);
         const client = await Client.create(signer, {
           enableAlphaMls: true,
           env: AppConfig.XMTP_ENV,
@@ -65,9 +71,14 @@ export const OnboardingEnableIdentityScreen = () => {
             await createIdentityPromise();
           },
           codecs: supportedContentTypes,
+          // dbEncryptionKey: keyBytes,
         });
+        if (Platform.OS !== 'android') {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const _ = new PushNotificatons(client);
+        }
         const keys = await client.exportKeyBundle();
-        const address = await signer.getAddress();
+        const address = client.address;
         saveClientKeys(address as `0x${string}`, keys);
         setClient(client);
       } catch (e: any) {
@@ -92,10 +103,11 @@ export const OnboardingEnableIdentityScreen = () => {
   }, [navigate, disconnect]);
 
   return (
-    <Screen>
+    <Screen includeTopPadding={false}>
+      <StatusBar animated={true} backgroundColor="#00000000" hidden={true} />
       <Image
         source={require('../../assets/images/xmtp-logo-empty.png')}
-        style={{justifyContent: 'center', alignItems: 'center'}}
+        style={{justifyContent: 'center', alignItems: 'center', width: '100%'}}
       />
       <VStack
         position={'absolute'}
@@ -106,13 +118,21 @@ export const OnboardingEnableIdentityScreen = () => {
         background={colors.backgroundPrimary}
         flex={1}
         justifyContent={'space-evenly'}
-        marginX={'24'}>
+        paddingX={'24px'}>
         {step === 'CREATE_IDENTITY' ? (
           <>
-            <Text typography="text-title/regular">Step 1 of 2</Text>
-            <Text typography="text-4xl/bold">Create your XMTP identity </Text>
-            <Text>{translate('now_that_your_wallet_is_connected')}</Text>
+            <Text textAlign={'center'} typography="text-title/regular">
+              {translate('step_1_of_2')}
+            </Text>
+            <Text textAlign={'center'} typography="text-4xl/bold">
+              {translate('create_your_xmtp_identity')}
+            </Text>
+            <Text marginTop={2} textAlign={'center'}>
+              {translate('now_that_your_wallet_is_connected')}
+            </Text>
             <Button
+              marginTop={6}
+              paddingX={6}
               variant={'solid'}
               backgroundColor={'brand.800'}
               rightIcon={
@@ -123,14 +143,21 @@ export const OnboardingEnableIdentityScreen = () => {
                 />
               }
               onPress={handleCreateIdentity}>
-              {translate('create_your_xmtp_identity')}
+              <Text
+                paddingLeft={6}
+                paddingY={2}
+                typography="text-lg/heavy"
+                color={colors.backgroundPrimary}>
+                {translate('create_your_xmtp_identity')}
+              </Text>
             </Button>
             <Button
+              marginTop={4}
               variant={'ghost'}
-              // backgroundColor={'brand.800'}
-              onPress={handleDisconnectWallet}
-              color={colors.actionNegative}>
-              {translate('disconnect_wallet')}
+              onPress={handleDisconnectWallet}>
+              <Text typography="text-sm/bold" color={colors.actionNegative}>
+                {translate('disconnect_wallet')}
+              </Text>
             </Button>
           </>
         ) : (
@@ -145,6 +172,7 @@ export const OnboardingEnableIdentityScreen = () => {
               )}
             </Text>
             <Button
+              marginTop={6}
               variant={'solid'}
               backgroundColor={'brand.800'}
               rightIcon={
@@ -155,14 +183,21 @@ export const OnboardingEnableIdentityScreen = () => {
                 />
               }
               onPress={handleEnableIdentity}>
-              {translate('connect_your_wallet')}
+              <Text
+                paddingY={2}
+                paddingX={6}
+                typography="text-lg/heavy"
+                color={colors.backgroundPrimary}>
+                {translate('connect_your_wallet')}
+              </Text>
             </Button>
             <Button
+              marginTop={4}
               variant={'ghost'}
-              // backgroundColor={'brand.800'}
-              onPress={handleDisconnectWallet}
-              color={colors.actionNegative}>
-              {translate('disconnect_wallet')}
+              onPress={handleDisconnectWallet}>
+              <Text typography="text-sm/bold" color={colors.actionNegative}>
+                {translate('disconnect_wallet')}
+              </Text>
             </Button>
           </>
         )}
