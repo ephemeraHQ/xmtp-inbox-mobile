@@ -1,6 +1,8 @@
 import {Client} from '@xmtp/react-native-sdk';
+import {Platform} from 'react-native';
 import {ListGroup, ListMessages} from '../models/ListMessages';
 import {mmkvStorage} from '../services/mmkvStorage';
+import {PushNotificatons} from '../services/pushNotifications';
 import {withRequestLogger} from './logger';
 
 export const getAllListMessages = async (client?: Client<any> | null) => {
@@ -24,6 +26,10 @@ export const getAllListMessages = async (client?: Client<any> | null) => {
         item.permissionType === 'allowed',
       );
     });
+    if (Platform.OS !== 'android') {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const _ = new PushNotificatons(client);
+    }
 
     const groups = await withRequestLogger(client.conversations.listGroups(), {
       name: 'groups',
@@ -32,6 +38,14 @@ export const getAllListMessages = async (client?: Client<any> | null) => {
     const allMessages: PromiseSettledResult<ListGroup>[] =
       await Promise.allSettled(
         groups.map(async group => {
+          // const hasPushSubscription = mmkvStorage.getGroupIdPushSubscription(
+          //   group.topic,
+          // );
+          // // if (!hasPushSubscription) {
+          // console.log('PUSH NOTIFICATION Subscribing to group', group.topic);
+          // XMTPPush.subscribe([group.topic]);
+          // mmkvStorage.saveGroupIdPushSubscription(group.topic, true);
+          // // }
           await group.sync();
           const messages = await withRequestLogger(group.messages(), {
             name: 'group_messages',
@@ -44,7 +58,7 @@ export const getAllListMessages = async (client?: Client<any> | null) => {
           return {
             group,
             display,
-            lastMessageTime: messages[0].sent,
+            lastMessageTime: messages[0]?.sent,
             isRequest: false,
           };
         }),

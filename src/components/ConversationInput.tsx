@@ -126,6 +126,7 @@ export const ConversationInput: FC<ConversationInputProps> = ({
         alignItems={'center'}
         borderBottomRightRadius={0}>
         <TextInput
+          autoFocus
           value={text}
           style={styles.input}
           onChangeText={setText}

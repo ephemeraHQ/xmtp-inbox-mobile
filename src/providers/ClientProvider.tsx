@@ -1,6 +1,6 @@
 import {useAddress, useConnectionStatus} from '@thirdweb-dev/react-native';
 import {Client} from '@xmtp/react-native-sdk';
-import React, {FC, PropsWithChildren, useEffect, useState} from 'react';
+import {FC, PropsWithChildren, useEffect, useState} from 'react';
 import {AppConfig} from '../consts/AppConfig';
 import {
   SupportedContentTypes,
@@ -33,10 +33,17 @@ export const ClientProvider: FC<PropsWithChildren> = ({children}) => {
         if (!keys) {
           return setLoading(false);
         }
+        // const keyBytes = new Uint8Array([
+        //   233, 120, 198, 96, 154, 65, 132, 17, 132, 96, 250, 40, 103, 35, 125,
+        //   64, 166, 83, 208, 224, 254, 44, 205, 227, 175, 49, 234, 129, 74, 252,
+        //   135, 145,
+        // ]);
         Client.createFromKeyBundle<SupportedContentTypes>(keys, {
           codecs: supportedContentTypes,
           enableAlphaMls: true,
           env: AppConfig.XMTP_ENV,
+          // dbEncryptionKey: keyBytes,
+          appVersion: 'Testing/0.0.0',
         })
           .then(newClient => {
             setClient(newClient as Client<SupportedContentTypes>);

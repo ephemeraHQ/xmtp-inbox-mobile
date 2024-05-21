@@ -3,7 +3,7 @@ import {ScreenNames} from './ScreenNames';
 import {RootStackParams} from './StackParams';
 
 export const linkingDefinition: LinkingOptions<RootStackParams> = {
-  prefixes: ['xmtp-chat://'],
+  prefixes: ['ephemera-chat://'],
   config: {
     screens: {
       [ScreenNames.OnboardingConnectWallet]: 'onboarding_connect_wallet',
