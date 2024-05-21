@@ -23,8 +23,10 @@ enum MMKVKeys {
   GROUP_NAME = 'GROUP_NAME',
 }
 
+export const mmkvstorage = new MMKV();
+
 class MMKVStorage {
-  storage = new MMKV();
+  storage = mmkvstorage;
 
   //#region Ens Name
   private getEnsNameKey = (address: string) => {

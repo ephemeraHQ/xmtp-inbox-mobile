@@ -136,6 +136,8 @@ const ListItem: FC<{
 
 export const SearchScreen = () => {
   const {goBack, navigate} = useTypedNavigation();
+  const {client} = useClient();
+  const [errorString, setErrorString] = useState<string | null>(null);
   const [searchText, setSearchText] = useState('');
   const [participants, setParticipants] = useState<string[]>([]);
 
@@ -147,10 +149,16 @@ export const SearchScreen = () => {
     [setParticipants],
   );
 
-  const onGroupStart = useCallback(() => {
+  const onGroupStart = useCallback(async () => {
+    setErrorString(null);
+    const canMessage = await client?.canGroupMessage(participants);
+    if (!canMessage) {
+      setErrorString(translate('not_on_xmtp_group'));
+      return;
+    }
     goBack();
     navigate(ScreenNames.NewConversation, {addresses: participants});
-  }, [participants, navigate, goBack]);
+  }, [participants, navigate, goBack, client]);
   const {data: ensAddress} = useEnsAddress({
     name: searchText,
     chainId: 1,
@@ -239,6 +247,7 @@ export const SearchScreen = () => {
 
   const removeParticipant = useCallback(
     (address: string) => {
+      setErrorString(null);
       setParticipants(prev => prev.filter(it => it !== address));
     },
     [setParticipants],
@@ -300,6 +309,17 @@ export const SearchScreen = () => {
             color={colors.actionPositive}
             typography="text-xs/semi-bold">
             {translate('valid_address')}
+          </Text>
+        </HStack>
+      )}
+      {errorString && (
+        <HStack paddingX={'16px'} paddingTop={'16px'} w="100%">
+          <Icon name="x-circle" color={colors.actionNegative} size={17} />
+          <Text
+            paddingLeft={'8px'}
+            color={colors.actionNegative}
+            typography="text-xs/semi-bold">
+            {errorString}
           </Text>
         </HStack>
       )}

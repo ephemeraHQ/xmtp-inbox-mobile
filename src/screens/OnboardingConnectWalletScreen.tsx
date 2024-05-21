@@ -56,11 +56,14 @@ export const OnboardingConnectWalletScreen = () => {
       try {
         await connect(config);
         setShowModal(false);
+        // Maybe a hack, feel like address should work from the useAddress hook
+        // But seems like something fairly consistently goes wrong with the hook
+        navigate(ScreenNames.OnboardingEnableIdentity);
       } catch (error: any) {
         Alert.alert(translate('wallet_error'), error?.message);
       }
     },
-    [connect],
+    [connect, navigate],
   );
 
   return (
