@@ -261,11 +261,7 @@ export const SearchScreen = () => {
           {translate('search')}
         </Text>
       }
-      left={
-        <Pressable onPress={() => navigate(ScreenNames.QRCode)}>
-          <Icon name="qr-code" />
-        </Pressable>
-      }
+      left={<Box />}
       right={
         <Pressable onPress={goBack}>
           <Icon name="x-circle" />

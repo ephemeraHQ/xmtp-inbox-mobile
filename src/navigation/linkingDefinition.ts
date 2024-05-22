@@ -17,7 +17,6 @@ export const linkingDefinition: LinkingOptions<RootStackParams> = {
         },
       },
       [ScreenNames.Search]: 'search',
-      [ScreenNames.QRCode]: 'qr_code',
       [ScreenNames.UserProfiles]: 'user_profiles',
     },
   },

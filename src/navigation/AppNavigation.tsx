@@ -11,7 +11,6 @@ import {LoadingScreen} from '../screens/LoadingScreen';
 import {NewConversationScreen} from '../screens/NewConversationScreen';
 import {OnboardingConnectWalletScreen} from '../screens/OnboardingConnectWalletScreen';
 import {OnboardingEnableIdentityScreen} from '../screens/OnboardingEnableIdentityScreen';
-import {QrCodeScreen} from '../screens/QrCodeScreen';
 import {SearchScreen} from '../screens/SearchScreen';
 import {UserProfilesScreen} from '../screens/UserProfilesScreen';
 import {ScreenNames} from './ScreenNames';
@@ -89,13 +88,6 @@ export const AppNavigation = () => {
           <AuthenticatedStack.Screen
             name={ScreenNames.Search}
             component={SearchScreen}
-            options={{
-              presentation: 'modal',
-            }}
-          />
-          <AuthenticatedStack.Screen
-            name={ScreenNames.QRCode}
-            component={QrCodeScreen}
             options={{
               presentation: 'modal',
             }}

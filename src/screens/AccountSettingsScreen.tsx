@@ -25,7 +25,6 @@ import {AppConfig} from '../consts/AppConfig';
 import {useClientContext} from '../context/ClientContext';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
-import {ScreenNames} from '../navigation/ScreenNames';
 import {clearClientKeys} from '../services/encryptedStorage';
 import {mmkvStorage} from '../services/mmkvStorage';
 import {colors, greens, reds} from '../theme/colors';
@@ -263,11 +262,7 @@ export const AccountSettingsScreen = () => {
             {translate('you')}
           </Text>
         }
-        left={
-          <Pressable onPress={() => navigate(ScreenNames.QRCode)}>
-            <Icon name="qr-code" />
-          </Pressable>
-        }
+        left={< Box />}
         right={
           <Pressable onPress={goBack}>
             <Icon name="x-circle" />
