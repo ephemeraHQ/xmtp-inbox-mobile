@@ -268,6 +268,7 @@ export const GroupScreen = () => {
           setShowAddModal(true);
         }}
         group={group!}
+        address={myAddress ?? ''}
       />
       <AddGroupParticipantModal
         shown={showAddModal}

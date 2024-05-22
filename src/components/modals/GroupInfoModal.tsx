@@ -22,12 +22,14 @@ export interface GroupInfoModalProps {
   addresses: string[];
   onPlusPress: () => void;
   group?: Group<SupportedContentTypes>;
+  address: string;
 }
 
 const GroupParticipant: React.FC<{
   address: string;
   onRemove: (address: string) => void;
-}> = ({address, onRemove}) => {
+  currentAddress: boolean;
+}> = ({address, currentAddress, onRemove}) => {
   const {displayName, avatarUrl} = useContactInfo(address);
   return (
     <VStack
@@ -44,9 +46,11 @@ const GroupParticipant: React.FC<{
           address={address}
           avatarUri={avatarUrl}
         />
-        <Pressable marginLeft={'10px'} onPress={() => onRemove(address)}>
-          <Icon name={'trash'} type={'mini'} color={colors.actionPrimary} />
-        </Pressable>
+        {!currentAddress && (
+          <Pressable marginLeft={'10px'} onPress={() => onRemove(address)}>
+            <Icon name={'trash'} type={'mini'} color={colors.actionPrimary} />
+          </Pressable>
+        )}
       </HStack>
       {AppConfig.LENS_ENABLED && (
         <>
@@ -79,6 +83,7 @@ export const GroupInfoModal: FC<GroupInfoModalProps> = ({
   addresses,
   onPlusPress,
   group,
+  address: currentAddress,
 }) => {
   const {client} = useClient();
   const [editing, setEditing] = useState(false);
@@ -154,6 +159,9 @@ export const GroupInfoModal: FC<GroupInfoModalProps> = ({
             key={address}
             address={address}
             onRemove={onRemovePress}
+            currentAddress={
+              currentAddress.toLowerCase() === address.toLowerCase()
+            }
           />
         ))}
         <Button onPress={onPlusPress} width={'200px'}>
