@@ -22,7 +22,7 @@ jobs:
       - name: Install Android SDK
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          script: ./android/gradlew connectedCheck
+          script: cd android && ./gradlew connectedCheck
           api-level: 30
           target: default
           arch: x86_64
