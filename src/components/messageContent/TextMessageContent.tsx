@@ -1,5 +1,5 @@
 import {DecodedMessage} from '@xmtp/react-native-sdk';
-import {Button, Container} from 'native-base';
+import {Box, Button, Container} from 'native-base';
 import React from 'react';
 import {useWindowDimensions} from 'react-native';
 import FastImage from 'react-native-fast-image';
@@ -37,9 +37,12 @@ export const TextMessageContent = ({
       </Container>
     );
   }
+  const imageWidth = (width * 2) / 3;
+  const imageHeight =
+    imageWidth / (frameData.image?.aspectRatio === '1:1' ? 1 : 1.91);
 
   return (
-    <Container
+    <Box
       alignSelf={isMe ? 'flex-end' : 'flex-start'}
       borderRadius={'16px'}
       borderBottomRightRadius={isMe ? 0 : '16px'}
@@ -47,24 +50,30 @@ export const TextMessageContent = ({
       paddingY={3}
       paddingX={5}>
       <FastImage
-        source={{uri: frameData.image}}
-        style={{height: 150, width: width / 2, borderRadius: 10}}
+        resizeMode="contain"
+        source={{uri: frameData.image?.content}}
+        style={{
+          height: imageHeight,
+          width: imageWidth,
+          borderRadius: 10,
+        }}
       />
       <Button.Group
         paddingTop={1}
-        width={width / 2}
+        width={imageWidth}
         isAttached
         flexWrap={'wrap'}>
         {frameData.buttons.map((it, id) => (
           <AppButton
             variant={'outline'}
-            key={String(it)}
+            key={String(it.label)}
             flex={1}
+            // TODO: Support other actions
             onPress={() => postFrame(id + 1)}>
-            {it}
+            {it.label}
           </AppButton>
         ))}
       </Button.Group>
-    </Container>
+    </Box>
   );
 };

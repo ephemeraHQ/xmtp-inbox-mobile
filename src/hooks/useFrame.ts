@@ -1,5 +1,6 @@
 import {useQuery} from '@tanstack/react-query';
 import {useMutation} from 'wagmi';
+import {FrameButton} from '../models/FrameButton';
 import {QueryKeys} from '../queries/QueryKeys';
 import {useFramesClient} from './useFramesClient';
 
@@ -25,14 +26,14 @@ export const useFrame = (messageText: string) => {
       if (!data) {
         return null;
       }
-      const postUrl = data?.extractedTags['fc:frame:post_url'];
-      const image = data?.extractedTags['fc:frame:image'];
-      const buttons: string[] = [];
-      Object.keys(data?.extractedTags ?? {}).forEach(key => {
-        if (key.includes('fc:frame:button')) {
-          buttons.push(data?.extractedTags[key]);
-        }
-      });
+      const postUrl =
+        data?.frameInfo?.postUrl ?? data?.extractedTags['fc:frame:post_url'];
+      const image = data?.frameInfo?.image;
+      const buttons: FrameButton[] = [];
+      for (const buttonKey in data?.frameInfo?.buttons) {
+        const button = data?.frameInfo?.buttons[buttonKey];
+        buttons[Number(buttonKey)] = button;
+      }
       return {
         image,
         postUrl,
@@ -62,14 +63,13 @@ export const useFrame = (messageText: string) => {
       if (!response) {
         return null;
       }
-      const postUrl = response?.extractedTags['fc:frame:post_url'];
-      const image = response?.extractedTags['fc:frame:image'];
-      const buttons: string[] = [];
-      Object.keys(response?.extractedTags ?? {}).forEach(key => {
-        if (key.includes('fc:frame:button')) {
-          buttons.push(response?.extractedTags[key]);
-        }
-      });
+      const postUrl = response?.frameInfo?.postUrl;
+      const image = response?.frameInfo?.image;
+      const buttons: FrameButton[] = [];
+      for (const buttonKey in response?.frameInfo?.buttons) {
+        const button = response?.frameInfo?.buttons[buttonKey];
+        buttons.push(button);
+      }
       return {
         image,
         postUrl,
