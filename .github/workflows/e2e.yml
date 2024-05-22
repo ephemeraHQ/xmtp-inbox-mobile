@@ -15,13 +15,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-
-      - name: Install dependencies
-        run: npm install
+      - uses: actions/setup-node@v3
+      - run: yarn
 
       - name: Install Android SDK
         uses: reactivecircus/android-emulator-runner@v2
@@ -51,12 +46,8 @@ jobs:
       - name: Select Xcode 15.1
         run: ls /Applications/ && sudo xcode-select -switch /Applications/Xcode_15.1.app # Switch Xcode version
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-
       - uses: actions/setup-node@v3
+      - run: yarn
       - name: Install Bundle
         run: bundle install
       - run: bundle exec yarn
