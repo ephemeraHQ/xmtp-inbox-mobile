@@ -1,7 +1,7 @@
 import {useRoute} from '@react-navigation/native';
 import {useQueryClient} from '@tanstack/react-query';
 import {Box} from 'native-base';
-import {useCallback} from 'react';
+import React, {useCallback} from 'react';
 import {Alert, KeyboardAvoidingView, Platform} from 'react-native';
 import {Asset} from 'react-native-image-picker';
 import {ConversationHeader} from '../components/ConversationHeader';
@@ -32,11 +32,9 @@ export const NewConversationScreen = () => {
             return;
           }
         }
-        console.log('here11118', addresses);
         client?.conversations
-          ?.newGroup(addresses)
+          ?.newGroup(addresses, 'everyone_admin')
           .then(group => {
-            console.log('here11118', message);
             group
               .send(message.text ?? '')
               .then(() => {
@@ -99,7 +97,7 @@ export const NewConversationScreen = () => {
         <Box flexGrow={1} />
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={10}>
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 10 : 30}>
           <ConversationInput sendMessage={onSend} />
         </KeyboardAvoidingView>
       </Box>

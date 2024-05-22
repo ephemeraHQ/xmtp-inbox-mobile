@@ -7,8 +7,6 @@ import {Button} from '../components/common/Button';
 import {Icon} from '../components/common/Icon';
 import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
-import {AppConfig} from '../consts/AppConfig';
-import {supportedContentTypes} from '../consts/ContentTypes';
 import {EventEmitterEvents} from '../consts/EventEmitters';
 import {useClientContext} from '../context/ClientContext';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
@@ -17,6 +15,7 @@ import {ScreenNames} from '../navigation/ScreenNames';
 import {saveClientKeys} from '../services/encryptedStorage';
 import {PushNotificatons} from '../services/pushNotifications';
 import {colors} from '../theme/colors';
+import {createClientOptions} from '../utils/clientOptions';
 
 type Step = 'CREATE_IDENTITY' | 'ENABLE_IDENTITY';
 
@@ -55,14 +54,10 @@ export const OnboardingEnableIdentityScreen = () => {
         return;
       }
       try {
-        // const keyBytes = new Uint8Array([
-        //   233, 120, 198, 96, 154, 65, 132, 17, 132, 96, 250, 40, 103, 35, 125,
-        //   64, 166, 83, 208, 224, 254, 44, 205, 227, 175, 49, 234, 129, 74, 252,
-        //   135, 145,
-        // ]);
+        const clientOptions = await createClientOptions();
+
         const client = await Client.create(signer, {
-          enableAlphaMls: true,
-          env: AppConfig.XMTP_ENV,
+          ...clientOptions,
           preEnableIdentityCallback: async () => {
             setStep('ENABLE_IDENTITY');
             await enableIdentityPromise();
@@ -70,8 +65,6 @@ export const OnboardingEnableIdentityScreen = () => {
           preCreateIdentityCallback: async () => {
             await createIdentityPromise();
           },
-          codecs: supportedContentTypes,
-          // dbEncryptionKey: keyBytes,
         });
         if (Platform.OS !== 'android') {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars

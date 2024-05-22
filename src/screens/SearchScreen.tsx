@@ -151,17 +151,10 @@ export const SearchScreen = () => {
 
   const onGroupStart = useCallback(async () => {
     setErrorString(null);
-    console.log('here1111 participants', participants);
 
     const canMessage = await client?.canGroupMessage(participants);
-    const canMessage2 = await client?.canMessage(participants[0]);
-    console.log('here1111 canMessage', canMessage);
-    console.log('here1111 canMessage2', canMessage2);
     for (const address of participants) {
-      const lower = address.toLowerCase();
-      console.log('here1111 address', lower);
-      console.log('here1111 address2', canMessage?.[lower]);
-      if (!canMessage?.[lower]) {
+      if (!canMessage?.[address.toLowerCase()]) {
         setErrorString(translate('not_on_xmtp_group'));
 
         return;

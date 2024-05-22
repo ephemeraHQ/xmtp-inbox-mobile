@@ -191,7 +191,7 @@ export const GroupScreen = () => {
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={{height: '100%'}}
-            keyboardVerticalOffset={10}>
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 10 : 30}>
             <Box flex={1}>
               <FlatList
                 keyExtractor={keyExtractor}
