@@ -1,6 +1,16 @@
 name: Typescript CI
 on:
   pull_request:
+    paths:
+      # JS Specific Files
+      - 'src/**'
+      - 'e2e/**'
+      - 'tsconfig.json'
+      - 'App.tsx'
+      # Build Files
+      - 'yarn.lock'
+      - 'package.json'
+      - 'patches/**'
 jobs:
   tsc:
     runs-on: ubuntu-latest
