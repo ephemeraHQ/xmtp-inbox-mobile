@@ -21,15 +21,15 @@ jobs:
       - name: Install Android SDK
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          script: # Add your script here
+          script: ./gradlew connectedCheck
           api-level: 30
           target: default
           arch: x86_64
           profile: Nexus 6
           emulator-options: -no-window
 
-      - name: Start emulator
-        run: adb wait-for-device
+      # - name: Start emulator
+      #   run: adb wait-for-device
 
       - name: Build Android app for Detox tests
         run: yarn e2e:android:build
