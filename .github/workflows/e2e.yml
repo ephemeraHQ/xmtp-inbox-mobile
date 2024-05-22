@@ -17,11 +17,12 @@ jobs:
 
       - uses: actions/setup-node@v3
       - run: yarn
-
+      - name: Install Detox CLI
+        run: yarn global add detox-cli
       - name: Install Android SDK
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          script: ./gradlew connectedCheck
+          script: ./android/gradlew connectedCheck
           api-level: 30
           target: default
           arch: x86_64
@@ -45,9 +46,13 @@ jobs:
         uses: actions/checkout@v2
       - name: Select Xcode 15.1
         run: ls /Applications/ && sudo xcode-select -switch /Applications/Xcode_15.1.app # Switch Xcode version
-
+      - name: Install iOS Dependencies
+        run: brew tap wix/brew
+      - run: brew install applesimutils
       - uses: actions/setup-node@v3
       - run: yarn
+      - name: Install Detox CLI
+        run: yarn global add detox-cli
       - name: Install Bundle
         run: bundle install
       - run: bundle exec yarn
