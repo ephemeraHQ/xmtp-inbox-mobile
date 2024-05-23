@@ -10,8 +10,8 @@ PODS:
   - CoinbaseWalletSDKExpo (1.0.10):
     - CoinbaseWalletSDK/CrossPlatform (= 1.0.4)
     - ExpoModulesCore
-  - Connect-Swift (0.3.0):
-    - SwiftProtobuf (~> 1.20.3)
+  - Connect-Swift (0.12.0):
+    - SwiftProtobuf (~> 1.25.2)
   - DoubleConversion (1.1.6)
   - EXApplication (5.8.3):
     - ExpoModulesCore
@@ -122,7 +122,7 @@ PODS:
   - libwebp/sharpyuv (1.3.2)
   - libwebp/webp (1.3.2):
     - libwebp/sharpyuv
-  - LibXMTP (0.4.2-beta5)
+  - LibXMTP (0.4.4-beta5)
   - Logging (1.0.0)
   - MessagePacker (0.4.7)
   - MMKV (1.3.5):
@@ -1202,13 +1202,21 @@ PODS:
     - React-Core
   - RNCClipboard (1.13.2):
     - React-Core
+  - RNCPushNotificationIOS (1.11.0):
+    - React-Core
   - RNDeviceInfo (10.12.0):
     - React-Core
   - RNFastImage (8.6.3):
     - React-Core
     - SDWebImage (~> 5.11.1)
     - SDWebImageWebPCoder (~> 0.8.4)
+  - RNFS (2.20.0):
+    - React-Core
   - RNLocalize (3.0.6):
+    - React-Core
+  - RNPermissions (4.1.5):
+    - React-Core
+  - RNReactNativeHapticFeedback (2.2.0):
     - React-Core
   - RNReanimated (3.6.2):
     - glog
@@ -1230,7 +1238,7 @@ PODS:
   - secp256k1.swift (0.1.4)
   - simdjson (3.1.0-wmelon1)
   - SocketRocket (0.6.1)
-  - SwiftProtobuf (1.20.3)
+  - SwiftProtobuf (1.25.2)
   - WatermelonDB (0.27.1):
     - React
     - simdjson
@@ -1239,16 +1247,16 @@ PODS:
     - GenericJSON (~> 2.0)
     - Logging (~> 1.0.0)
     - secp256k1.swift (~> 0.1)
-  - XMTP (0.8.15):
-    - Connect-Swift (= 0.3.0)
+  - XMTP (0.10.11):
+    - Connect-Swift (= 0.12.0)
     - GzipSwift
-    - LibXMTP (= 0.4.2-beta5)
+    - LibXMTP (= 0.4.4-beta5)
     - web3.swift
-  - XMTPReactNative (1.28.0-beta.13):
+  - XMTPReactNative (1.33.1-beta.2):
     - ExpoModulesCore
     - MessagePacker
     - secp256k1.swift
-    - XMTP (= 0.8.15)
+    - XMTP (= 0.10.11)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -1348,9 +1356,13 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
+  - "RNCPushNotificationIOS (from `../node_modules/@react-native-community/push-notification-ios`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNFastImage (from `../node_modules/react-native-fast-image`)
+  - RNFS (from `../node_modules/react-native-fs`)
   - RNLocalize (from `../node_modules/react-native-localize`)
+  - RNPermissions (from `../node_modules/react-native-permissions`)
+  - RNReactNativeHapticFeedback (from `../node_modules/react-native-haptic-feedback`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -1537,12 +1549,20 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCClipboard:
     :path: "../node_modules/@react-native-clipboard/clipboard"
+  RNCPushNotificationIOS:
+    :path: "../node_modules/@react-native-community/push-notification-ios"
   RNDeviceInfo:
     :path: "../node_modules/react-native-device-info"
   RNFastImage:
     :path: "../node_modules/react-native-fast-image"
+  RNFS:
+    :path: "../node_modules/react-native-fs"
   RNLocalize:
     :path: "../node_modules/react-native-localize"
+  RNPermissions:
+    :path: "../node_modules/react-native-permissions"
+  RNReactNativeHapticFeedback:
+    :path: "../node_modules/react-native-haptic-feedback"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -1565,7 +1585,7 @@ SPEC CHECKSUMS:
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   CoinbaseWalletSDK: ea1f37512bbc69ebe07416e3b29bf840f5cc3152
   CoinbaseWalletSDKExpo: c79420eb009f482f768c23b6768fc5b2d7c98777
-  Connect-Swift: d38eedc1907d440314f8d26d5a038a00cbb0f6f1
+  Connect-Swift: 1de2ef4a548c59ecaeb9120812dfe0d6e07a0d47
   DoubleConversion: fea03f2699887d960129cc54bba7e52542b6f953
   EXApplication: 137189a3f149b4e8e546884629392c3efc94cbd3
   EXConstants: 988aa430ca0f76b43cd46b66e7fae3287f9cc2fc
@@ -1594,7 +1614,7 @@ SPEC CHECKSUMS:
   hermes-engine: b12d9bb1b7cee546f5e48212e7ea7e3c1665a367
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   libwebp: 1786c9f4ff8a279e4dac1e8f385004d5fc253009
-  LibXMTP: 3cbd1d0dd44ae3648f571a0e81bbe73565759e67
+  LibXMTP: e2fb601691981900099551ff3e05621bd73dccf1
   Logging: 9ef4ecb546ad3169398d5a723bc9bea1c46bef26
   MessagePacker: ab2fe250e86ea7aedd1a9ee47a37083edd41fd02
   MMKV: 506311d0494023c2f7e0b62cc1f31b7370fa3cfb
@@ -1653,9 +1673,13 @@ SPEC CHECKSUMS:
   ReactCommon: 1da3fc14d904883c46327b3322325eebf60a720a
   RNCAsyncStorage: 618d03a5f52fbccb3d7010076bc54712844c18ef
   RNCClipboard: 60fed4b71560d7bfe40e9d35dea9762b024da86d
+  RNCPushNotificationIOS: 64218f3c776c03d7408284a819b2abfda1834bc8
   RNDeviceInfo: db5c64a060e66e5db3102d041ebe3ef307a85120
   RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
+  RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNLocalize: 4222a3756cdbe2dc9a5bdf445765a4d2572107cb
+  RNPermissions: 5b96247c15864f9d89d7f51eeb0f2b736a2b212d
+  RNReactNativeHapticFeedback: ec56a5f81c3941206fd85625fa669ffc7b4545f9
   RNReanimated: 4f0931c29b1535a3a40a6c06797b1d9d39f50754
   RNScreens: 17e2f657f1b09a71ec3c821368a04acbb7ebcb46
   RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396
@@ -1664,13 +1688,13 @@ SPEC CHECKSUMS:
   secp256k1.swift: a7e7a214f6db6ce5db32cc6b2b45e5c4dd633634
   simdjson: e6bfae9ce4bcdc80452d388d593816f1ca2106f3
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
-  SwiftProtobuf: b02b5075dcf60c9f5f403000b3b0c202a11b6ae1
+  SwiftProtobuf: 407a385e97fd206c4fbe880cc84123989167e0d1
   WatermelonDB: 842d22ba555425aa9f3ce551239a001200c539bc
   web3.swift: 2263d1e12e121b2c42ffb63a5a7beb1acaf33959
-  XMTP: 00fe090825e6bc5991870c1925befc06b1a30b78
-  XMTPReactNative: cf4227bf733870dc0331f3925cea852cafd43928
+  XMTP: 1deb40ac712ba315dcfdecd590a9b924d8c2241a
+  XMTPReactNative: ffc7fb00c38f3d3f8af038ae5d1f9712cac0bb5f
   Yoga: 2a16e58450c48e110211dae1159fb114bbcdcfc0
 
-PODFILE CHECKSUM: 605f5beea10db7b4d01fe2949787bef356832da3
+PODFILE CHECKSUM: 47641fd2f7a6fc6169785131e7615d136e56edd8
 
 COCOAPODS: 1.15.2

@@ -17,7 +17,7 @@ import {blues, colors, reds} from '../theme/colors';
 export const QrCodeScreen = () => {
   const {goBack} = useTypedNavigation();
   const address = useAddress();
-  const value = `xmtp://new_conversation/${address}`;
+  const value = `ephemera-chat://new_conversation/${address}`;
   const handleCopy = useCallback(() => {
     Clipboard.setString(value);
   }, [value]);

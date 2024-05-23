@@ -243,23 +243,26 @@ export const ConversationListScreen = () => {
           }
           ListEmptyComponent={
             list === 'ALL_MESSAGES' && !isLoading ? (
-              <VStack
-                justifyContent={'center'}
-                alignItems={'center'}
-                height={'100%'}>
-                <Center paddingBottom={'32px'} alignSelf={'center'}>
-                  <EmptyBackground />
-                </Center>
-                <Text
-                  paddingBottom={'6px'}
-                  typography="text-xl/bold"
-                  textAlign={'center'}>
-                  {translate('youve_got_no_messages')}
-                </Text>
-                <Text typography="text-title/regular" textAlign={'center'}>
-                  {translate('start_a_conversation_to_get_going')}
-                </Text>
-              </VStack>
+              <Box flexGrow={1} paddingBottom={50}>
+                <VStack
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                  flexGrow={1}
+                  height={'100%'}>
+                  <Center paddingBottom={'32px'} alignSelf={'center'}>
+                    <EmptyBackground />
+                  </Center>
+                  <Text
+                    paddingBottom={'6px'}
+                    typography="text-xl/bold"
+                    textAlign={'center'}>
+                    {translate('youve_got_no_messages')}
+                  </Text>
+                  <Text typography="text-title/regular" textAlign={'center'}>
+                    {translate('start_a_conversation_to_get_going')}
+                  </Text>
+                </VStack>
+              </Box>
             ) : null
           }
           renderItem={renderItem}

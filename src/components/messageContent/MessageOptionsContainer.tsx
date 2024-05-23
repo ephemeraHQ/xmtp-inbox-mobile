@@ -6,7 +6,10 @@ import React, {
   useContext,
   useState,
 } from 'react';
+import {StyleSheet} from 'react-native';
+import Haptic from 'react-native-haptic-feedback';
 import {GroupContext} from '../../context/GroupContext';
+import {translate} from '../../i18n';
 import {colors} from '../../theme/colors';
 import {Button as AppButton} from '../common/Button';
 import {Text} from '../common/Text';
@@ -24,6 +27,7 @@ export const MessageOptionsContainer: FC<
 
   const handleReactPress = useCallback(
     (content: string) => {
+      Haptic.trigger('notificationSuccess');
       group?.send({
         reaction: {
           reference: messageId,
@@ -43,6 +47,7 @@ export const MessageOptionsContainer: FC<
 
   const handleRemoveReplyPress = useCallback(
     (content: string) => {
+      Haptic.trigger('notificationSuccess');
       group?.send({
         reaction: {
           reference: messageId,
@@ -55,8 +60,17 @@ export const MessageOptionsContainer: FC<
     [group, messageId],
   );
 
+  const handleLongPress = useCallback(() => {
+    Haptic.trigger('longPress');
+    setShown(true);
+  }, [setShown]);
+
+  const handlePress = useCallback(() => {
+    setShown(false);
+  }, [setShown]);
+
   return (
-    <Pressable onPress={() => setShown(prev => !prev)}>
+    <Pressable onPress={handlePress} onLongPress={handleLongPress}>
       <Container
         flexShrink={1}
         alignSelf={isMe ? 'flex-end' : 'flex-start'}
@@ -65,38 +79,39 @@ export const MessageOptionsContainer: FC<
         {children}
         {reactions.length > 0 && (
           <HStack paddingTop={2}>
-            {reactions.map(({content, count, addedByUser}) => (
-              <Pressable
-                onPress={
-                  addedByUser
-                    ? () => handleRemoveReplyPress(content)
-                    : () => handleReactPress(content)
-                }
-                key={content}
-                style={{
-                  backgroundColor: addedByUser
-                    ? colors.actionPrimary
-                    : undefined,
-                  borderRadius: 16,
-                  height: 24,
-                  padding: 4,
-                }}>
-                <Text
-                  color={
-                    addedByUser ? colors.textTertiary : colors.textSecondary
+            {reactions.map(({content, count, addedByUser}) => {
+              if (count <= 0) {
+                return null;
+              }
+              return (
+                <Pressable
+                  onPress={
+                    addedByUser
+                      ? () => handleRemoveReplyPress(content)
+                      : () => handleReactPress(content)
                   }
-                  typography="text-xs/semi-bold"
-                  marginX={1}>
-                  {content} {count}
-                </Text>
-              </Pressable>
-            ))}
+                  key={content}
+                  style={[
+                    styles.reaction,
+                    addedByUser && styles.reactionFromUser,
+                  ]}>
+                  <Text
+                    color={
+                      addedByUser ? colors.textTertiary : colors.textSecondary
+                    }
+                    typography="text-xs/semi-bold"
+                    marginX={1}>
+                    {content} {count}
+                  </Text>
+                </Pressable>
+              );
+            })}
           </HStack>
         )}
         {shown && (
           <Button.Group isAttached flexWrap={'wrap'}>
             <AppButton onPress={handleReplyPress} variant={'ghost'}>
-              Reply
+              {translate('reply')}
             </AppButton>
             <AppButton onPress={() => handleReactPress('👍')} variant={'ghost'}>
               👍
@@ -110,3 +125,15 @@ export const MessageOptionsContainer: FC<
     </Pressable>
   );
 };
+
+const styles = StyleSheet.create({
+  reaction: {
+    borderRadius: 16,
+    height: 24,
+    padding: 4,
+  },
+  reactionFromUser: {
+    backgroundColor: colors.actionPrimary,
+  },
+  reactionNotFromUser: {},
+});

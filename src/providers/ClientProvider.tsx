@@ -1,13 +1,10 @@
 import {useAddress, useConnectionStatus} from '@thirdweb-dev/react-native';
 import {Client} from '@xmtp/react-native-sdk';
 import React, {FC, PropsWithChildren, useEffect, useState} from 'react';
-import {AppConfig} from '../consts/AppConfig';
-import {
-  SupportedContentTypes,
-  supportedContentTypes,
-} from '../consts/ContentTypes';
+import {SupportedContentTypes} from '../consts/ContentTypes';
 import {ClientContext} from '../context/ClientContext';
 import {clearClientKeys, getClientKeys} from '../services/encryptedStorage';
+import {createClientOptions} from '../utils/clientOptions';
 
 export const ClientProvider: FC<PropsWithChildren> = ({children}) => {
   const [client, setClient] = useState<Client<SupportedContentTypes> | null>(
@@ -28,28 +25,31 @@ export const ClientProvider: FC<PropsWithChildren> = ({children}) => {
       // Address still shows as undefined even when connected
       return;
     }
-    getClientKeys(address as `0x${string}`)
-      .then(keys => {
+    const handleClientCreation = async () => {
+      try {
+        const keys = await getClientKeys(address as `0x${string}`);
         if (!keys) {
           return setLoading(false);
         }
-        Client.createFromKeyBundle<SupportedContentTypes>(keys, {
-          codecs: supportedContentTypes,
-          enableAlphaMls: true,
-          env: AppConfig.XMTP_ENV,
-        })
-          .then(newClient => {
-            setClient(newClient as Client<SupportedContentTypes>);
-            setLoading(false);
-          })
-          .catch(() => {
-            clearClientKeys(address as `0x${string}`);
-            setLoading(false);
-          });
-      })
-      .catch(() => {
+        try {
+          const clientOptions = await createClientOptions();
+          const newClient =
+            await Client.createFromKeyBundle<SupportedContentTypes>(
+              keys,
+              clientOptions,
+            );
+          setClient(newClient as Client<SupportedContentTypes>);
+        } catch (err) {
+          clearClientKeys(address as `0x${string}`);
+        } finally {
+          setLoading(false);
+        }
+      } catch (err) {
+        console.log('Error in handleClientCreation', err);
         return setLoading(false);
-      });
+      }
+    };
+    handleClientCreation();
   }, [address, status]);
 
   return (

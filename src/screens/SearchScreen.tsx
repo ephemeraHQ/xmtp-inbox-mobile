@@ -151,10 +151,14 @@ export const SearchScreen = () => {
 
   const onGroupStart = useCallback(async () => {
     setErrorString(null);
+
     const canMessage = await client?.canGroupMessage(participants);
-    if (!canMessage) {
-      setErrorString(translate('not_on_xmtp_group'));
-      return;
+    for (const address of participants) {
+      if (!canMessage?.[address.toLowerCase()]) {
+        setErrorString(translate('not_on_xmtp_group'));
+
+        return;
+      }
     }
     goBack();
     navigate(ScreenNames.NewConversation, {addresses: participants});

@@ -2,7 +2,7 @@ import {useRoute} from '@react-navigation/native';
 import {useQueryClient} from '@tanstack/react-query';
 import {Box} from 'native-base';
 import React, {useCallback} from 'react';
-import {Alert, Platform} from 'react-native';
+import {Alert, KeyboardAvoidingView, Platform} from 'react-native';
 import {Asset} from 'react-native-image-picker';
 import {ConversationHeader} from '../components/ConversationHeader';
 import {ConversationInput} from '../components/ConversationInput';
@@ -23,41 +23,56 @@ export const NewConversationScreen = () => {
 
   const onSend = useCallback(
     async (message: {text?: string; asset?: Asset}) => {
-      // TODO: Error Handling
-      const canMessage = await client?.canGroupMessage(addresses);
-      if (!canMessage && Platform.OS === 'android') {
-        Alert.alert('You do not have permission to message this group');
-        return;
+      try {
+        const canMessage = await client?.canGroupMessage(addresses);
+        for (const address of addresses) {
+          const lower = address.toLowerCase();
+          if (!canMessage?.[lower]) {
+            Alert.alert(`${address} cannot be added to a group`);
+            return;
+          }
+        }
+        try {
+          const group = await client?.conversations.newGroup(
+            addresses,
+            'creator_admin',
+          );
+          if (!group) {
+            Alert.alert('Error creating group');
+            return;
+          }
+          try {
+            await group?.send(message.text ?? '');
+            queryClient.setQueryData<ListMessages>(
+              [QueryKeys.List, client?.address],
+              prev => {
+                return [
+                  {
+                    group,
+                    display: message.text ?? 'Image',
+                    lastMessageTime: Date.now(),
+                    isRequest: false,
+                  },
+                  ...(prev ?? []),
+                ];
+              },
+            );
+          } catch (error: any) {
+            Alert.alert('Error sending message', error?.message);
+          }
+          if (group) {
+            replace(ScreenNames.Group, {id: group.id});
+          }
+        } catch (error: any) {
+          Alert.alert('Error creating group', error?.message);
+        }
+      } catch (error: any) {
+        Alert.alert(
+          'An Error has occurred',
+          (typeof error === 'object' && 'message' in error && error?.message) ||
+            '',
+        );
       }
-      client?.conversations
-        ?.newGroup(addresses)
-        .then(group => {
-          // The client is not notified of a group they create, so we add it to the list here
-          group
-            .send(message as {text: string})
-            .then(() => {
-              queryClient.setQueryData<ListMessages>(
-                [QueryKeys.List, client?.address],
-                prev => {
-                  return [
-                    {
-                      group,
-                      display: message.text ?? 'Image',
-                      lastMessageTime: Date.now(),
-                      isRequest: false,
-                    },
-                    ...(prev ?? []),
-                  ];
-                },
-              );
-            })
-            .finally(() => {
-              replace(ScreenNames.Group, {id: group.id});
-            });
-        })
-        .catch(err => {
-          console.log('error on new', err);
-        });
     },
     [addresses, client, queryClient, replace],
   );
@@ -82,7 +97,11 @@ export const NewConversationScreen = () => {
           />
         )}
         <Box flexGrow={1} />
-        <ConversationInput sendMessage={onSend} />
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 10 : 30}>
+          <ConversationInput sendMessage={onSend} />
+        </KeyboardAvoidingView>
       </Box>
     </Screen>
   );
