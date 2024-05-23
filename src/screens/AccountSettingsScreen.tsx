@@ -32,7 +32,7 @@ import {useClientContext} from '../context/ClientContext';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
 import {ScreenNames} from '../navigation/ScreenNames';
-import {clearClientKeys} from '../services/encryptedStorage';
+import {encryptedStorage} from '../services/encryptedStorage';
 import {mmkvStorage} from '../services/mmkvStorage';
 import {colors, greens, reds} from '../theme/colors';
 import {formatAddress} from '../utils/formatAddress';
@@ -204,7 +204,7 @@ export const AccountSettingsScreen = () => {
               if (!address) {
                 return;
               }
-              await clearClientKeys(address as `0x${string}`);
+              await encryptedStorage.clearClientKeys(address as `0x${string}`);
               setClient(null);
               disconnect()
                 .then(() => {})

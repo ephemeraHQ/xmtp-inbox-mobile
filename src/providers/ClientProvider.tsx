@@ -3,7 +3,7 @@ import {Client} from '@xmtp/react-native-sdk';
 import React, {FC, PropsWithChildren, useEffect, useState} from 'react';
 import {SupportedContentTypes} from '../consts/ContentTypes';
 import {ClientContext} from '../context/ClientContext';
-import {clearClientKeys, getClientKeys} from '../services/encryptedStorage';
+import {encryptedStorage} from '../services/encryptedStorage';
 import {createClientOptions} from '../utils/clientOptions';
 
 export const ClientProvider: FC<PropsWithChildren> = ({children}) => {
@@ -27,7 +27,9 @@ export const ClientProvider: FC<PropsWithChildren> = ({children}) => {
     }
     const handleClientCreation = async () => {
       try {
-        const keys = await getClientKeys(address as `0x${string}`);
+        const keys = await encryptedStorage.getClientKeys(
+          address as `0x${string}`,
+        );
         if (!keys) {
           return setLoading(false);
         }
@@ -40,7 +42,7 @@ export const ClientProvider: FC<PropsWithChildren> = ({children}) => {
             );
           setClient(newClient as Client<SupportedContentTypes>);
         } catch (err) {
-          clearClientKeys(address as `0x${string}`);
+          encryptedStorage.clearClientKeys(address as `0x${string}`);
         } finally {
           setLoading(false);
         }
