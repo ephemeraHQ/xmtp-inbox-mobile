@@ -86,7 +86,10 @@ export const ConversationInput: FC<ConversationInputProps> = ({
 
   return (
     <VStack flexShrink={1}>
-      <HStack alignItems={'flex-end'} backgroundColor={'transparent'}>
+      <HStack
+        marginX={2}
+        alignItems={'flex-end'}
+        backgroundColor={'transparent'}>
         <Pressable onPress={handleImageUploadPress}>
           <Icon name="photo" size={40} color={colors.actionPrimary} />
         </Pressable>
