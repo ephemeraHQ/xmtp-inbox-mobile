@@ -108,6 +108,7 @@ const ListHeader: FC<ListHeaderProps> = ({
           <Box>
             <Button
               onLongPress={navigateToDev}
+              _pressed={{backgroundColor: 'transparent'}}
               size={'sm'}
               variant={'ghost'}
               leftIcon={
