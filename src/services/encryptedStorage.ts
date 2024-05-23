@@ -1,20 +1,31 @@
-import EncryptedStorage from 'react-native-encrypted-storage';
+import RNEncryptedStorage from 'react-native-encrypted-storage';
 
-enum StorageKeys {
+enum EncryptedStorageKeys {
   clientKeys = 'CLIENT_KEYS',
 }
 
-export const saveClientKeys = (address: `0x${string}`, clientKeys: string) => {
-  return EncryptedStorage.setItem(
-    `${StorageKeys.clientKeys}_${address}`,
-    clientKeys,
-  );
-};
+class EncryptedStorage {
+  //#region Client Keys
+  private getClientKeysKey = (address: string) => {
+    return `${EncryptedStorageKeys.clientKeys}_${address}`;
+  };
 
-export const getClientKeys = (address: `0x${string}`) => {
-  return EncryptedStorage.getItem(`${StorageKeys.clientKeys}_${address}`);
-};
+  saveClientKeys = (address: string, clientKeys: string) => {
+    return RNEncryptedStorage.setItem(
+      this.getClientKeysKey(address),
+      clientKeys,
+    );
+  };
 
-export const clearClientKeys = (address: `0x${string}`) => {
-  return EncryptedStorage.removeItem(`${StorageKeys.clientKeys}_${address}`);
-};
+  getClientKeys = (address: string) => {
+    return RNEncryptedStorage.getItem(this.getClientKeysKey(address));
+  };
+
+  clearClientKeys = (address: string) => {
+    return RNEncryptedStorage.removeItem(this.getClientKeysKey(address));
+  };
+
+  //#endregion Client Keys
+}
+
+export const encryptedStorage = new EncryptedStorage();

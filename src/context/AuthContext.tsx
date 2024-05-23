@@ -7,7 +7,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import {getClientKeys} from '../services/encryptedStorage';
+import {encryptedStorage} from '../services/encryptedStorage';
 
 type AuthedStatus = 'LOADING' | 'AUTHED' | 'UNAUTHED';
 
@@ -31,7 +31,8 @@ export const AuthProvider: FC<PropsWithChildren> = ({children}) => {
     if (!address) {
       return setAuthStatus('UNAUTHED');
     }
-    getClientKeys(address as `0x${string}`)
+    encryptedStorage
+      .getClientKeys(address as `0x${string}`)
       .then(keys => {
         if (!keys) {
           return setAuthStatus('UNAUTHED');

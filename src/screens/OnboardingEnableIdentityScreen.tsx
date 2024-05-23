@@ -12,7 +12,7 @@ import {useClientContext} from '../context/ClientContext';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
 import {ScreenNames} from '../navigation/ScreenNames';
-import {saveClientKeys} from '../services/encryptedStorage';
+import {encryptedStorage} from '../services/encryptedStorage';
 import {PushNotificatons} from '../services/pushNotifications';
 import {colors} from '../theme/colors';
 import {createClientOptions} from '../utils/clientOptions';
@@ -72,7 +72,7 @@ export const OnboardingEnableIdentityScreen = () => {
         }
         const keys = await client.exportKeyBundle();
         const address = client.address;
-        saveClientKeys(address as `0x${string}`, keys);
+        encryptedStorage.saveClientKeys(address as `0x${string}`, keys);
         setClient(client);
       } catch (e: any) {
         console.log('Error creating client', e);
