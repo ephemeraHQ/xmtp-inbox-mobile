@@ -22,7 +22,12 @@ export class PushNotificatons {
           const token = registrationData.token;
           console.log('PUSH NOTIFICATION TOKEN:', token);
           XMTPPush.register(PUSH_SERVER, token);
+          await Promise.all([
+            client.contacts.refreshConsentList(),
+            client.conversations.syncGroups(),
+          ]);
           await client.contacts.refreshConsentList();
+          await client.conversations.syncGroups();
           const conversations = await client.conversations.listGroups();
           const pushClient = new XMTPPush(client);
           pushClient.subscribe(conversations.map(c => c.topic));

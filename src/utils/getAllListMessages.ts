@@ -80,12 +80,7 @@ export const getAllListMessages = async (client?: Client<any> | null) => {
       },
       [],
     );
-
-    const sorted = allMessagesFiltered.sort((a, b) => {
-      return b.lastMessageTime - a.lastMessageTime;
-    });
-
-    return sorted;
+    return allMessagesFiltered;
   } catch (e) {
     console.log('Error fetching messages', e);
     throw new Error('Error fetching messages');

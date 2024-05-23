@@ -32,38 +32,40 @@ export const NewConversationScreen = () => {
             return;
           }
         }
-        client?.conversations
-          ?.newGroup(addresses, 'everyone_admin')
-          .then(group => {
-            group
-              .send(message.text ?? '')
-              .then(() => {
-                queryClient.setQueryData<ListMessages>(
-                  [QueryKeys.List, client?.address],
-                  prev => {
-                    return [
-                      {
-                        group,
-                        display: message.text ?? 'Image',
-                        lastMessageTime: Date.now(),
-                        isRequest: false,
-                      },
-                      ...(prev ?? []),
-                    ];
+        try {
+          const group = await client?.conversations.newGroup(
+            addresses,
+            'creator_admin',
+          );
+          if (!group) {
+            Alert.alert('Error creating group');
+            return;
+          }
+          try {
+            await group?.send(message.text ?? '');
+            queryClient.setQueryData<ListMessages>(
+              [QueryKeys.List, client?.address],
+              prev => {
+                return [
+                  {
+                    group,
+                    display: message.text ?? 'Image',
+                    lastMessageTime: Date.now(),
+                    isRequest: false,
                   },
-                );
-              })
-              .catch(err => {
-                Alert.alert('Error sending message', err.message);
-                // console.log('error on new', err);
-              })
-              .finally(() => {
-                replace(ScreenNames.Group, {id: group.id});
-              });
-          })
-          .catch(err => {
-            Alert.alert('Error creating group', err.message);
-          });
+                  ...(prev ?? []),
+                ];
+              },
+            );
+          } catch (error: any) {
+            Alert.alert('Error sending message', error?.message);
+          }
+          if (group) {
+            replace(ScreenNames.Group, {id: group.id});
+          }
+        } catch (error: any) {
+          Alert.alert('Error creating group', error?.message);
+        }
       } catch (error: any) {
         Alert.alert(
           'An Error has occurred',

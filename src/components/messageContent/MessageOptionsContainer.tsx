@@ -7,6 +7,7 @@ import React, {
   useState,
 } from 'react';
 import {StyleSheet} from 'react-native';
+import Haptic from 'react-native-haptic-feedback';
 import {GroupContext} from '../../context/GroupContext';
 import {translate} from '../../i18n';
 import {colors} from '../../theme/colors';
@@ -26,6 +27,7 @@ export const MessageOptionsContainer: FC<
 
   const handleReactPress = useCallback(
     (content: string) => {
+      Haptic.trigger('notificationSuccess');
       group?.send({
         reaction: {
           reference: messageId,
@@ -45,6 +47,7 @@ export const MessageOptionsContainer: FC<
 
   const handleRemoveReplyPress = useCallback(
     (content: string) => {
+      Haptic.trigger('notificationSuccess');
       group?.send({
         reaction: {
           reference: messageId,
@@ -58,6 +61,7 @@ export const MessageOptionsContainer: FC<
   );
 
   const handleLongPress = useCallback(() => {
+    Haptic.trigger('longPress');
     setShown(true);
   }, [setShown]);
 

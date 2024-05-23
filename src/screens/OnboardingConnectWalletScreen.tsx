@@ -60,7 +60,8 @@ export const OnboardingConnectWalletScreen = () => {
         // But seems like something fairly consistently goes wrong with the hook
         navigate(ScreenNames.OnboardingEnableIdentity);
       } catch (error: any) {
-        Alert.alert(translate('wallet_error'), error?.message);
+        console.error(error);
+        Alert.alert(translate('wallet_error'), error?.message ?? '');
       }
     },
     [connect, navigate],
