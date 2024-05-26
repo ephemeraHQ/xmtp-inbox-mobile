@@ -93,7 +93,7 @@ export const GroupInfoModal: FC<GroupInfoModalProps> = ({
       try {
         await group?.removeMembers([address]);
         DeviceEventEmitter.emit(
-          `${EventEmitterEvents.GROUP_CHANGED}_${group?.id}`,
+          `${EventEmitterEvents.GROUP_CHANGED}_${group?.topic}`,
         );
         hide();
       } catch (err: any) {
@@ -110,12 +110,12 @@ export const GroupInfoModal: FC<GroupInfoModalProps> = ({
     }
     mmkvStorage.saveGroupName(
       client?.address ?? '',
-      group?.id ?? '',
+      group?.topic ?? '',
       groupName,
     );
     setEditing(false);
     setGroupName('');
-  }, [client?.address, group?.id, groupName]);
+  }, [client?.address, group?.topic, groupName]);
 
   return (
     <Modal onBackgroundPress={hide} isOpen={shown}>
@@ -141,7 +141,10 @@ export const GroupInfoModal: FC<GroupInfoModalProps> = ({
           <HStack w={'100%'} alignItems={'center'} justifyContent={'center'}>
             <Text typography="text-xl/bold" textAlign={'center'}>
               {(!!group &&
-                mmkvStorage.getGroupName(client?.address ?? '', group?.id)) ??
+                mmkvStorage.getGroupName(
+                  client?.address ?? '',
+                  group?.topic,
+                )) ??
                 translate('group')}
             </Text>
             <Pressable onPress={() => setEditing(true)} alignSelf={'flex-end'}>

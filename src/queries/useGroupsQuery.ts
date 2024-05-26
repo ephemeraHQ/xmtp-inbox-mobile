@@ -1,7 +1,7 @@
 import {useQuery} from '@tanstack/react-query';
 import {useClient} from '../hooks/useClient';
 import {createEntityObject} from '../utils/entities';
-import {getGroupId} from '../utils/idExtractors';
+import {getGroupTopic} from '../utils/idExtractors';
 import {QueryKeys} from './QueryKeys';
 
 export const useGroupsQuery = () => {
@@ -13,6 +13,6 @@ export const useGroupsQuery = () => {
       const groups = await client?.conversations.listGroups();
       return groups || [];
     },
-    select: data => createEntityObject(data, getGroupId),
+    select: data => createEntityObject(data, getGroupTopic),
   });
 };

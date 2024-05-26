@@ -1,8 +1,8 @@
 import {useDisconnect, useSigner} from '@thirdweb-dev/react-native';
 import {Client} from '@xmtp/react-native-sdk';
 import {StatusBar, VStack} from 'native-base';
-import {useCallback, useEffect, useState} from 'react';
-import {Alert, DeviceEventEmitter, Image, Platform} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Alert, DeviceEventEmitter, Image} from 'react-native';
 import {Button} from '../components/common/Button';
 import {Icon} from '../components/common/Icon';
 import {Screen} from '../components/common/Screen';
@@ -12,10 +12,15 @@ import {useClientContext} from '../context/ClientContext';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
 import {ScreenNames} from '../navigation/ScreenNames';
+import {QueryKeys} from '../queries/QueryKeys';
 import {encryptedStorage} from '../services/encryptedStorage';
-import {PushNotificatons} from '../services/pushNotifications';
+import {PushNotifications} from '../services/pushNotifications';
+import {queryClient} from '../services/queryClient';
 import {colors} from '../theme/colors';
 import {createClientOptions} from '../utils/clientOptions';
+import {getAllListMessages} from '../utils/getAllListMessages';
+import {withRequestLogger} from '../utils/logger';
+import {streamAllMessages} from '../utils/streamAllMessages';
 
 type Step = 'CREATE_IDENTITY' | 'ENABLE_IDENTITY';
 
@@ -66,14 +71,21 @@ export const OnboardingEnableIdentityScreen = () => {
             await createIdentityPromise();
           },
         });
-        if (Platform.OS !== 'android') {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const _ = new PushNotificatons(client);
-        }
+
+        const pushClient = new PushNotifications(client);
+        pushClient.subscribeToAllGroups();
         const keys = await client.exportKeyBundle();
         const address = client.address;
         encryptedStorage.saveClientKeys(address as `0x${string}`, keys);
+        queryClient.prefetchQuery({
+          queryKey: [QueryKeys.List, client?.address],
+          queryFn: () =>
+            withRequestLogger(getAllListMessages(client), {
+              name: 'all_messages_list',
+            }),
+        });
         setClient(client);
+        streamAllMessages(client);
       } catch (e: any) {
         console.log('Error creating client', e);
         Alert.alert('Error creating client', e?.message);

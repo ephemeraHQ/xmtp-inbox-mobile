@@ -33,6 +33,8 @@ export const ConversationInput: FC<ConversationInputProps> = ({
   //   ? getDraftImage(currentAddress, topic) ?? null
   //   : null,
 
+  const textInputRef = React.createRef<TextInput>();
+
   useEffect(() => {
     if (text && currentAddress && id) {
       mmkvStorage.saveDraftText(currentAddress, id, text);
@@ -126,12 +128,15 @@ export const ConversationInput: FC<ConversationInputProps> = ({
         alignItems={'center'}
         borderBottomRightRadius={0}>
         <TextInput
+          ref={textInputRef}
           autoFocus
           value={text}
           style={styles.input}
           onChangeText={setText}
           onFocus={() => setFocus(true)}
           onBlur={() => setFocus(false)}
+          returnKeyType={canSend ? 'send' : 'default'}
+          onSubmitEditing={canSend ? handleSend : textInputRef.current?.blur}
         />
         <Pressable onPress={handleSend}>
           <Box

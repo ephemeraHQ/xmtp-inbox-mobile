@@ -12,7 +12,7 @@ export type OnboardingStackParams = {
 export type AuthenticatedStackParams = {
   [ScreenNames.Account]: undefined;
   [ScreenNames.ConversationList]: undefined;
-  [ScreenNames.Group]: {id: string};
+  [ScreenNames.Group]: {topic: string};
   [ScreenNames.NewConversation]: {addresses: string[]};
   [ScreenNames.Search]: undefined;
   [ScreenNames.QRCode]: undefined;

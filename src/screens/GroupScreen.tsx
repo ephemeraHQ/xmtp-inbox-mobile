@@ -25,14 +25,14 @@ import {colors} from '../theme/colors';
 
 const keyExtractor = (item: string) => item;
 
-const useData = (id: string) => {
-  const {data: messages, refetch, isRefetching} = useGroupMessages(id);
-  const {data: addresses} = useGroupParticipantsQuery(id);
+const useData = (topic: string) => {
+  const {data: messages, refetch, isRefetching} = useGroupMessages(topic);
+  const {data: addresses} = useGroupParticipantsQuery(topic);
   const {client} = useClient();
-  const {data: group} = useGroup(id);
+  const {data: group} = useGroup(topic);
 
   return {
-    name: group?.id,
+    name: topic,
     myAddress: client?.address,
     messages,
     refetch,
@@ -60,13 +60,13 @@ const getInitialConsentState = (
 
 export const GroupScreen = () => {
   const {params} = useRoute();
-  const {id} = params as {id: string};
+  const {topic} = params as {topic: string};
   const {myAddress, messages, addresses, group, client, refetch, isRefetching} =
-    useData(id);
+    useData(topic);
   const [showGroupModal, setShowGroupModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [consent, setConsent] = useState<'allowed' | 'denied' | 'unknown'>(
-    getInitialConsentState(myAddress ?? '', group?.id ?? ''),
+    getInitialConsentState(myAddress ?? '', group?.topic ?? ''),
   );
   const [replyId, setReplyId] = useState<string | null>(null);
   const [reactId, setReactId] = useState<string | null>(null);
@@ -141,16 +141,16 @@ export const GroupScreen = () => {
       client?.contacts.allow(addresses);
     }
     setConsent('allowed');
-    mmkvStorage.saveConsent(myAddress ?? '', id ?? '', true);
-  }, [addresses, client?.contacts, myAddress, id]);
+    mmkvStorage.saveConsent(myAddress ?? '', topic ?? '', true);
+  }, [addresses, client?.contacts, myAddress, topic]);
 
   const onBlock = useCallback(() => {
     if (addresses) {
       client?.contacts.deny(addresses);
     }
     setConsent('denied');
-    mmkvStorage.saveConsent(myAddress ?? '', id ?? '', false);
-  }, [addresses, client?.contacts, id, myAddress]);
+    mmkvStorage.saveConsent(myAddress ?? '', topic ?? '', false);
+  }, [addresses, client?.contacts, topic, myAddress]);
 
   const setReply = useCallback(
     (id: string) => {
@@ -184,7 +184,7 @@ export const GroupScreen = () => {
         }}>
         <Box backgroundColor={colors.backgroundPrimary} paddingBottom={10}>
           <GroupHeader
-            groupId={group?.id ?? ''}
+            groupId={group?.topic ?? ''}
             peerAddresses={addresses ?? []}
             onGroupPress={() => setShowGroupModal(true)}
           />
@@ -207,7 +207,7 @@ export const GroupScreen = () => {
               <ConversationInput
                 sendMessage={sendMessage}
                 currentAddress={myAddress}
-                id={id}
+                id={topic}
               />
             ) : (
               <HStack justifyContent={'space-around'} marginX={'40px'}>
