@@ -1,7 +1,7 @@
 import {useFocusEffect, useRoute} from '@react-navigation/native';
 import {RemoteAttachmentContent} from '@xmtp/react-native-sdk';
 import {Box, FlatList, HStack, VStack} from 'native-base';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {KeyboardAvoidingView, ListRenderItem, Platform} from 'react-native';
 import {Asset} from 'react-native-image-picker';
 import {ConversationInput} from '../components/ConversationInput';
@@ -16,10 +16,10 @@ import {GroupInfoModal} from '../components/modals/GroupInfoModal';
 import {GroupContext, GroupContextValue} from '../context/GroupContext';
 import {useClient} from '../hooks/useClient';
 import {useGroup} from '../hooks/useGroup';
+import {useGroupConsent} from '../hooks/useGroupConsent';
 import {useGroupMessages} from '../hooks/useGroupMessages';
 import {translate} from '../i18n';
 import {useGroupParticipantsQuery} from '../queries/useGroupParticipantsQuery';
-import {mmkvStorage} from '../services/mmkvStorage';
 import {AWSHelper} from '../services/s3';
 import {colors} from '../theme/colors';
 
@@ -43,21 +43,6 @@ const useData = (topic: string) => {
   };
 };
 
-const getInitialConsentState = (
-  addresses: string,
-  groupId: string,
-): 'allowed' | 'denied' | 'unknown' => {
-  const cachedConsent = mmkvStorage.getConsent(addresses, groupId);
-  // if (cachedConsent === undefined) {
-  //   return 'unknown';
-  // }
-  // if (cachedConsent) {
-  //   return 'allowed';
-  // }
-  // return 'denied';
-  return cachedConsent ? 'allowed' : 'allowed';
-};
-
 export const GroupScreen = () => {
   const {params} = useRoute();
   const {topic} = params as {topic: string};
@@ -65,24 +50,11 @@ export const GroupScreen = () => {
     useData(topic);
   const [showGroupModal, setShowGroupModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [consent, setConsent] = useState<'allowed' | 'denied' | 'unknown'>(
-    getInitialConsentState(myAddress ?? '', group?.topic ?? ''),
-  );
   const [replyId, setReplyId] = useState<string | null>(null);
   const [reactId, setReactId] = useState<string | null>(null);
+  const {consent, allow, deny} = useGroupConsent(topic);
 
   const {ids, entities, reactionsEntities} = messages ?? {};
-
-  useEffect(() => {
-    if (!group) {
-      return;
-    }
-    // TODO: Update with consent
-    setConsent('allowed');
-    // group..then(currentConsent => {
-    //   setConsent(currentConsent);
-    // });
-  }, [group]);
 
   useFocusEffect(
     useCallback(() => {
@@ -135,22 +107,6 @@ export const GroupScreen = () => {
 
     return <Message message={message} isMe={isMe} reactions={reactions} />;
   };
-
-  const onConsent = useCallback(() => {
-    if (addresses) {
-      client?.contacts.allow(addresses);
-    }
-    setConsent('allowed');
-    mmkvStorage.saveConsent(myAddress ?? '', topic ?? '', true);
-  }, [addresses, client?.contacts, myAddress, topic]);
-
-  const onBlock = useCallback(() => {
-    if (addresses) {
-      client?.contacts.deny(addresses);
-    }
-    setConsent('denied');
-    mmkvStorage.saveConsent(myAddress ?? '', topic ?? '', false);
-  }, [addresses, client?.contacts, topic, myAddress]);
 
   const setReply = useCallback(
     (id: string) => {
@@ -211,14 +167,14 @@ export const GroupScreen = () => {
               />
             ) : (
               <HStack justifyContent={'space-around'} marginX={'40px'}>
-                <Button onPress={onConsent}>
+                <Button onPress={allow}>
                   <Text
                     typography="text-base/medium"
                     color={colors.backgroundPrimary}>
                     {translate('allow')}
                   </Text>
                 </Button>
-                <Button onPress={onBlock}>
+                <Button onPress={deny}>
                   <Text
                     typography="text-base/medium"
                     color={colors.backgroundPrimary}>

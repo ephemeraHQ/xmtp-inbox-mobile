@@ -6,5 +6,5 @@ export const AppConfig = {
   XMTP_ENV: 'dev' as 'local' | 'dev' | 'production',
   MULTI_WALLET: false,
   PUSH_NOTIFICATIONS: Platform.OS === 'ios',
-  GROUP_CONSENT: false,
+  GROUP_CONSENT: Platform.OS === 'android',
 };

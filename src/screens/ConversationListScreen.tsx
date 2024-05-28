@@ -10,6 +10,7 @@ import {Drawer} from '../components/common/Drawer';
 import {Icon} from '../components/common/Icon';
 import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
+import {AppConfig} from '../consts/AppConfig';
 import {SupportedContentTypes} from '../consts/ContentTypes';
 import {TestIds} from '../consts/TestIds';
 import {useClient} from '../hooks/useClient';
@@ -17,6 +18,7 @@ import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
 import {ScreenNames} from '../navigation/ScreenNames';
 import {useListQuery} from '../queries/useListQuery';
+import {mmkvStorage} from '../services/mmkvStorage';
 import {colors} from '../theme/colors';
 
 const EmptyBackground = require('../../assets/images/Bg_asset.svg').default;
@@ -28,20 +30,35 @@ const useData = () => {
   const {data, isLoading, refetch, isRefetching, isError, error} =
     useListQuery();
 
-  const {listItems, requests} = useMemo(() => {
+  const {listItems, requests, requestsCount} = useMemo(() => {
     const listMessages: Group<SupportedContentTypes>[] = [];
     const requestsItems: Group<SupportedContentTypes>[] = [];
+    let requestCount = 0;
     data?.forEach(item => {
-      // TODO: add a check for isRequest
-      listMessages.push(item);
+      if (
+        !AppConfig.GROUP_CONSENT ||
+        mmkvStorage.getGroupConsent(item.id) === 'allowed'
+      ) {
+        listMessages.push(item);
+      } else {
+        requestsItems.push(item);
+        if ((mmkvStorage.getGroupConsent(item.id) ?? 'unknown') === 'unknown') {
+          requestCount++;
+        }
+      }
     });
-    return {listItems: listMessages, requests: requestsItems};
+    return {
+      listItems: listMessages,
+      requests: requestsItems,
+      requestsCount: requestCount,
+    };
   }, [data]);
 
   console.log('Connected as address:', client?.address);
 
   return {
     messageRequests: requests,
+    messageRequestsCount: requestsCount,
     messages: listItems,
     isLoading,
     refetch,
@@ -58,8 +75,14 @@ export const ConversationListScreen = () => {
   const [showPickerModal, setShowPickerModal] = useState(false);
   const [showConsentDrawer, setShowConsentDrawer] = useState(false);
   const focused = useIsFocused();
-  const {messages, messageRequests, isLoading, refetch, isRefetching} =
-    useData();
+  const {
+    messages,
+    messageRequests,
+    messageRequestsCount,
+    isLoading,
+    refetch,
+    isRefetching,
+  } = useData();
   const {navigate} = useTypedNavigation();
 
   const showPicker = () => {
@@ -98,7 +121,7 @@ export const ConversationListScreen = () => {
             <ConversationListHeader
               showPickerModal={showPicker}
               list={list}
-              messageRequestCount={messageRequests.length}
+              messageRequestCount={messageRequestsCount}
               onShowMessageRequests={() => setList('MESSAGE_REQUESTS')}
             />
           }
