@@ -22,6 +22,9 @@ enum MMKVKeys {
   // Groups
   GROUP_NAME = 'GROUP_NAME',
   GROUP_ID_PUSH_SUBSCRIPTION = 'GROUP_ID_PUSH_SUBSCRIPTION',
+  GROUP_PARTICIPANTS = 'GROUP_PARTICIPANTS',
+
+  GROUP_FIRST_MESSAGE_CONTENT = 'GROUP_FIRST_MESSAGE_CONTENT',
 }
 
 export const mmkvstorage = new MMKV();
@@ -223,48 +226,94 @@ class MMKVStorage {
 
   // #region Group Name
 
-  private getGroupNameKey = (address: string, groupId: string) => {
-    return `${MMKVKeys.GROUP_NAME}_${address}_${groupId}`;
+  private getGroupNameKey = (address: string, topic: string) => {
+    return `${MMKVKeys.GROUP_NAME}_${address}_${topic}`;
   };
 
-  saveGroupName = (address: string, groupId: string, groupName: string) => {
-    return this.storage.set(this.getGroupNameKey(address, groupId), groupName);
+  saveGroupName = (address: string, topic: string, groupName: string) => {
+    return this.storage.set(this.getGroupNameKey(address, topic), groupName);
   };
 
-  getGroupName = (address: string, groupId: string) => {
-    return this.storage.getString(this.getGroupNameKey(address, groupId));
+  getGroupName = (address: string, topic: string) => {
+    return this.storage.getString(this.getGroupNameKey(address, topic));
   };
 
-  clearGroupName = (address: string, groupId: string) => {
-    return this.storage.delete(this.getGroupNameKey(address, groupId));
+  clearGroupName = (address: string, topic: string) => {
+    return this.storage.delete(this.getGroupNameKey(address, topic));
   };
 
   //#endregion Group Name
 
   //#region Group Id Push Subscription
-  private getGroupIdPushSubscriptionKey = (groupId: string) => {
-    return `${MMKVKeys.GROUP_ID_PUSH_SUBSCRIPTION}_${groupId}`;
+  private getGroupIdPushSubscriptionKey = (topic: string) => {
+    return `${MMKVKeys.GROUP_ID_PUSH_SUBSCRIPTION}_${topic}`;
   };
 
-  saveGroupIdPushSubscription = (
-    groupId: string,
-    pushSubscription: boolean,
-  ) => {
+  saveGroupIdPushSubscription = (topic: string, pushSubscription: boolean) => {
     return this.storage.set(
-      this.getGroupIdPushSubscriptionKey(groupId),
+      this.getGroupIdPushSubscriptionKey(topic),
       pushSubscription,
     );
   };
 
-  getGroupIdPushSubscription = (groupId: string) => {
-    return this.storage.getBoolean(this.getGroupIdPushSubscriptionKey(groupId));
+  getGroupIdPushSubscription = (topic: string) => {
+    return this.storage.getBoolean(this.getGroupIdPushSubscriptionKey(topic));
   };
 
-  clearGroupIdPushSubscription = (groupId: string) => {
-    return this.storage.delete(this.getGroupIdPushSubscriptionKey(groupId));
+  clearGroupIdPushSubscription = (topic: string) => {
+    return this.storage.delete(this.getGroupIdPushSubscriptionKey(topic));
   };
+
+  //#endregion Group Id Push Subscription
+
+  //#region Group Participants
+
+  private getGroupParticipantsKey = (topic: string) => {
+    return `${MMKVKeys.GROUP_PARTICIPANTS}_${topic}`;
+  };
+
+  saveGroupParticipants = (topic: string, participants: string[]) => {
+    return this.storage.set(
+      this.getGroupParticipantsKey(topic),
+      participants.join(','),
+    );
+  };
+
+  getGroupParticipants = (topic: string): string[] => {
+    return (
+      this.storage.getString(this.getGroupParticipantsKey(topic))?.split(',') ??
+      []
+    );
+  };
+
+  clearGroupParticipants = (topic: string) => {
+    return this.storage.delete(this.getGroupParticipantsKey(topic));
+  };
+
+  //#endregion Group Participants
+
+  //#region Group First Message
+
+  private getGroupFirstMessageContentKey = (topic: string) => {
+    return `${MMKVKeys.GROUP_FIRST_MESSAGE_CONTENT}_${topic}`;
+  };
+
+  saveGroupFirstMessageContent = (topic: string, message: string) => {
+    return this.storage.set(
+      this.getGroupFirstMessageContentKey(topic),
+      message,
+    );
+  };
+
+  getGroupFirstMessageContent = (topic: string) => {
+    return this.storage.getString(this.getGroupFirstMessageContentKey(topic));
+  };
+
+  clearGroupFirstMessageContent = (topic: string) => {
+    return this.storage.delete(this.getGroupFirstMessageContentKey(topic));
+  };
+
+  //#endregion Group First Message
 }
 
 export const mmkvStorage = new MMKVStorage();
-
-// #endregion Group Name

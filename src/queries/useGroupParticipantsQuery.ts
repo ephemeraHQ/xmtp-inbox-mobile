@@ -6,16 +6,16 @@ import {useGroup} from '../hooks/useGroup';
 import {withRequestLogger} from '../utils/logger';
 import {QueryKeys} from './QueryKeys';
 
-export const useGroupParticipantsQuery = (id: string) => {
-  const {data: group} = useGroup(id);
+export const useGroupParticipantsQuery = (topic: string) => {
+  const {data: group} = useGroup(topic);
   const queryClient = useQueryClient();
 
   useEffect(() => {
     const groupChangeSubscription = DeviceEventEmitter.addListener(
-      `${EventEmitterEvents.GROUP_CHANGED}_${id}`,
+      `${EventEmitterEvents.GROUP_CHANGED}_${topic}`,
       () => {
         queryClient.refetchQueries({
-          queryKey: [QueryKeys.GroupParticipants, id],
+          queryKey: [QueryKeys.GroupParticipants, topic],
         });
       },
     );
@@ -23,10 +23,10 @@ export const useGroupParticipantsQuery = (id: string) => {
     return () => {
       groupChangeSubscription.remove();
     };
-  }, [id, queryClient]);
+  }, [topic, queryClient]);
 
   return useQuery({
-    queryKey: [QueryKeys.GroupParticipants, group?.id],
+    queryKey: [QueryKeys.GroupParticipants, group?.topic],
     queryFn: async () => {
       if (!group) {
         return [];

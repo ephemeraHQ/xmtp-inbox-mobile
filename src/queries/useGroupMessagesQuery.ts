@@ -4,7 +4,6 @@ import {ContentTypes, SupportedContentTypes} from '../consts/ContentTypes';
 import {useGroup} from '../hooks/useGroup';
 import {EntityObject} from '../utils/entities';
 import {getMessageId} from '../utils/idExtractors';
-import {withRequestLogger} from '../utils/logger';
 import {QueryKeys} from './QueryKeys';
 
 export type GroupMessagesQueryRequestData =
@@ -27,22 +26,23 @@ export interface GroupMessagesQueryData
   reactionsEntities: MessageIdReactionsMapping;
 }
 
-export const useGroupMessagesQuery = (id: string) => {
-  const {data: group} = useGroup(id);
+export interface GroupMessagesQueryOptions {
+  limit?: number;
+}
+
+export const useGroupMessagesQuery = (topic: string) => {
+  const {data: group} = useGroup(topic);
 
   return useQuery<
     GroupMessagesQueryRequestData,
     GroupMessagesQueryError,
     GroupMessagesQueryData
   >({
-    queryKey: [QueryKeys.GroupMessages, id],
+    queryKey: [QueryKeys.GroupMessages, topic],
     queryFn: async () => {
       if (!group) {
         return [];
       }
-      await withRequestLogger(group.sync(), {
-        name: 'group_sync',
-      });
       return group.messages() as Promise<
         DecodedMessage<SupportedContentTypes>[]
       >;

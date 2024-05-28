@@ -61,7 +61,7 @@ export const NewConversationScreen = () => {
             Alert.alert('Error sending message', error?.message);
           }
           if (group) {
-            replace(ScreenNames.Group, {id: group.id});
+            replace(ScreenNames.Group, {topic: group.topic});
           }
         } catch (error: any) {
           Alert.alert('Error creating group', error?.message);

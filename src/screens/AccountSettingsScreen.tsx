@@ -36,6 +36,7 @@ import {encryptedStorage} from '../services/encryptedStorage';
 import {mmkvStorage} from '../services/mmkvStorage';
 import {colors, greens, reds} from '../theme/colors';
 import {formatAddress} from '../utils/formatAddress';
+import {cancelStreamAllMessages} from '../utils/streamAllMessages';
 
 interface Address {
   display: string;
@@ -206,6 +207,7 @@ export const AccountSettingsScreen = () => {
               }
               await encryptedStorage.clearClientKeys(address as `0x${string}`);
               setClient(null);
+              cancelStreamAllMessages(client);
               disconnect()
                 .then(() => {})
                 .catch();
@@ -221,6 +223,7 @@ export const AccountSettingsScreen = () => {
     address,
     setClient,
     disconnect,
+    client,
   ]);
 
   const renderItem: SectionListRenderItem<ListItem, {section: Section}> = ({
@@ -337,6 +340,7 @@ export const AccountSettingsScreen = () => {
               setWalletsShown(true);
             }
           }}
+          _pressed={{backgroundColor: 'transparent'}}
           variant={'ghost'}
           rightIcon={
             <Icon

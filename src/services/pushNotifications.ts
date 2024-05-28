@@ -1,6 +1,7 @@
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import {Client, XMTPPush} from '@xmtp/react-native-sdk';
 import RNPush from 'react-native-push-notification';
+import {AppConfig} from '../consts/AppConfig';
 import {SupportedContentTypes} from '../consts/ContentTypes';
 import {
   CHANNEL_ID,
@@ -8,42 +9,21 @@ import {
   PUSH_SERVER,
 } from '../consts/PushNotifications';
 
-export class PushNotificatons {
+export class PushNotifications {
   client: Client<SupportedContentTypes>;
+  pushClient: XMTPPush;
+
   constructor(client: Client<SupportedContentTypes>) {
     this.client = client;
-    this.configure();
-  }
-  configure = () => {
-    const client = this.client;
+    this.pushClient = new XMTPPush(client);
     RNPush.configure({
       async onRegister(registrationData) {
         try {
           const token = registrationData.token;
           console.log('PUSH NOTIFICATION TOKEN:', token);
-          XMTPPush.register(PUSH_SERVER, token);
-          await Promise.all([
-            client.contacts.refreshConsentList(),
-            client.conversations.syncGroups(),
-          ]);
-          await client.contacts.refreshConsentList();
-          await client.conversations.syncGroups();
-          const conversations = await client.conversations.listGroups();
-          const pushClient = new XMTPPush(client);
-          pushClient.subscribe(conversations.map(c => c.topic));
-          for (const conversation of conversations) {
-            RNPush.createChannel(
-              {
-                channelId: CHANNEL_ID + conversation.topic, // (required)
-                channelName: CHANNEL_NAME + conversation.topic, // (required)
-              },
-              created =>
-                console.log(
-                  `PUSH NOTIFICATION createChannel returned '${created}'`,
-                ),
-            );
+          if (AppConfig.PUSH_NOTIFICATIONS) {
+            XMTPPush.register(PUSH_SERVER, token);
           }
-          console.log('PUSH NOTIFICATION Registered push token:', token);
         } catch (error) {
           console.error(
             'PUSH NOTIFICATION Failed to register push token:',
@@ -115,5 +95,51 @@ export class PushNotificatons {
       popInitialNotification: true,
       requestPermissions: true,
     });
+  }
+
+  subscribeToAllGroups = async () => {
+    const client = this.client;
+    await Promise.all([
+      client.contacts.refreshConsentList(),
+      client.conversations.syncGroups(),
+    ]);
+    const groups = await client.conversations.listGroups();
+    const topics = groups.map(c => c.topic);
+    const allowedTopics: string[] = [];
+
+    await Promise.allSettled(
+      groups.map(group =>
+        client.contacts.isGroupAllowed(group.topic).then(allowed => {
+          if (!AppConfig.GROUP_CONSENT || allowed) {
+            allowedTopics.push(group.topic);
+          }
+        }),
+      ),
+    );
+    console.log('PUSH NOTIFICATION TOPICS:', topics);
+    this.subscribeToGroups(allowedTopics);
+  };
+
+  subscribeToGroups = async (topics: string[]) => {
+    if (topics.length === 0) {
+      return;
+    }
+    if (AppConfig.PUSH_NOTIFICATIONS) {
+      await this.pushClient.subscribe(topics);
+    }
+    for (const topic of topics) {
+      RNPush.createChannel(
+        {
+          channelId: CHANNEL_ID + topic, // (required)
+          channelName: CHANNEL_NAME + topic, // (required)
+        },
+        created =>
+          console.log(`PUSH NOTIFICATION createChannel returned '${created}'`),
+      );
+    }
+  };
+
+  subscribeToGroup = async (topic: string) => {
+    return this.subscribeToGroups([topic]);
   };
 }

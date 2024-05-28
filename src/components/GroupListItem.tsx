@@ -1,11 +1,12 @@
 import {Group} from '@xmtp/react-native-sdk/build/lib/Group';
 import {Box, HStack, VStack} from 'native-base';
-import React, {FC} from 'react';
+import React, {FC, useCallback, useMemo} from 'react';
 import {Pressable} from 'react-native';
 import {SupportedContentTypes} from '../consts/ContentTypes';
 import {useGroupName} from '../hooks/useGroupName';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {ScreenNames} from '../navigation/ScreenNames';
+import {useFirstGroupMessageQuery} from '../queries/useFirstGroupMessageQuery';
 import {useGroupParticipantsQuery} from '../queries/useGroupParticipantsQuery';
 import {getMessageTimeDisplay} from '../utils/getMessageTimeDisplay';
 import {GroupAvatarStack} from './GroupAvatarStack';
@@ -13,26 +14,56 @@ import {Text} from './common/Text';
 
 interface GroupListItemProps {
   group: Group<SupportedContentTypes>;
-  display: string;
-  lastMessageTime: number;
 }
 
-export const GroupListItem: FC<GroupListItemProps> = ({
-  group,
-  display,
-  lastMessageTime,
-}) => {
-  const {data: addresses} = useGroupParticipantsQuery(group?.id);
+export const GroupListItem: FC<GroupListItemProps> = ({group}) => {
+  const topic = group?.topic;
+  const {data: addresses} = useGroupParticipantsQuery(topic);
   const {navigate} = useTypedNavigation();
-  const groupName = useGroupName(addresses ?? [], group?.id);
+  const groupName = useGroupName(addresses ?? [], topic);
+  const {data: messages, isLoading, isError} = useFirstGroupMessageQuery(topic);
+  const firstMessage = messages?.[0];
+
+  const handlePress = useCallback(() => {
+    navigate(ScreenNames.Group, {
+      topic,
+    });
+  }, [topic, navigate]);
+
+  const display: string | undefined = useMemo(() => {
+    if (!firstMessage) {
+      return '';
+    }
+    let text = '';
+    try {
+      const content = firstMessage.content();
+      if (typeof content === 'string') {
+        text = content;
+      } else {
+        text = firstMessage.fallback ?? '';
+      }
+    } catch (e) {
+      text = firstMessage.fallback ?? '';
+    }
+    return text;
+  }, [firstMessage]);
+
+  const lastMessageTime: number | undefined = useMemo(() => {
+    if (isLoading) {
+      return undefined;
+    }
+    if (isError) {
+      return undefined;
+    }
+    if (!firstMessage) {
+      return undefined;
+    }
+
+    return firstMessage?.sent;
+  }, [firstMessage, isLoading, isError]);
 
   return (
-    <Pressable
-      onPress={() => {
-        navigate(ScreenNames.Group, {
-          id: group?.id,
-        });
-      }}>
+    <Pressable onPress={handlePress}>
       <HStack space={[2, 3]} alignItems={'center'} w={'100%'} padding={'16px'}>
         <Box marginRight={'30px'}>
           <GroupAvatarStack
@@ -47,16 +78,20 @@ export const GroupListItem: FC<GroupListItemProps> = ({
             typography="text-base/bold">
             {groupName}
           </Text>
-          <Text numberOfLines={1} typography="text-sm/regular">
-            {display}
-          </Text>
+          {!isLoading && (
+            <Text numberOfLines={1} typography="text-sm/regular">
+              {display}
+            </Text>
+          )}
         </VStack>
-        <Text
-          alignSelf={'flex-start'}
-          typography="text-xs/regular"
-          style={{textAlignVertical: 'top'}}>
-          {getMessageTimeDisplay(lastMessageTime)}
-        </Text>
+        {lastMessageTime && (
+          <Text
+            alignSelf={'flex-start'}
+            typography="text-xs/regular"
+            style={{textAlignVertical: 'top'}}>
+            {getMessageTimeDisplay(lastMessageTime)}
+          </Text>
+        )}
       </HStack>
     </Pressable>
   );

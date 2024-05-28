@@ -13,6 +13,6 @@ export const getConversationId = (
   return conversation.topic;
 };
 
-export const getGroupId = (group: Group<SupportedContentTypes>) => {
-  return group.id;
+export const getGroupTopic = (group: Group<SupportedContentTypes>) => {
+  return group.topic;
 };

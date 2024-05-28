@@ -77,7 +77,7 @@ export const AddGroupParticipantModal: FC<GroupInfoModalProps> = ({
     try {
       await group.addMembers(participants);
       DeviceEventEmitter.emit(
-        `${EventEmitterEvents.GROUP_CHANGED}_${group.id}`,
+        `${EventEmitterEvents.GROUP_CHANGED}_${group.topic}`,
       );
       hide();
     } catch (err: any) {

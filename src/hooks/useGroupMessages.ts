@@ -8,31 +8,38 @@ import {
 } from '../queries/useGroupMessagesQuery';
 import {useGroup} from './useGroup';
 
-export const useGroupMessages = (id: string) => {
-  const {data: group} = useGroup(id);
+export const useGroupMessages = (topic: string) => {
+  const {data: group} = useGroup(topic);
   const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const cancelStream = group?.streamGroupMessages(async message => {
-      queryClient.setQueryData<GroupMessagesQueryRequestData>(
-        [QueryKeys.GroupMessages, group?.id],
-        prevMessages => [message, ...(prevMessages ?? [])],
-      );
-      if (message.contentTypeId === ContentTypes.GroupMembershipChange) {
-        await group.sync();
-        const addresses = await group.memberAddresses();
-        queryClient.setQueryData(
-          [QueryKeys.GroupParticipants, group?.id],
-          addresses,
+  useEffect(
+    () => {
+      const cancelStream = group?.streamGroupMessages(async message => {
+        queryClient.setQueryData<GroupMessagesQueryRequestData>(
+          [QueryKeys.GroupMessages, topic],
+          prevMessages => [message, ...(prevMessages ?? [])],
         );
-      }
-    });
-    return () => {
-      cancelStream?.then(callback => {
-        callback();
+        if (message.contentTypeId === ContentTypes.GroupMembershipChange) {
+          await group.sync();
+          const addresses = await group.memberAddresses();
+          queryClient.setQueryData(
+            [QueryKeys.GroupParticipants, topic],
+            addresses,
+          );
+        }
       });
-    };
-  }, [group, queryClient]);
+      return () => {
+        cancelStream?.then(callback => {
+          callback();
+        });
+      };
+    },
+    // iOS - Rerender causes lost stream, these shouldn't change anyways so it should be fine
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      // group, queryClient, topic
+    ],
+  );
 
-  return useGroupMessagesQuery(id);
+  return useGroupMessagesQuery(topic);
 };
