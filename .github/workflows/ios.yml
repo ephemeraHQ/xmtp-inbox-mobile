@@ -20,4 +20,4 @@ jobs:
       - run: bundle exec yarn
       - run: bundle exec pod install --project-directory=ios
       - name: Build iOS App
-        run: yarn ios --no-packager --mode Release
+        run: cd ios &&  xcodebuild -workspace EphemeraMobileChat.xcworkspace -scheme EphemeraMobileChat -configuration Release -sdk iphoneos build
