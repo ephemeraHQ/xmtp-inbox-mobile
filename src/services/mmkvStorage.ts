@@ -23,6 +23,7 @@ enum MMKVKeys {
   GROUP_NAME = 'GROUP_NAME',
   GROUP_ID_PUSH_SUBSCRIPTION = 'GROUP_ID_PUSH_SUBSCRIPTION',
   GROUP_PARTICIPANTS = 'GROUP_PARTICIPANTS',
+  GROUP_CONSENT = 'GROUP_CONSENT',
 
   GROUP_FIRST_MESSAGE_CONTENT = 'GROUP_FIRST_MESSAGE_CONTENT',
 }
@@ -291,6 +292,30 @@ class MMKVStorage {
   };
 
   //#endregion Group Participants
+
+  //#region Group Consent
+
+  private getGroupConsentKey = (id: string) => {
+    return `${MMKVKeys.GROUP_CONSENT}_${id}`;
+  };
+
+  saveGroupConsent = (
+    id: string,
+    consent: 'allowed' | 'denied' | 'unknown',
+  ) => {
+    return this.storage.set(this.getGroupConsentKey(id), consent);
+  };
+
+  getGroupConsent = (id: string) => {
+    return this.storage.getString(this.getGroupConsentKey(id)) as
+      | 'allowed'
+      | 'denied'
+      | 'unknown';
+  };
+
+  clearGroupConsent = (id: string) => {
+    return this.storage.delete(this.getGroupConsentKey(id));
+  };
 
   //#region Group First Message
 

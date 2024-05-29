@@ -16,14 +16,15 @@ export class PushNotifications {
   constructor(client: Client<SupportedContentTypes>) {
     this.client = client;
     this.pushClient = new XMTPPush(client);
+    if (!AppConfig.PUSH_NOTIFICATIONS) {
+      return;
+    }
     RNPush.configure({
       async onRegister(registrationData) {
         try {
           const token = registrationData.token;
           console.log('PUSH NOTIFICATION TOKEN:', token);
-          if (AppConfig.PUSH_NOTIFICATIONS) {
-            XMTPPush.register(PUSH_SERVER, token);
-          }
+          XMTPPush.register(PUSH_SERVER, token);
         } catch (error) {
           console.error(
             'PUSH NOTIFICATION Failed to register push token:',

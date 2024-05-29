@@ -35,6 +35,13 @@ export const getAllListMessages = async (
     const groups = await withRequestLogger(client.conversations.listGroups(), {
       name: 'groups',
     });
+    await Promise.allSettled(
+      groups.map(async group => {
+        const consent = await group.consentState();
+        console.log('Consent state', consent);
+        mmkvStorage.saveGroupConsent(group.id, consent);
+      }),
+    );
 
     return groups;
   } catch (e) {
