@@ -1,6 +1,5 @@
 import Clipboard from '@react-native-clipboard/clipboard';
 import {BlurView} from '@react-native-community/blur';
-import {useAddress} from '@thirdweb-dev/react-native';
 import {Box, Center, Pressable} from 'native-base';
 import React, {useCallback} from 'react';
 import {Platform, StyleSheet} from 'react-native';
@@ -10,13 +9,14 @@ import {Button} from '../components/common/Button';
 import {Icon} from '../components/common/Icon';
 import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
+import {useAddress} from '../hooks/useAddress';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
 import {blues, colors, reds} from '../theme/colors';
 
 export const QrCodeScreen = () => {
   const {goBack} = useTypedNavigation();
-  const address = useAddress();
+  const {address} = useAddress();
   const value = `ephemera-chat://new_conversation/${address}`;
   const handleCopy = useCallback(() => {
     Clipboard.setString(value);

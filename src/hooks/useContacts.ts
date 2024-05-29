@@ -1,4 +1,3 @@
-import {useSupportedChains, useWalletContext} from '@thirdweb-dev/react-native';
 import {useEffect, useMemo, useState} from 'react';
 import {formatAddress} from '../utils/formatAddress';
 import {getEnsInfo} from '../utils/getEnsInfo';
@@ -9,15 +8,13 @@ export const useContacts = () => {
   const [contacts, setContacts] = useState<{name: string; address: string}[]>(
     [],
   );
-  const supportedChains = useSupportedChains();
-  const {clientId} = useWalletContext();
 
   useEffect(() => {
     const fetchConsentList = async () => {
       const list = await client?.contacts?.consentList();
       list?.forEach(async item => {
         if (item.permissionType === 'allowed') {
-          getEnsInfo(item.value, supportedChains, clientId)
+          getEnsInfo(item.value)
             .then(({ens}) => {
               setContacts(prev => [
                 ...prev,
@@ -40,7 +37,7 @@ export const useContacts = () => {
       });
     };
     fetchConsentList();
-  }, [client?.contacts, client?.conversations, clientId, supportedChains]);
+  }, [client?.contacts, client?.conversations]);
 
   // Avoids hot refresh adding the same contact multiple times
   const filterContacts = useMemo(() => {

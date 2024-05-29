@@ -1,4 +1,3 @@
-import {useAddress, useENS} from '@thirdweb-dev/react-native';
 import {Box, HStack, VStack} from 'native-base';
 import React, {FC, useCallback} from 'react';
 import {Pressable} from 'react-native';
@@ -6,6 +5,8 @@ import {AvatarWithFallback} from '../components/AvatarWithFallback';
 import {Button} from '../components/common/Button';
 import {Icon} from '../components/common/Icon';
 import {Text} from '../components/common/Text';
+import {useAddress} from '../hooks/useAddress';
+import {useContactInfo} from '../hooks/useContactInfo';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
 import {ScreenNames} from '../navigation/ScreenNames';
@@ -25,9 +26,8 @@ export const ConversationListHeader: FC<ConversationListHeaderProps> = ({
   onShowMessageRequests,
 }) => {
   const {navigate} = useTypedNavigation();
-  const address = useAddress();
-  const {data} = useENS();
-  const {avatarUrl} = data ?? {};
+  const {address} = useAddress();
+  const {avatarUrl} = useContactInfo(address);
 
   const handleAccountPress = useCallback(() => {
     navigate(ScreenNames.Account);
