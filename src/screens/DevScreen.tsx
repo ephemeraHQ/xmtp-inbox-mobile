@@ -1,11 +1,11 @@
 import {useNavigation} from '@react-navigation/native';
 import {useQueryClient} from '@tanstack/react-query';
-import {useAddress} from '@thirdweb-dev/react-native';
 import {Box, Container, Pressable, ScrollView} from 'native-base';
 import React, {FC, useCallback, useEffect, useMemo, useState} from 'react';
 import {Icon} from '../components/common/Icon';
 import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
+import {useAddress} from '../hooks/useAddress';
 import {useClient} from '../hooks/useClient';
 import {translate} from '../i18n';
 import {QueryKeys} from '../queries/QueryKeys';
@@ -94,7 +94,7 @@ const DataItem: FC<DataItemProps> = ({title, data}) => {
 
 export const DevScreen = () => {
   const {client} = useClient();
-  const address = useAddress();
+  const {address} = useAddress();
   const {goBack} = useNavigation();
   const queryClient = useQueryClient();
   const list = queryClient.getQueriesData({queryKey: [QueryKeys.List]});

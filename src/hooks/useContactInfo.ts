@@ -1,4 +1,3 @@
-import {useSupportedChains, useWalletContext} from '@thirdweb-dev/react-native';
 import {useEffect, useState} from 'react';
 import {mmkvStorage} from '../services/mmkvStorage';
 import {formatAddress} from '../utils/formatAddress';
@@ -10,16 +9,17 @@ interface ContactInfoState {
   loading: boolean;
 }
 
-export const useContactInfo = (address: string) => {
+export const useContactInfo = (address?: string) => {
   const [state, setState] = useState<ContactInfoState>({
     displayName: null,
     avatarUrl: null,
     loading: true,
   });
-  const supportedChains = useSupportedChains();
-  const {clientId} = useWalletContext();
 
   useEffect(() => {
+    if (!address) {
+      return;
+    }
     const cachedName = mmkvStorage.getEnsName(address);
     const cachedAvatar = mmkvStorage.getEnsAvatar(address);
     setState({
@@ -28,7 +28,7 @@ export const useContactInfo = (address: string) => {
       loading: true,
     });
 
-    getEnsInfo(address, supportedChains, clientId)
+    getEnsInfo(address)
       .then(({ens, avatarUrl}) => {
         if (ens) {
           mmkvStorage.saveEnsName(address, ens);
@@ -51,9 +51,12 @@ export const useContactInfo = (address: string) => {
           loading: false,
         });
       });
-  }, [address, supportedChains, clientId]);
+  }, [address]);
 
   useEffect(() => {
+    if (!address) {
+      return;
+    }
     if (state.displayName) {
       mmkvStorage.saveEnsName(address, state.displayName);
     }

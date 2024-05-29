@@ -1,11 +1,6 @@
 import Clipboard from '@react-native-clipboard/clipboard';
 import {useFocusEffect} from '@react-navigation/native';
-import {
-  useAddress,
-  useDisconnect,
-  useENS,
-  useWallet,
-} from '@thirdweb-dev/react-native';
+import {useDisconnect} from '@thirdweb-dev/react-native';
 import {Box, FlatList, HStack, SectionList, Switch, VStack} from 'native-base';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
@@ -14,6 +9,7 @@ import {
   Platform,
   Pressable,
   SectionListRenderItem,
+  StyleSheet,
 } from 'react-native';
 import {
   checkNotifications,
@@ -29,6 +25,8 @@ import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
 import {AppConfig} from '../consts/AppConfig';
 import {useClientContext} from '../context/ClientContext';
+import {useAddress} from '../hooks/useAddress';
+import {useContactInfo} from '../hooks/useContactInfo';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
 import {ScreenNames} from '../navigation/ScreenNames';
@@ -51,14 +49,8 @@ interface Wallet {
 }
 
 const useData = () => {
-  const address = useAddress();
-  const wallet = useWallet();
-  const {data} = useENS();
-  const {ens, avatarUrl} = data ?? {};
-  if (!wallet) {
-    throw new Error('Wallet not found');
-  }
-
+  const {address} = useAddress();
+  const {displayName: ens, avatarUrl} = useContactInfo(address);
   const addresses: Address[] = [
     {
       display: address ? formatAddress(address) : '',
@@ -132,7 +124,7 @@ export const AccountSettingsScreen = () => {
   const {avatarUrl, addresses, wallets, name} = useData();
   const [walletsShown, setWalletsShown] = useState(false);
   const disconnect = useDisconnect();
-  const address = useAddress();
+  const {address} = useAddress();
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const appState = useRef(AppState.currentState);
 
@@ -284,12 +276,12 @@ export const AccountSettingsScreen = () => {
           marginX={'16px'}
           space={[2, 3]}>
           <AvatarWithFallback
-            style={{marginRight: 16}}
+            style={styles.avatar}
             size={32}
             address={item.address}
             avatarUri={item.image}
           />
-          <VStack flex={1} style={{justifyContent: 'flex-start'}}>
+          <VStack flex={1} style={styles.nameContainer}>
             <Text typography="text-base/bold">{item.name}</Text>
             <Text typography="text-xs/mono medium" color={colors.textSecondary}>
               {item.address}
@@ -355,12 +347,12 @@ export const AccountSettingsScreen = () => {
           </Text>
         </Button>
         <HStack flexWrap={'wrap'} justifyContent={'center'}>
-          {addresses.map(address => (
+          {addresses.map(addressItem => (
             <Pill
-              key={address.display}
+              key={addressItem.display}
               size="sm"
-              text={address.display}
-              leftIconName={getIconName(address.type)}
+              text={addressItem.display}
+              leftIconName={getIconName(addressItem.type)}
             />
           ))}
         </HStack>
@@ -420,3 +412,10 @@ export const AccountSettingsScreen = () => {
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  avatar: {marginRight: 16},
+  nameContainer: {
+    justifyContent: 'flex-start',
+  },
+});
