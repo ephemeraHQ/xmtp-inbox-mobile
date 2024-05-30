@@ -1,6 +1,6 @@
 import {configure, isConnected} from '@coinbase/wallet-mobile-sdk';
 import {Alert} from 'react-native';
-import {CoinbaseWallet} from './CoinbaseWallet';
+import {CoinbaseWallet} from './coinbaseWallet';
 import {mmkvStorage} from './mmkvStorage';
 
 // Mock mmkvStorage
