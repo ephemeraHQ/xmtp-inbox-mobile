@@ -6,6 +6,7 @@ export interface GroupContextValue {
   group: Group<SupportedContentTypes> | null;
   setReplyId: (id: string) => void;
   clearReplyId: () => void;
+  scrollToMessage: (id: string) => void;
 }
 
 export const GroupContext = createContext<GroupContextValue>({
@@ -14,6 +15,9 @@ export const GroupContext = createContext<GroupContextValue>({
     throw new Error('Not Implemented');
   },
   clearReplyId: () => {
+    throw new Error('Not Implemented');
+  },
+  scrollToMessage: () => {
     throw new Error('Not Implemented');
   },
 });

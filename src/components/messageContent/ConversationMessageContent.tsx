@@ -13,6 +13,7 @@ import {formatAddress} from '../../utils/formatAddress';
 import {ImageMessage} from '../ImageMessage';
 import {Text} from '../common/Text';
 import {MessageOptionsContainer} from './MessageOptionsContainer';
+import {ReplyMessageContent} from './ReplyMessageContent';
 import {TextMessageContent} from './TextMessageContent';
 
 interface ConversationMessageContentProps {
@@ -128,7 +129,18 @@ export const ConversationMessageContent: FC<
       </Container>
     );
   }
+  if (message.contentTypeId === ContentTypes.Reply) {
+    return (
+      <MessageOptionsContainer
+        reactions={reacts}
+        isMe={isMe}
+        messageId={message.id}>
+        <ReplyMessageContent message={message} isMe={isMe} />
+      </MessageOptionsContainer>
+    );
+  }
 
+  console.log('Unsupported content type', message.contentTypeId);
   // TODO: Add support for other content types
   return null;
 };

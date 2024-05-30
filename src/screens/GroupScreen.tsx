@@ -1,14 +1,19 @@
 import {useFocusEffect, useRoute} from '@react-navigation/native';
 import {RemoteAttachmentContent} from '@xmtp/react-native-sdk';
-import {Box, FlatList, HStack, VStack} from 'native-base';
+import {Box, FlatList, HStack} from 'native-base';
 import React, {useCallback, useMemo, useState} from 'react';
-import {KeyboardAvoidingView, ListRenderItem, Platform} from 'react-native';
+import {
+  KeyboardAvoidingView,
+  ListRenderItem,
+  Platform,
+  FlatList as RNFlatList,
+  StyleSheet,
+} from 'react-native';
 import {Asset} from 'react-native-image-picker';
 import {ConversationInput} from '../components/ConversationInput';
 import {GroupHeader} from '../components/GroupHeader';
 import {Message} from '../components/Message';
 import {Button} from '../components/common/Button';
-import {Drawer} from '../components/common/Drawer';
 import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
 import {AddGroupParticipantModal} from '../components/modals/AddGroupParticipantModal';
@@ -51,8 +56,8 @@ export const GroupScreen = () => {
   const [showGroupModal, setShowGroupModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [replyId, setReplyId] = useState<string | null>(null);
-  const [reactId, setReactId] = useState<string | null>(null);
   const {consent, allow, deny} = useGroupConsent(topic);
+  const scrollRef = React.useRef<RNFlatList<string>>(null);
 
   const {ids, entities, reactionsEntities} = messages ?? {};
 
@@ -62,37 +67,80 @@ export const GroupScreen = () => {
     }, [refetch]),
   );
 
+  const scrollToMessage = useCallback(
+    (messageId: string) => {
+      scrollRef.current?.scrollToItem({
+        animated: false,
+        item: messageId,
+      });
+    },
+    [scrollRef],
+  );
+
+  const clearReply = useCallback(() => {
+    setReplyId(null);
+  }, [setReplyId]);
+
   const sendMessage = useCallback(
-    async (payload: {text?: string; asset?: Asset}) => {
+    async (payload: {text?: string; asset?: Asset; replyId?: string}) => {
       if (!group) {
         return;
       }
-      if (payload.text) {
-        group?.send(payload.text);
-      }
+      const textContent = payload.text;
+      let remoteAttachment: RemoteAttachmentContent | undefined;
+
       if (payload.asset) {
-        client
-          ?.encryptAttachment({
+        try {
+          const encrypted = await client?.encryptAttachment({
             fileUri: payload.asset.uri ?? '',
             mimeType: payload.asset.type,
-          })
-          .then(encrypted => {
-            AWSHelper.uploadFile(
-              encrypted.encryptedLocalFileUri,
-              encrypted.metadata.filename ?? '',
-            ).then(response => {
-              const remote: RemoteAttachmentContent = {
-                ...encrypted.metadata,
-                scheme: 'https://',
-                url: response,
-              };
-              group?.send({remoteAttachment: remote});
-            });
-          })
-          .catch(() => {});
+          });
+          if (!encrypted) {
+            return;
+          }
+          const response = await AWSHelper.uploadFile(
+            encrypted.encryptedLocalFileUri,
+            encrypted.metadata.filename ?? '',
+          );
+          remoteAttachment = {
+            ...encrypted.metadata,
+            scheme: 'https://',
+            url: response,
+          };
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      if (replyId) {
+        if (remoteAttachment) {
+          group?.send({
+            reply: {
+              reference: replyId,
+              content: {
+                remoteAttachment,
+              },
+            } as any,
+          });
+        } else if (textContent) {
+          group?.send({
+            reply: {
+              reference: replyId,
+              content: {
+                text: textContent,
+              },
+            } as any,
+          });
+        }
+        clearReply();
+      } else if (remoteAttachment) {
+        group?.send({
+          remoteAttachment,
+        });
+      } else if (textContent) {
+        group?.send(textContent);
       }
     },
-    [client, group],
+    [clearReply, client, group, replyId],
   );
 
   const renderItem: ListRenderItem<string> = ({item}) => {
@@ -115,21 +163,14 @@ export const GroupScreen = () => {
     [setReplyId],
   );
 
-  const clearReply = useCallback(() => {
-    setReplyId(null);
-  }, [setReplyId]);
-
-  const clearReaction = useCallback(() => {
-    setReactId(null);
-  }, [setReactId]);
-
   const conversationProviderValue = useMemo((): GroupContextValue => {
     return {
       group: group ?? null,
       setReplyId: setReply,
       clearReplyId: clearReply,
+      scrollToMessage,
     };
-  }, [group, setReply, clearReply]);
+  }, [group, setReply, clearReply, scrollToMessage]);
 
   return (
     <GroupContext.Provider value={conversationProviderValue}>
@@ -146,10 +187,11 @@ export const GroupScreen = () => {
           />
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={{height: '100%'}}
+            style={styles.container}
             keyboardVerticalOffset={Platform.OS === 'ios' ? 10 : 30}>
             <Box flex={1}>
               <FlatList
+                ref={scrollRef}
                 keyExtractor={keyExtractor}
                 inverted
                 data={ids}
@@ -164,6 +206,8 @@ export const GroupScreen = () => {
                 sendMessage={sendMessage}
                 currentAddress={myAddress}
                 id={topic}
+                replyMessage={replyId ? entities?.[replyId] : undefined}
+                clearReply={clearReply}
               />
             ) : (
               <HStack justifyContent={'space-around'} marginX={'40px'}>
@@ -186,35 +230,6 @@ export const GroupScreen = () => {
           </KeyboardAvoidingView>
         </Box>
       </Screen>
-
-      <Drawer
-        title="Test"
-        isOpen={!!replyId}
-        onBackgroundPress={() => setReplyId(null)}>
-        <VStack w={'100%'} alignItems={'flex-start'}>
-          <Box
-            backgroundColor={'white'}
-            paddingX={'4px'}
-            paddingY={'6px'}
-            marginRight={'12px'}>
-            <Text>Test</Text>
-          </Box>
-        </VStack>
-      </Drawer>
-      <Drawer
-        title="Test"
-        isOpen={Boolean(reactId)}
-        onBackgroundPress={clearReaction}>
-        <VStack w={'100%'} alignItems={'flex-start'}>
-          <Box
-            backgroundColor={'white'}
-            paddingX={'4px'}
-            paddingY={'6px'}
-            marginRight={'12px'}>
-            <Text>Test</Text>
-          </Box>
-        </VStack>
-      </Drawer>
       <GroupInfoModal
         shown={showGroupModal}
         hide={() => setShowGroupModal(false)}
@@ -234,3 +249,9 @@ export const GroupScreen = () => {
     </GroupContext.Provider>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    height: '100%',
+  },
+});

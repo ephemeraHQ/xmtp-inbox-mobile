@@ -78,5 +78,8 @@
   "group_remove_plural": "%{initiatedByAddress} removed %{addressCount} members",
   "error_group_remove": "An error occurred removing from group",
   "error_group_adding": "An error occurred adding to group",
-  "reply": "Reply"
+  "reply": "Reply",
+
+  "conversation_replying_to": "Replying to %{name}",
+  "replied_to": "Replied to an earlier message"
 }
