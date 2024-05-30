@@ -22,6 +22,7 @@ describe('RandomWallet', () => {
   test('should generate a private key and set account and address', () => {
     expect(randomWallet.account).toBeDefined();
     expect(randomWallet.address).toBe(randomWallet.account.address);
+    // @ts-ignore-next-line
     mmkvStorage.saveAddress.mockReturnValue();
     expect(mmkvStorage.saveAddress).toHaveBeenCalledWith(randomWallet.address);
   });
