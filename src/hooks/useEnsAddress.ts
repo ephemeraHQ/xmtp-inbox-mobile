@@ -17,6 +17,7 @@ export const useEnsAddress = (searchText?: string) => {
         })
         .catch(e => {
           console.error('Error getting ENS address', e);
+          setEnsAddress(null);
         });
     } else {
       setEnsAddress(null);
