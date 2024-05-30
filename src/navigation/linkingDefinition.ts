@@ -2,8 +2,12 @@ import {LinkingOptions} from '@react-navigation/native';
 import {ScreenNames} from './ScreenNames';
 import {RootStackParams} from './StackParams';
 
+const DEEP_LINK_PREFIX = 'ephemera-chat://';
+
+export const createDeepLink = (path: string) => `${DEEP_LINK_PREFIX}${path}`;
+
 export const linkingDefinition: LinkingOptions<RootStackParams> = {
-  prefixes: ['ephemera-chat://'],
+  prefixes: [DEEP_LINK_PREFIX],
   config: {
     screens: {
       [ScreenNames.OnboardingConnectWallet]: 'onboarding_connect_wallet',

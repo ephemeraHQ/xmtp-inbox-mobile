@@ -2,8 +2,8 @@ import RNFS from 'react-native-fs';
 import {AppConfig} from '../consts/AppConfig';
 import {supportedContentTypes} from '../consts/ContentTypes';
 
-export const createClientOptions = async () => {
-  const dbDirPath = `${RNFS.DocumentDirectoryPath}/xmtp_db`;
+export const createClientOptions = async (address: string) => {
+  const dbDirPath = `${RNFS.DocumentDirectoryPath}/xmtp_db/${address}`;
   const directoryExists = await RNFS.exists(dbDirPath);
   if (!directoryExists) {
     await RNFS.mkdir(dbDirPath);

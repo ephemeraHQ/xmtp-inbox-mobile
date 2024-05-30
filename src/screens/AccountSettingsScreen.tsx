@@ -1,6 +1,5 @@
 import Clipboard from '@react-native-clipboard/clipboard';
 import {useFocusEffect} from '@react-navigation/native';
-import {useDisconnect} from '@thirdweb-dev/react-native';
 import {Box, FlatList, HStack, SectionList, Switch, VStack} from 'native-base';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
@@ -25,6 +24,7 @@ import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
 import {AppConfig} from '../consts/AppConfig';
 import {useClientContext} from '../context/ClientContext';
+import {useWalletContext} from '../context/WalletContext';
 import {useAddress} from '../hooks/useAddress';
 import {useContactInfo} from '../hooks/useContactInfo';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
@@ -123,7 +123,7 @@ export const AccountSettingsScreen = () => {
   const {client, setClient} = useClientContext();
   const {avatarUrl, addresses, wallets, name} = useData();
   const [walletsShown, setWalletsShown] = useState(false);
-  const disconnect = useDisconnect();
+  const {wallet, setWallet} = useWalletContext();
   const {address} = useAddress();
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const appState = useRef(AppState.currentState);
@@ -141,7 +141,6 @@ export const AccountSettingsScreen = () => {
       openSettings();
     } else {
       requestNotifications(['alert', 'sound']).then(({status}) => {
-        console.log('status', status);
         if (status === 'granted' || status === 'limited') {
           setNotificationsEnabled(true);
         } else {
@@ -200,9 +199,8 @@ export const AccountSettingsScreen = () => {
               await encryptedStorage.clearClientKeys(address as `0x${string}`);
               setClient(null);
               cancelStreamAllMessages(client);
-              disconnect()
-                .then(() => {})
-                .catch();
+              wallet?.disconnect();
+              setWallet(null);
               mmkvStorage.clearAll();
             },
           },
@@ -210,12 +208,13 @@ export const AccountSettingsScreen = () => {
       },
     ];
   }, [
-    toggleNotifications,
-    notificationsEnabled,
     address,
-    setClient,
-    disconnect,
     client,
+    notificationsEnabled,
+    wallet,
+    setClient,
+    setWallet,
+    toggleNotifications,
   ]);
 
   const renderItem: SectionListRenderItem<ListItem, {section: Section}> = ({

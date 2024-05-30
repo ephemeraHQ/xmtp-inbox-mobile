@@ -1,10 +1,11 @@
-import {useAddress, useConnectionStatus} from '@thirdweb-dev/react-native';
+// import {useAddress, useConnectionStatus} from '@thirdweb-dev/react-native';
 import {Client} from '@xmtp/react-native-sdk';
 import React, {FC, PropsWithChildren, useEffect, useState} from 'react';
 import {SupportedContentTypes} from '../consts/ContentTypes';
 import {ClientContext} from '../context/ClientContext';
 import {QueryKeys} from '../queries/QueryKeys';
 import {encryptedStorage} from '../services/encryptedStorage';
+import {mmkvStorage} from '../services/mmkvStorage';
 import {queryClient} from '../services/queryClient';
 import {createClientOptions} from '../utils/clientOptions';
 import {getAllListMessages} from '../utils/getAllListMessages';
@@ -16,18 +17,12 @@ export const ClientProvider: FC<PropsWithChildren> = ({children}) => {
     null,
   );
   const [loading, setLoading] = useState(true);
-  const address = useAddress();
-  const status = useConnectionStatus();
 
   useEffect(() => {
-    if (status === 'unknown' || status === 'connecting') {
-      return;
-    }
-    if (status === 'disconnected') {
-      return setLoading(false);
-    }
+    const address = mmkvStorage.getAddress();
     if (!address) {
       // Address still shows as undefined even when connected
+      setLoading(false);
       return;
     }
     const handleClientCreation = async () => {
@@ -39,7 +34,7 @@ export const ClientProvider: FC<PropsWithChildren> = ({children}) => {
           return setLoading(false);
         }
         try {
-          const clientOptions = await createClientOptions();
+          const clientOptions = await createClientOptions(address);
           const newClient =
             await Client.createFromKeyBundle<SupportedContentTypes>(
               keys,
@@ -68,7 +63,7 @@ export const ClientProvider: FC<PropsWithChildren> = ({children}) => {
       }
     };
     handleClientCreation();
-  }, [address, status]);
+  }, []);
 
   return (
     <ClientContext.Provider
