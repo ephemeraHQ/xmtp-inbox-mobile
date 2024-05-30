@@ -156,7 +156,6 @@ export const SearchScreen = () => {
     for (const address of participants) {
       if (!canMessage?.[address.toLowerCase()]) {
         setErrorString(translate('not_on_xmtp_group'));
-
         return;
       }
     }
@@ -172,10 +171,7 @@ export const SearchScreen = () => {
       mapping: Set<string>;
     }>(
       ({filtered, mapping}, curr) => {
-        if (
-          // curr.name?.toLowerCase().includes(searchText.toLowerCase()) ||
-          curr.address.toLowerCase().includes(searchText.toLowerCase())
-        ) {
+        if (curr.address.toLowerCase().includes(searchText.toLowerCase())) {
           filtered.push(curr);
           mapping.add(curr.address);
         }
@@ -274,6 +270,8 @@ export const SearchScreen = () => {
       <Input
         testID={TestIds.SEARCH_INPUT}
         variant={'unstyled'}
+        autoCapitalize="none"
+        autoCorrect={false}
         leftElement={
           <Box paddingLeft={'8px'}>
             <Icon
@@ -295,7 +293,7 @@ export const SearchScreen = () => {
           ) : undefined
         }
         backgroundColor={colors.backgroundTertiary}
-        value={searchText}
+        defaultValue={searchText}
         onChangeText={setSearchText}
         marginX={'16px'}
         paddingY={'12px'}
