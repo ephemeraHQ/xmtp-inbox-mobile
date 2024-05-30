@@ -25,7 +25,7 @@ interface ConversationInputProps {
   currentAddress?: string;
   id?: string;
   replyMessage?: DecodedMessage<SupportedContentTypes>;
-  clearReply: () => void;
+  clearReply?: () => void;
 }
 
 export const ConversationInput: FC<ConversationInputProps> = ({
