@@ -1,5 +1,6 @@
+import {DecodedMessage} from '@xmtp/react-native-sdk';
 import {Box, HStack, Image, Pressable, VStack} from 'native-base';
-import React, {FC, useCallback, useEffect, useState} from 'react';
+import React, {FC, useCallback, useEffect, useMemo, useState} from 'react';
 import {Platform, StyleSheet, TextInput} from 'react-native';
 import {
   Asset,
@@ -7,20 +8,32 @@ import {
   launchImageLibrary,
 } from 'react-native-image-picker';
 import {Icon} from '../components/common/Icon';
+import {SupportedContentTypes} from '../consts/ContentTypes';
 import {translate} from '../i18n';
 import {mmkvStorage} from '../services/mmkvStorage';
 import {colors} from '../theme/colors';
+import {getContentFromMessage} from '../utils/getContentFromMessage';
+import {getSenderNameFromMessage} from '../utils/getSenderNameFromMessage';
+import {Text} from './common/Text';
 
 interface ConversationInputProps {
-  sendMessage: (payload: {text?: string; asset?: Asset}) => void;
+  sendMessage: (payload: {
+    text?: string;
+    asset?: Asset;
+    replyId?: string;
+  }) => void;
   currentAddress?: string;
   id?: string;
+  replyMessage?: DecodedMessage<SupportedContentTypes>;
+  clearReply?: () => void;
 }
 
 export const ConversationInput: FC<ConversationInputProps> = ({
   sendMessage,
   currentAddress,
   id,
+  replyMessage,
+  clearReply,
 }) => {
   const [focused, setFocus] = useState<boolean>(false);
   const [text, setText] = useState<string>(
@@ -34,6 +47,13 @@ export const ConversationInput: FC<ConversationInputProps> = ({
   //   : null,
 
   const textInputRef = React.createRef<TextInput>();
+
+  const replyContent = useMemo(() => {
+    if (!replyMessage) {
+      return undefined;
+    }
+    return getContentFromMessage(replyMessage);
+  }, [replyMessage]);
 
   useEffect(() => {
     if (text && currentAddress && id) {
@@ -81,13 +101,33 @@ export const ConversationInput: FC<ConversationInputProps> = ({
     if (!canSend) {
       return;
     }
-    sendMessage({text, asset: asset ?? undefined});
+    sendMessage({text, asset: asset ?? undefined, replyId: replyMessage?.id});
     setText('');
     setAssetUri(null);
-  }, [sendMessage, text, asset, canSend]);
+  }, [canSend, replyMessage, sendMessage, text, asset]);
 
   return (
     <VStack flexShrink={1}>
+      {replyContent && (
+        <HStack marginX={2}>
+          <Text typography="text-sm/regular" color={colors.textSecondary}>
+            {translate('conversation_replying_to', {
+              name: getSenderNameFromMessage(replyMessage),
+            })}
+          </Text>
+          <Text
+            paddingLeft={1}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            typography="text-sm/regular"
+            color={colors.textSecondary}>
+            {replyContent}
+          </Text>
+          <Pressable onPress={clearReply}>
+            <Icon name="x-circle" size={20} color={colors.textSecondary} />
+          </Pressable>
+        </HStack>
+      )}
       <HStack
         marginX={2}
         alignItems={'flex-end'}

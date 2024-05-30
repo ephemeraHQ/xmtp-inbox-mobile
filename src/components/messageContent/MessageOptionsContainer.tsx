@@ -42,7 +42,9 @@ export const MessageOptionsContainer: FC<
   );
 
   const handleReplyPress = useCallback(() => {
+    Haptic.trigger('contextClick');
     setReplyId(messageId);
+    setShown(false);
   }, [setReplyId, messageId]);
 
   const handleRemoveReplyPress = useCallback(

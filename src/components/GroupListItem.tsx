@@ -8,6 +8,7 @@ import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {ScreenNames} from '../navigation/ScreenNames';
 import {useFirstGroupMessageQuery} from '../queries/useFirstGroupMessageQuery';
 import {useGroupParticipantsQuery} from '../queries/useGroupParticipantsQuery';
+import {getContentFromMessage} from '../utils/getContentFromMessage';
 import {getMessageTimeDisplay} from '../utils/getMessageTimeDisplay';
 import {GroupAvatarStack} from './GroupAvatarStack';
 import {Text} from './common/Text';
@@ -34,18 +35,7 @@ export const GroupListItem: FC<GroupListItemProps> = ({group}) => {
     if (!firstMessage) {
       return '';
     }
-    let text = '';
-    try {
-      const content = firstMessage.content();
-      if (typeof content === 'string') {
-        text = content;
-      } else {
-        text = firstMessage.fallback ?? '';
-      }
-    } catch (e) {
-      text = firstMessage.fallback ?? '';
-    }
-    return text;
+    return getContentFromMessage(firstMessage);
   }, [firstMessage]);
 
   const lastMessageTime: number | undefined = useMemo(() => {
