@@ -10,7 +10,7 @@ import {WalletConnection} from '../models/WalletConnection';
 import {createDeepLink} from '../navigation/linkingDefinition';
 import {mmkvStorage} from './mmkvStorage';
 
-class CoinbaseWallet extends WalletConnection {
+export class CoinbaseWallet extends WalletConnection {
   provider: WalletMobileSDKEVMProvider;
   address?: string;
   signer: Signer;
