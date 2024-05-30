@@ -7,7 +7,7 @@ import {
 import {WalletConnection} from '../models/WalletConnection';
 import {mmkvStorage} from './mmkvStorage';
 
-class RandomWallet extends WalletConnection {
+export class RandomWallet extends WalletConnection {
   address?: string;
   account: PrivateKeyAccount;
 
