@@ -25,7 +25,7 @@ class CoinbaseWallet extends WalletConnection {
         params: [message, this.address],
       });
       return signature;
-    } catch (e) {
+    } catch (e: any) {
       Alert.alert('Error signing message', e?.message);
       throw e;
     } finally {
