@@ -1,11 +1,10 @@
-import {ethers} from 'ethers';
-import {RPC_URL} from '../consts/Chains';
+import {getEnsAvatar, getEnsName, normalize} from 'viem/ens';
+import {viemClient} from './viemClient';
 
 export const getEnsInfo = async (address: string) => {
-  const provider = new ethers.providers.JsonRpcProvider(RPC_URL);
   const [ens, avatarUrl] = await Promise.all([
-    provider.lookupAddress(address),
-    provider.getAvatar(address),
+    getEnsName(viemClient, {address: address as `0x${string}`}),
+    getEnsAvatar(viemClient, {name: normalize(address) as `0x${string}`}),
   ]);
   return {
     ens,

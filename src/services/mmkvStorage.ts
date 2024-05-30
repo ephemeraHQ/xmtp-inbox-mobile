@@ -1,6 +1,9 @@
 import {MMKV} from 'react-native-mmkv';
 
 enum MMKVKeys {
+  // Wallet
+  ADDRESS = 'ADDRESS',
+
   // Ens Info
   ENS_NAME = 'ENS_NAME',
   ENS_AVATAR = 'ENS_AVATAR',
@@ -32,6 +35,21 @@ export const mmkvstorage = new MMKV();
 
 class MMKVStorage {
   storage = mmkvstorage;
+
+  //#region Address
+  saveAddress = (address: string) => {
+    return this.storage.set(MMKVKeys.ADDRESS, address);
+  };
+
+  getAddress = () => {
+    return this.storage.getString(MMKVKeys.ADDRESS);
+  };
+
+  clearAddress = () => {
+    return this.storage.delete(MMKVKeys.ADDRESS);
+  };
+
+  //#endregion Address
 
   //#region Ens Name
   private getEnsNameKey = (address: string) => {

@@ -1,4 +1,3 @@
-import {useDisconnect, useSigner} from '@thirdweb-dev/react-native';
 import {Client} from '@xmtp/react-native-sdk';
 import {StatusBar, VStack} from 'native-base';
 import React, {useCallback, useEffect, useState} from 'react';
@@ -9,6 +8,7 @@ import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
 import {EventEmitterEvents} from '../consts/EventEmitters';
 import {useClientContext} from '../context/ClientContext';
+import {useWalletContext} from '../context/WalletContext';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
 import {ScreenNames} from '../navigation/ScreenNames';
@@ -49,19 +49,19 @@ const enableIdentityPromise = async () =>
 export const OnboardingEnableIdentityScreen = () => {
   const [step, setStep] = useState<Step>('CREATE_IDENTITY');
   const {navigate} = useTypedNavigation();
-  const disconnect = useDisconnect();
-  const signer = useSigner();
+  const {wallet, setWallet} = useWalletContext();
   const {setClient} = useClientContext();
 
   useEffect(() => {
     const startClientCreation = async () => {
-      if (!signer) {
+      if (!wallet) {
         return;
       }
       try {
-        const clientOptions = await createClientOptions();
+        const address = await wallet.getAddress();
+        const clientOptions = await createClientOptions(address);
 
-        const client = await Client.create(signer, {
+        const client = await Client.create(wallet, {
           ...clientOptions,
           preEnableIdentityCallback: async () => {
             setStep('ENABLE_IDENTITY');
@@ -75,7 +75,6 @@ export const OnboardingEnableIdentityScreen = () => {
         const pushClient = new PushNotifications(client);
         pushClient.subscribeToAllGroups();
         const keys = await client.exportKeyBundle();
-        const address = client.address;
         encryptedStorage.saveClientKeys(address as `0x${string}`, keys);
         queryClient.prefetchQuery({
           queryKey: [QueryKeys.List, client?.address],
@@ -92,7 +91,7 @@ export const OnboardingEnableIdentityScreen = () => {
       }
     };
     startClientCreation();
-  }, [setClient, signer]);
+  }, [setClient, wallet]);
 
   const handleCreateIdentity = useCallback(() => {
     DeviceEventEmitter.emit(EventEmitterEvents.CREATE_IDENTITY);
@@ -103,9 +102,10 @@ export const OnboardingEnableIdentityScreen = () => {
   }, []);
 
   const handleDisconnectWallet = useCallback(async () => {
-    await disconnect();
+    await wallet?.disconnect();
     navigate(ScreenNames.OnboardingConnectWallet);
-  }, [navigate, disconnect]);
+    setWallet(null);
+  }, [navigate, wallet, setWallet]);
 
   return (
     <Screen includeTopPadding={false}>

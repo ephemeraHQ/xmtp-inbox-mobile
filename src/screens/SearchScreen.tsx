@@ -1,8 +1,7 @@
-import {getAddress, isAddress} from 'ethers/lib/utils';
 import {Box, HStack, Input, Pressable, SectionList, VStack} from 'native-base';
 import React, {FC, useCallback, useEffect, useMemo, useState} from 'react';
 import {SectionListRenderItem} from 'react-native';
-import {useEnsAddress} from 'wagmi';
+import {getAddress, isAddress} from 'viem';
 import {AvatarWithFallback} from '../components/AvatarWithFallback';
 import {Button} from '../components/common/Button';
 import {Icon} from '../components/common/Icon';
@@ -12,6 +11,7 @@ import {Text} from '../components/common/Text';
 import {TestIds} from '../consts/TestIds';
 import {useClient} from '../hooks/useClient';
 import {useContactInfo} from '../hooks/useContactInfo';
+import {useEnsAddress} from '../hooks/useEnsAddress';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
 import {ScreenNames} from '../navigation/ScreenNames';
@@ -163,11 +163,7 @@ export const SearchScreen = () => {
     goBack();
     navigate(ScreenNames.NewConversation, {addresses: participants});
   }, [participants, navigate, goBack, client]);
-  const {data: ensAddress} = useEnsAddress({
-    name: searchText,
-    chainId: 1,
-    // provider: useChain(1),
-  });
+  const {data: ensAddress} = useEnsAddress(searchText);
   const isValidAddress = useMemo(() => isAddress(searchText), [searchText]);
 
   const items = useMemo(() => {

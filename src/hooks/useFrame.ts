@@ -1,5 +1,4 @@
-import {useQuery} from '@tanstack/react-query';
-import {useMutation} from 'wagmi';
+import {useMutation, useQuery} from '@tanstack/react-query';
 import {FrameButton} from '../models/FrameButton';
 import {QueryKeys} from '../queries/QueryKeys';
 import {useFramesClient} from './useFramesClient';

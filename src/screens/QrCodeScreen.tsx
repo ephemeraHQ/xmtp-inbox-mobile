@@ -12,12 +12,13 @@ import {Text} from '../components/common/Text';
 import {useAddress} from '../hooks/useAddress';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
+import {createDeepLink} from '../navigation/linkingDefinition';
 import {blues, colors, reds} from '../theme/colors';
 
 export const QrCodeScreen = () => {
   const {goBack} = useTypedNavigation();
   const {address} = useAddress();
-  const value = `ephemera-chat://new_conversation/${address}`;
+  const value = createDeepLink(`new_conversation/${address}`);
   const handleCopy = useCallback(() => {
     Clipboard.setString(value);
   }, [value]);
