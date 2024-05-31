@@ -18,7 +18,8 @@
   "no": "No",
   "yes": "Yes",
   "start": "Start",
-  "recents": "Recents",
+
+  "recents": "Recent",
   "contacts": "Contacts",
   "your_interoperable_web3_inbox": "Your interoperable web3 inbox",
   "youre_just_a_few_steps_away_from_secure_wallet_to_wallet_messaging": "You're just a few steps away from secure, wallet-to-wallet messaging",
@@ -43,6 +44,7 @@
   "guest_wallet": "Guest Wallet",
   "group_changed": "Group Changed",
   "add_to_group": "Add",
+  "add_members_to_group": "Add members",
   "group": "Group",
   "dev_screen": "Dev Screen",
   "client": "Client",
@@ -68,5 +70,8 @@
   "reply": "Reply",
   "conversation_replying_to": "Replying to %{name}",
   "replied_to": "Replied to an earlier message",
-  "group_chats": "Group Chats"
+  "group_chats": "Group Chats",
+
+  "cancel": "Cancel",
+  "create_group": "Create"
 }

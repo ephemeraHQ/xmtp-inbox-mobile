@@ -3,9 +3,7 @@ import React, {FC, useCallback, useEffect, useMemo, useState} from 'react';
 import {SectionListRenderItem} from 'react-native';
 import {getAddress, isAddress} from 'viem';
 import {AvatarWithFallback} from '../components/AvatarWithFallback';
-import {Button} from '../components/common/Button';
 import {Icon} from '../components/common/Icon';
-import {Pill} from '../components/common/Pill';
 import {Screen} from '../components/common/Screen';
 import {Text} from '../components/common/Text';
 import {TestIds} from '../consts/TestIds';
@@ -84,6 +82,89 @@ const useData = () => {
   };
 };
 
+const VerticalListItem: FC<{item: Contact; index: number; section: any}> = ({
+  item,
+  index,
+  section,
+}) => {
+  const {avatarUrl, displayName} = useContactInfo(item.address);
+  const handlePress = () => section.onPress(item);
+
+  return (
+    <Pressable
+      onPress={handlePress}
+      testID={`${TestIds.SEARCH_RESULT}_${item.address}`}>
+      <HStack
+        alignItems="center"
+        marginX="16px"
+        paddingX="12px"
+        paddingY="12px"
+        borderTopRadius={index === 0 ? '16px' : undefined}
+        borderBottomRadius={
+          index === section.data.length - 1 ? '16px' : undefined
+        }
+        backgroundColor={colors.backgroundTertiary}
+        flexDirection="row">
+        <AvatarWithFallback
+          address={item.address}
+          avatarUri={avatarUrl}
+          size={48}
+        />
+        <VStack flex={1} alignItems="flex-start">
+          <Text
+            typography="text-title/bold"
+            color={colors.textSecondary}
+            paddingLeft="16px">
+            {displayName ?? formatAddress(item.address)}
+          </Text>
+          <Text
+            color={colors.textSecondary}
+            typography="text-sm/mono medium"
+            paddingLeft="16px">
+            {formatAddress(item.address)}
+          </Text>
+        </VStack>
+        {item.isConnected ? <Icon name="check-thick" size={24} /> : null}
+      </HStack>
+    </Pressable>
+  );
+};
+
+const HorizontalListItem: FC<{item: Contact; index: number; section: any}> = ({
+  item,
+  index,
+  section,
+}) => {
+  const {avatarUrl, displayName} = useContactInfo(item.address);
+  const handlePress = () => section.onPress(item);
+  return (
+    <Pressable
+      onPress={handlePress}
+      testID={`${TestIds.SEARCH_RESULT}_${item.address}`}>
+      <VStack
+        alignItems="center"
+        paddingX="12px"
+        paddingY="12px"
+        borderTopRadius={index === 0 ? '16px' : undefined}
+        borderBottomRadius={
+          index === section.data.length - 1 ? '16px' : undefined
+        }
+        backgroundColor={'transparent'}
+        flexDirection="column">
+        <AvatarWithFallback
+          address={item.address}
+          avatarUri={avatarUrl}
+          size={48}
+        />
+        <Text typography="text-xs/regular" color={colors.textSecondary}>
+          {displayName ?? formatAddress(item.address)}
+        </Text>
+        {item.isConnected ? <Icon name="check-thick" size={24} /> : null}
+      </VStack>
+    </Pressable>
+  );
+};
+
 const ListItem: FC<{
   item: Contact;
   section: {
@@ -92,59 +173,26 @@ const ListItem: FC<{
     data: readonly Contact[];
   };
   index: number;
-}> = ({item, index, section}) => {
-  const {avatarUrl, displayName} = useContactInfo(item.address);
-  const isTop = index === 0;
-  const isBottom = index === section.data.length - 1;
-  const handlePress = () => {
-    section.onPress(item);
-  };
-  return (
-    <Pressable
-      onPress={handlePress}
-      testID={`${TestIds.SEARCH_RESULT}_${item.address}`}>
-      <HStack
-        alignItems={'center'}
-        marginX={'16px'}
-        paddingX={'12px'}
-        paddingY={'12px'}
-        borderTopRadius={isTop ? '16px' : undefined}
-        borderBottomRadius={isBottom ? '16px' : undefined}
-        backgroundColor={colors.backgroundTertiary}
-        flexDirection={'row'}>
-        <AvatarWithFallback
-          address={item.address}
-          avatarUri={avatarUrl}
-          size={48}
-        />
-        <VStack flex={1}>
-          <Text typography="text-title/bold" paddingLeft={'16px'}>
-            {displayName ?? formatAddress(item.address)}
-          </Text>
-          <Text
-            color={colors.textSecondary}
-            typography="text-sm/mono medium"
-            paddingLeft={'16px'}>
-            {formatAddress(item.address)}
-          </Text>
-        </VStack>
-        {item.isConnected ? <Icon name={'check-thick'} size={24} /> : null}
-      </HStack>
-    </Pressable>
+  horizontal?: boolean;
+}> = ({item, index, section, horizontal}) => {
+  return horizontal ? (
+    <HorizontalListItem item={item} index={index} section={section} />
+  ) : (
+    <VerticalListItem item={item} index={index} section={section} />
   );
 };
 
-export const SearchScreen = () => {
+export const CreateGroupScreen = () => {
   const {goBack, navigate} = useTypedNavigation();
   const {client} = useClient();
   const [errorString, setErrorString] = useState<string | null>(null);
   const [searchText, setSearchText] = useState('');
-  const [participants, setParticipants] = useState<string[]>([]);
+  const [participants, setParticipants] = useState<Contact[]>([]);
 
   const {recents, contacts} = useData();
   const onItemPress = useCallback(
     (item: Contact) => {
-      setParticipants(prev => [...prev, item.address]);
+      setParticipants(prev => [...prev, item]);
     },
     [setParticipants],
   );
@@ -152,15 +200,18 @@ export const SearchScreen = () => {
   const onGroupStart = useCallback(async () => {
     setErrorString(null);
 
-    const canMessage = await client?.canGroupMessage(participants);
-    for (const address of participants) {
+    const participantAddresses = participants.map(
+      participant => participant.address,
+    );
+    const canMessage = await client?.canGroupMessage(participantAddresses);
+    for (const address of participantAddresses) {
       if (!canMessage?.[address.toLowerCase()]) {
         setErrorString(translate('not_on_xmtp_group'));
         return;
       }
     }
     goBack();
-    navigate(ScreenNames.NewConversation, {addresses: participants});
+    navigate(ScreenNames.NewConversation, {addresses: participantAddresses});
   }, [participants, navigate, goBack, client]);
   const {data: ensAddress} = useEnsAddress(searchText);
   const isValidAddress = useMemo(() => isAddress(searchText), [searchText]);
@@ -222,49 +273,51 @@ export const SearchScreen = () => {
     ];
   }, [recents, contacts, isValidAddress, ensAddress, searchText]);
 
-  const renderItem: SectionListRenderItem<Contact, {title: string}> = ({
-    item,
-    section,
-    index,
-    ...rest
-  }) => {
-    return (
-      <ListItem
-        {...rest}
-        item={item}
-        index={index}
-        section={{
-          ...section,
-          onPress: onItemPress,
-        }}
-      />
-    );
-  };
-
-  const removeParticipant = useCallback(
-    (address: string) => {
-      setErrorString(null);
-      setParticipants(prev => prev.filter(it => it !== address));
-    },
-    [setParticipants],
-  );
+  const renderItem =
+    ({horizontal = false}: {horizontal?: boolean} = {}): SectionListRenderItem<
+      Contact,
+      {title: string; data: Contact[]}
+    > =>
+    ({item, section, index, ...rest}) => {
+      return (
+        <ListItem
+          {...rest}
+          item={item}
+          index={index}
+          section={{
+            ...section,
+            onPress: onItemPress,
+          }}
+          horizontal={horizontal}
+        />
+      );
+    };
 
   return (
     <Screen
       testId={TestIds.SEARCH_SCREEN}
       title={
-        <Text typography="text-lg/heavy" textAlign={'center'}>
-          {translate('search')}
+        <Text typography="text-sm/heavy" textAlign={'center'}>
+          {translate('add_members_to_group')}
         </Text>
       }
+      includeTopPadding={false}
       left={
-        <Pressable onPress={() => navigate(ScreenNames.QRCode)}>
-          <Icon name="qr-code" />
+        <Pressable onPress={goBack}>
+          <Text typography="text-sm/semibold" textAlign={'left'}>
+            {translate('cancel')}
+          </Text>
         </Pressable>
       }
       right={
-        <Pressable onPress={goBack}>
-          <Icon name="x-circle" />
+        <Pressable onPress={onGroupStart} disabled={!(participants.length > 0)}>
+          <Text
+            typography={
+              participants.length > 0 ? 'text-sm/semibold' : 'text-sm/regular'
+            }
+            textAlign={'right'}>
+            {translate('create_group')}
+          </Text>
         </Pressable>
       }>
       <Input
@@ -322,35 +375,18 @@ export const SearchScreen = () => {
         </HStack>
       )}
       <VStack paddingX={'16px'} paddingTop={'16px'} w="100%">
-        <HStack flexWrap={'wrap'}>
-          {participants.map(participant => {
-            return (
-              <Pill
-                key={participant}
-                testId={`${TestIds.SEARCH_PARTICIPANTS_LIST_PILL}_${participant}`}
-                size={'sm'}
-                onPress={() => removeParticipant(participant)}
-                text={formatAddress(participant)}
-              />
-            );
-          })}
-        </HStack>
-        {participants.length > 0 && (
-          <Button
-            testID={TestIds.SEARCH_START_BUTTON}
-            w={20}
-            alignSelf={'center'}
-            size={'xs'}
-            onPress={onGroupStart}>
-            {translate('start')}
-          </Button>
-        )}
+        <SectionList
+          w={'100%'}
+          horizontal={true}
+          sections={[{title: '', data: participants}]}
+          renderItem={renderItem({horizontal: true})}
+        />
       </VStack>
       <SectionList
         w={'100%'}
         sections={items}
         keyExtractor={item => item.address}
-        renderItem={renderItem}
+        renderItem={renderItem()}
         stickySectionHeadersEnabled={false}
         renderSectionHeader={({section}) => {
           if (section.data.length === 0) {
