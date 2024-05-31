@@ -192,9 +192,17 @@ export const CreateGroupScreen = () => {
   const {recents, contacts} = useData();
   const onItemPress = useCallback(
     (item: Contact) => {
+      if (
+        participants.some(participant => participant.address === item.address)
+      ) {
+        setParticipants(prev =>
+          prev.filter(participant => participant.address !== item.address),
+        );
+        return;
+      }
       setParticipants(prev => [...prev, item]);
     },
-    [setParticipants],
+    [participants],
   );
 
   const onGroupStart = useCallback(async () => {

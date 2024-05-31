@@ -17,11 +17,11 @@ import {ReactionItems} from './ConversationMessageContent';
 
 export const MessageOptionsContainer: FC<
   PropsWithChildren<{
-    isMe: boolean;
+    isFromUser: boolean;
     messageId: string;
     reactions: ReactionItems;
   }>
-> = ({children, isMe, messageId, reactions}) => {
+> = ({children, isFromUser, messageId, reactions}) => {
   const [shown, setShown] = useState(false);
   const {group, setReplyId} = useContext(GroupContext);
 
@@ -75,8 +75,8 @@ export const MessageOptionsContainer: FC<
     <Pressable onPress={handlePress} onLongPress={handleLongPress}>
       <Container
         flexShrink={1}
-        alignSelf={isMe ? 'flex-end' : 'flex-start'}
-        alignItems={isMe ? 'flex-end' : 'flex-start'}
+        alignSelf={isFromUser ? 'flex-end' : 'flex-start'}
+        alignItems={isFromUser ? 'flex-end' : 'flex-start'}
         borderRadius={'16px'}>
         {children}
         {reactions.length > 0 && (

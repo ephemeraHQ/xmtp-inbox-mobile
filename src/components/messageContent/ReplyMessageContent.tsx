@@ -16,12 +16,12 @@ import {ImageMessage} from '../ImageMessage';
 
 interface ReplyMessageContentProps {
   message: DecodedMessage<SupportedContentTypes>;
-  isMe: boolean;
+  isFromUser: boolean;
 }
 
 export const ReplyMessageContent = ({
   message,
-  isMe,
+  isFromUser,
 }: ReplyMessageContentProps) => {
   const {scrollToMessage} = useContext(GroupContext);
 
@@ -39,17 +39,19 @@ export const ReplyMessageContent = ({
         return (
           <Container
             backgroundColor={
-              isMe ? colors.actionPrimary : colors.backgroundSecondary
+              isFromUser ? colors.actionPrimary : colors.backgroundSecondary
             }
-            alignSelf={isMe ? 'flex-end' : 'flex-start'}
+            alignSelf={isFromUser ? 'flex-end' : 'flex-start'}
             borderRadius={'16px'}
-            borderBottomRightRadius={isMe ? 0 : '16px'}
-            borderTopLeftRadius={isMe ? '16px' : 0}
+            borderBottomRightRadius={isFromUser ? 0 : '16px'}
+            borderTopLeftRadius={isFromUser ? '16px' : 0}
             paddingY={3}
             paddingX={5}>
             <Text
               typography="text-base/medium"
-              color={isMe ? colors.actionPrimaryText : colors.textPrimary}>
+              color={
+                isFromUser ? colors.actionPrimaryText : colors.textPrimary
+              }>
               {textContent.text}
             </Text>
           </Container>
@@ -61,7 +63,7 @@ export const ReplyMessageContent = ({
       default:
         return null;
     }
-  }, [isMe, reply]);
+  }, [isFromUser, reply]);
 
   const handlePress = useCallback(() => {
     if (reply.reference) {
@@ -75,8 +77,8 @@ export const ReplyMessageContent = ({
   return (
     <Container
       borderRadius={'16px'}
-      borderBottomRightRadius={isMe ? 0 : '16px'}
-      borderTopLeftRadius={isMe ? '16px' : 0}>
+      borderBottomRightRadius={isFromUser ? 0 : '16px'}
+      borderTopLeftRadius={isFromUser ? '16px' : 0}>
       <Pressable onPress={handlePress}>
         <Text typography="text-xs/regular" color={colors.textSecondary}>
           {translate('replied_to')}

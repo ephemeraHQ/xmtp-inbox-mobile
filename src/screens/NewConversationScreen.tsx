@@ -35,7 +35,7 @@ export const NewConversationScreen = () => {
         try {
           const group = await client?.conversations.newGroup(
             addresses,
-            'creator_admin',
+            'all_members',
           );
           if (!group) {
             Alert.alert('Error creating group');

@@ -63,7 +63,7 @@ describe('useGroupMessages', () => {
     const newMessages = updateFn(prevMessages);
     expect(newMessages).toEqual([mockMessage, ...prevMessages]);
 
-    if (mockMessage.contentTypeId === ContentTypes.GroupMembershipChange) {
+    if (mockMessage.contentTypeId === ContentTypes.GroupUpdated) {
       await act(async () => {
         await mockGroup.sync();
         const addresses = await mockGroup.memberAddresses();

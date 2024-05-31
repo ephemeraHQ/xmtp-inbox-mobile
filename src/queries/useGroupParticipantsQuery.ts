@@ -32,7 +32,7 @@ export const useGroupParticipantsQuery = (topic: string) => {
         return [];
       }
       await withRequestLogger(group.sync(), {name: 'group_sync'});
-      return withRequestLogger(group.memberAddresses(), {
+      return withRequestLogger(group.memberInboxIds(), {
         name: 'group_members',
       });
     },

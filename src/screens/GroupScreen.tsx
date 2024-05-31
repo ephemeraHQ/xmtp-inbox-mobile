@@ -149,11 +149,17 @@ export const GroupScreen = () => {
       return null;
     }
     const reactions = reactionsEntities?.[item] ?? new Map();
-    const isMe =
+    const isFromUser =
       message.senderAddress?.toLocaleLowerCase() ===
-      myAddress?.toLocaleLowerCase();
+      client?.inboxId?.toLocaleLowerCase();
 
-    return <Message message={message} isMe={isMe} reactions={reactions} />;
+    return (
+      <Message
+        message={message}
+        isFromUser={isFromUser}
+        reactions={reactions}
+      />
+    );
   };
 
   const setReply = useCallback(

@@ -19,9 +19,9 @@ export const useGroupMessages = (topic: string) => {
           [QueryKeys.GroupMessages, topic],
           prevMessages => [message, ...(prevMessages ?? [])],
         );
-        if (message.contentTypeId === ContentTypes.GroupMembershipChange) {
+        if (message.contentTypeId === ContentTypes.GroupUpdated) {
           await group.sync();
-          const addresses = await group.memberAddresses();
+          const addresses = await group.memberInboxIds();
           queryClient.setQueryData(
             [QueryKeys.GroupParticipants, topic],
             addresses,
