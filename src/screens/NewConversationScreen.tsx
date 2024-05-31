@@ -88,7 +88,7 @@ export const NewConversationScreen = () => {
           <GroupHeader
             peerAddresses={addresses}
             onGroupPress={() => {}}
-            groupId="new_convo"
+            groupTopic="new_convo"
           />
         ) : (
           <ConversationHeader

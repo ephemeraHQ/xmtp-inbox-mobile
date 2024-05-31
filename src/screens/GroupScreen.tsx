@@ -187,7 +187,7 @@ export const GroupScreen = () => {
         }}>
         <Box backgroundColor={colors.backgroundPrimary} paddingBottom={10}>
           <GroupHeader
-            groupId={group?.topic ?? ''}
+            groupTopic={group?.topic ?? ''}
             peerAddresses={addresses ?? []}
             onGroupPress={() => setShowGroupModal(true)}
           />

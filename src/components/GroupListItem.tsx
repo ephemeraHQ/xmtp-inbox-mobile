@@ -21,7 +21,7 @@ export const GroupListItem: FC<GroupListItemProps> = ({group}) => {
   const topic = group?.topic;
   const {data: addresses} = useGroupParticipantsQuery(topic);
   const {navigate} = useTypedNavigation();
-  const groupName = useGroupName(addresses ?? [], topic);
+  const {groupName} = useGroupName(topic);
   const {data: messages, isLoading, isError} = useFirstGroupMessageQuery(topic);
   const firstMessage = messages?.[0];
 

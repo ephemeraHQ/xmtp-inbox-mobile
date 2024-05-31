@@ -12,7 +12,7 @@ import {Text} from './common/Text';
 interface GroupHeaderProps {
   peerAddresses: string[];
   onGroupPress: () => void;
-  groupId: string;
+  groupTopic: string;
 }
 
 const HeaderContainer: FC<PropsWithChildren> = ({children}) => {
@@ -33,10 +33,10 @@ const HeaderContainer: FC<PropsWithChildren> = ({children}) => {
 export const GroupHeader: FC<GroupHeaderProps> = ({
   peerAddresses,
   onGroupPress,
-  groupId,
+  groupTopic,
 }) => {
   const {goBack} = useTypedNavigation();
-  const groupDisplayName = useGroupName(peerAddresses, groupId);
+  const {groupName} = useGroupName(groupTopic);
 
   return (
     <HeaderContainer>
@@ -56,7 +56,7 @@ export const GroupHeader: FC<GroupHeaderProps> = ({
             typography="text-lg/heavy"
             numberOfLines={1}
             textAlign={'center'}>
-            {groupDisplayName}
+            {groupName}
           </Text>
         </VStack>
         <Pressable onPress={onGroupPress}>
