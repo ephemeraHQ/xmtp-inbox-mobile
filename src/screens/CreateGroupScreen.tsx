@@ -82,31 +82,45 @@ const useData = () => {
   };
 };
 
-const VerticalListItem: FC<{item: Contact; index: number; section: any;}> = ({
+const VerticalListItem: FC<{item: Contact; index: number; section: any}> = ({
   item,
   index,
-  section
+  section,
 }) => {
   const {avatarUrl, displayName} = useContactInfo(item.address);
   const handlePress = () => section.onPress(item);
 
   return (
-    <Pressable onPress={handlePress} testID={`${TestIds.SEARCH_RESULT}_${item.address}`}>
+    <Pressable
+      onPress={handlePress}
+      testID={`${TestIds.SEARCH_RESULT}_${item.address}`}>
       <HStack
         alignItems="center"
         marginX="16px"
         paddingX="12px"
         paddingY="12px"
         borderTopRadius={index === 0 ? '16px' : undefined}
-        borderBottomRadius={index === section.data.length - 1 ? '16px' : undefined}
+        borderBottomRadius={
+          index === section.data.length - 1 ? '16px' : undefined
+        }
         backgroundColor={colors.backgroundTertiary}
         flexDirection="row">
-        <AvatarWithFallback address={item.address} avatarUri={avatarUrl} size={48} />
+        <AvatarWithFallback
+          address={item.address}
+          avatarUri={avatarUrl}
+          size={48}
+        />
         <VStack flex={1} alignItems="flex-start">
-          <Text typography="text-title/bold" color={colors.textSecondary} paddingLeft="16px">
+          <Text
+            typography="text-title/bold"
+            color={colors.textSecondary}
+            paddingLeft="16px">
             {displayName ?? formatAddress(item.address)}
           </Text>
-          <Text color={colors.textSecondary} typography="text-sm/mono medium" paddingLeft="16px">
+          <Text
+            color={colors.textSecondary}
+            typography="text-sm/mono medium"
+            paddingLeft="16px">
             {formatAddress(item.address)}
           </Text>
         </VStack>
@@ -116,24 +130,32 @@ const VerticalListItem: FC<{item: Contact; index: number; section: any;}> = ({
   );
 };
 
-const HorizontalListItem: FC<{item: Contact; index: number; section: any;}> = ({
+const HorizontalListItem: FC<{item: Contact; index: number; section: any}> = ({
   item,
   index,
-  section
+  section,
 }) => {
   const {avatarUrl, displayName} = useContactInfo(item.address);
   const handlePress = () => section.onPress(item);
   return (
-    <Pressable onPress={handlePress} testID={`${TestIds.SEARCH_RESULT}_${item.address}`}>
+    <Pressable
+      onPress={handlePress}
+      testID={`${TestIds.SEARCH_RESULT}_${item.address}`}>
       <VStack
         alignItems="center"
         paddingX="12px"
         paddingY="12px"
         borderTopRadius={index === 0 ? '16px' : undefined}
-        borderBottomRadius={index === section.data.length - 1 ? '16px' : undefined}
-        backgroundColor={"transparent"}
+        borderBottomRadius={
+          index === section.data.length - 1 ? '16px' : undefined
+        }
+        backgroundColor={'transparent'}
         flexDirection="column">
-        <AvatarWithFallback address={item.address} avatarUri={avatarUrl} size={48} />
+        <AvatarWithFallback
+          address={item.address}
+          avatarUri={avatarUrl}
+          size={48}
+        />
         <Text typography="text-xs/regular" color={colors.textSecondary}>
           {displayName ?? formatAddress(item.address)}
         </Text>
@@ -153,13 +175,12 @@ const ListItem: FC<{
   index: number;
   horizontal?: boolean;
 }> = ({item, index, section, horizontal}) => {
-    return horizontal ? (
-      <HorizontalListItem item={item} index={index} section={section} />
-    ) : (
-      <VerticalListItem item={item} index={index} section={section} />
-    );  
-  };
-
+  return horizontal ? (
+    <HorizontalListItem item={item} index={index} section={section} />
+  ) : (
+    <VerticalListItem item={item} index={index} section={section} />
+  );
+};
 
 export const CreateGroupScreen = () => {
   const {goBack, navigate} = useTypedNavigation();
@@ -179,7 +200,9 @@ export const CreateGroupScreen = () => {
   const onGroupStart = useCallback(async () => {
     setErrorString(null);
 
-    const participantAddresses = participants.map(participant => participant.address);
+    const participantAddresses = participants.map(
+      participant => participant.address,
+    );
     const canMessage = await client?.canGroupMessage(participantAddresses);
     for (const address of participantAddresses) {
       if (!canMessage?.[address.toLowerCase()]) {
@@ -250,34 +273,25 @@ export const CreateGroupScreen = () => {
     ];
   }, [recents, contacts, isValidAddress, ensAddress, searchText]);
 
-const renderItem = ({horizontal = false}: {horizontal?: boolean} = {}): 
-  SectionListRenderItem<Contact, {title: string; data: Contact[];}> => ({
-    item,
-    section,
-    index,
-    ...rest
-  }) => {
-    return (
-      <ListItem
-        {...rest}
-        item={item}
-        index={index}
-        section={{
-          ...section,
-          onPress: onItemPress,
-        }}
-        horizontal={horizontal}
-      />
-    );
-  };
-
-  const removeParticipant = useCallback(
-    (address: string) => {
-      setErrorString(null);
-      setParticipants(prev => prev.filter(it => it !== address));
-    },
-    [setParticipants],
-  );
+  const renderItem =
+    ({horizontal = false}: {horizontal?: boolean} = {}): SectionListRenderItem<
+      Contact,
+      {title: string; data: Contact[]}
+    > =>
+    ({item, section, index, ...rest}) => {
+      return (
+        <ListItem
+          {...rest}
+          item={item}
+          index={index}
+          section={{
+            ...section,
+            onPress: onItemPress,
+          }}
+          horizontal={horizontal}
+        />
+      );
+    };
 
   return (
     <Screen
@@ -298,9 +312,10 @@ const renderItem = ({horizontal = false}: {horizontal?: boolean} = {}):
       right={
         <Pressable onPress={onGroupStart} disabled={!(participants.length > 0)}>
           <Text
-            typography={participants.length > 0 ? "text-sm/semibold" : "text-sm/regular"}
-            textAlign={'right'}
-            >
+            typography={
+              participants.length > 0 ? 'text-sm/semibold' : 'text-sm/regular'
+            }
+            textAlign={'right'}>
             {translate('create_group')}
           </Text>
         </Pressable>
@@ -365,7 +380,7 @@ const renderItem = ({horizontal = false}: {horizontal?: boolean} = {}):
           horizontal={true}
           sections={[{title: '', data: participants}]}
           renderItem={renderItem({horizontal: true})}
-      />
+        />
       </VStack>
       <SectionList
         w={'100%'}
