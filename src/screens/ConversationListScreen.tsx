@@ -1,6 +1,6 @@
 import {useIsFocused} from '@react-navigation/native';
 import {Group} from '@xmtp/react-native-sdk';
-import {Box, Center, Fab, FlatList, HStack, VStack} from 'native-base';
+import {Box, Center, FlatList, HStack, VStack} from 'native-base';
 import React, {useCallback, useMemo, useState} from 'react';
 import {ListRenderItem, Pressable} from 'react-native';
 import {ConversationListHeader} from '../components/ConversationListHeader';
@@ -152,26 +152,6 @@ export const ConversationListScreen = () => {
           renderItem={renderItem}
           ListFooterComponent={<Box height={50} />}
         />
-        {!showPickerModal && focused && (
-          <Fab
-            testID={TestIds.CONVERSATION_LIST_NEW_BUTTON}
-            position="absolute"
-            size="sm"
-            right={27}
-            bottom={24}
-            height={'48px'}
-            width={'48px'}
-            backgroundColor={'#4F46E5'}
-            onPress={handleNewMessagePress}
-            icon={
-              <Icon
-                name="plus-thick"
-                size={28}
-                color={colors.actionPrimaryText}
-              />
-            }
-          />
-        )}
       </Screen>
       <Drawer
         title={translate('filter_conversations')}

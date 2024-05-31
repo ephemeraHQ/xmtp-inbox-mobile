@@ -2,7 +2,6 @@ import {Box, HStack, VStack} from 'native-base';
 import React, {FC, useCallback} from 'react';
 import {Pressable} from 'react-native';
 import {AvatarWithFallback} from '../components/AvatarWithFallback';
-import {Button} from '../components/common/Button';
 import {Icon} from '../components/common/Icon';
 import {Text} from '../components/common/Text';
 import {useAddress} from '../hooks/useAddress';
@@ -10,7 +9,6 @@ import {useContactInfo} from '../hooks/useContactInfo';
 import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
 import {ScreenNames} from '../navigation/ScreenNames';
-import {colors} from '../theme/colors';
 
 export interface ConversationListHeaderProps {
   list: 'ALL_MESSAGES' | 'MESSAGE_REQUESTS';
@@ -28,6 +26,10 @@ export const ConversationListHeader: FC<ConversationListHeaderProps> = ({
   const {navigate} = useTypedNavigation();
   const {address} = useAddress();
   const {avatarUrl} = useContactInfo(address);
+
+  const handleNewMessagePress = useCallback(() => {
+    navigate(ScreenNames.Search);
+  }, [navigate]);
 
   const handleAccountPress = useCallback(() => {
     navigate(ScreenNames.Account);
@@ -52,13 +54,12 @@ export const ConversationListHeader: FC<ConversationListHeaderProps> = ({
             size={40}
           />
         </Pressable>
-        <Box
+        {/* <Box
           borderRadius={'24px'}
-          zIndex={10}
           paddingX={'16px'}
           paddingY={'8px'}
           backgroundColor={'white'}
-          shadow={4}>
+        >
           <Box>
             <Button
               onLongPress={navigateToDev}
@@ -88,56 +89,69 @@ export const ConversationListHeader: FC<ConversationListHeaderProps> = ({
                   : translate('message_requests')}
               </Text>
             </Button>
-          </Box>
+          </Box> }
+      </Box> */}
+        <Text typography="text-lg/heavy" textAlign={'center'}>
+          {translate('group_chats')}
+        </Text>
+        <Box>
+          <Pressable onPress={handleNewMessagePress}>
+            <Icon
+              name="plus-circle"
+              size={40}
+              color={"#4F46E5"}
+            />
+          </Pressable>
         </Box>
-        <Box width={10} />
       </HStack>
-      {list === 'MESSAGE_REQUESTS' ? (
-        <Box
-          backgroundColor={colors.actionAlertBG}
-          paddingY={'8px'}
-          paddingX={'16px'}>
-          <Text
-            typography="text-caption/regular"
-            textAlign={'center'}
-            color={colors.actionAlertText}>
-            {translate('message_requests_from_new_addresses')}
-          </Text>
-        </Box>
-      ) : messageRequestCount > 0 ? (
-        <Pressable onPress={onShowMessageRequests}>
-          <HStack
-            backgroundColor={colors.actionPrimary}
-            padding={'8px'}
-            borderRadius={'8px'}
-            alignItems={'center'}
-            marginX={'16px'}>
-            <Box paddingLeft={'8px'} paddingRight={'16px'}>
-              <Icon name="inbox-arrow-down" color={colors.actionPrimaryText} />
-            </Box>
+      {/* {
+        list === 'MESSAGE_REQUESTS' ? (
+          <Box
+            backgroundColor={colors.actionAlertBG}
+            paddingY={'8px'}
+            paddingX={'16px'}>
             <Text
-              flex={1}
-              color={colors.actionPrimaryText}
-              typography="text-xs/bold">
-              {translate('message_requests_count', {
-                count: String(messageRequestCount),
-              })}
+              typography="text-caption/regular"
+              textAlign={'center'}
+              color={colors.actionAlertText}>
+              {translate('message_requests_from_new_addresses')}
             </Text>
-            <Box
-              paddingLeft={'8px'}
-              paddingRight={'16px'}
-              justifyContent={'flex-end'}>
-              <Icon
-                name="chevron-right-thick"
-                size={16}
+          </Box>
+        ) : messageRequestCount > 0 ? (
+          <Pressable onPress={onShowMessageRequests}>
+            <HStack
+              backgroundColor={colors.actionPrimary}
+              padding={'8px'}
+              borderRadius={'8px'}
+              alignItems={'center'}
+              marginX={'16px'}>
+              <Box paddingLeft={'8px'} paddingRight={'16px'}>
+                <Icon name="inbox-arrow-down" color={colors.actionPrimaryText} />
+              </Box>
+              <Text
+                flex={1}
                 color={colors.actionPrimaryText}
-              />
-            </Box>
-          </HStack>
-        </Pressable>
-      ) : (
-        <Box />
-      )}
-    </VStack>
+                typography="text-xs/bold">
+                {translate('message_requests_count', {
+                  count: String(messageRequestCount),
+                })}
+              </Text>
+              <Box
+                paddingLeft={'8px'}
+                paddingRight={'16px'}
+                justifyContent={'flex-end'}>
+                <Icon
+                  name="chevron-right-thick"
+                  size={16}
+                  color={colors.actionPrimaryText}
+                />
+              </Box>
+            </HStack>
+          </Pressable>
+        ) : (
+          <Box />
+        )
+      } */}
+    </VStack >
   );
 };
