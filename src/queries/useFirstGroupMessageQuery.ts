@@ -19,7 +19,7 @@ export const useFirstGroupMessageQuery = (topic: string) => {
         return undefined;
       }
       const messages: DecodedMessage<SupportedContentTypes>[] =
-        await group.messages(false, {
+        await group.messages({
           // limit: 1,
           // direction: 'SORT_DIRECTION_ASCENDING',
         });

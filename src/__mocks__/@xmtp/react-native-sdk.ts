@@ -24,7 +24,7 @@ module.exports = {
   JSContentCodec: jest.fn().mockImplementation(() => {
     return {};
   }),
-  GroupChangeCodec: jest.fn().mockImplementation(() => {
+  GroupUpdatedCodec: jest.fn().mockImplementation(() => {
     return {};
   }),
   ReplyCodec: jest.fn().mockImplementation(() => ({})),

@@ -114,7 +114,7 @@ PODS:
   - libwebp/sharpyuv (1.3.2)
   - libwebp/webp (1.3.2):
     - libwebp/sharpyuv
-  - LibXMTP (0.4.4-beta5)
+  - LibXMTP (0.5.0-beta2)
   - Logging (1.0.0)
   - MessagePacker (0.4.7)
   - MMKV (1.3.5):
@@ -1240,16 +1240,16 @@ PODS:
     - GenericJSON (~> 2.0)
     - Logging (~> 1.0.0)
     - secp256k1.swift (~> 0.1)
-  - XMTP (0.10.11):
+  - XMTP (0.11.1):
     - Connect-Swift (= 0.12.0)
     - GzipSwift
-    - LibXMTP (= 0.4.4-beta5)
+    - LibXMTP (= 0.5.0-beta2)
     - web3.swift
-  - XMTPReactNative (1.33.1-beta.2):
+  - XMTPReactNative (1.34.0-beta.2):
     - ExpoModulesCore
     - MessagePacker
     - secp256k1.swift
-    - XMTP (= 0.10.11)
+    - XMTP (= 0.11.1)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -1588,7 +1588,7 @@ SPEC CHECKSUMS:
   hermes-engine: b12d9bb1b7cee546f5e48212e7ea7e3c1665a367
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   libwebp: 1786c9f4ff8a279e4dac1e8f385004d5fc253009
-  LibXMTP: e2fb601691981900099551ff3e05621bd73dccf1
+  LibXMTP: 0a2e98cc3b101e53538c54061633e6587dc861bf
   Logging: 9ef4ecb546ad3169398d5a723bc9bea1c46bef26
   MessagePacker: ab2fe250e86ea7aedd1a9ee47a37083edd41fd02
   MMKV: 506311d0494023c2f7e0b62cc1f31b7370fa3cfb
@@ -1664,10 +1664,10 @@ SPEC CHECKSUMS:
   SwiftProtobuf: 407a385e97fd206c4fbe880cc84123989167e0d1
   WatermelonDB: 842d22ba555425aa9f3ce551239a001200c539bc
   web3.swift: 2263d1e12e121b2c42ffb63a5a7beb1acaf33959
-  XMTP: 1deb40ac712ba315dcfdecd590a9b924d8c2241a
-  XMTPReactNative: ffc7fb00c38f3d3f8af038ae5d1f9712cac0bb5f
-  Yoga: e5b887426cee15d2a326bdd34afc0282fc0486ad
+  XMTP: b2145642aae614c82b8115d479442f58513139b6
+  XMTPReactNative: cb23f376c29cd889a4c360eb2d4bb4417bc37690
+  Yoga: 2a16e58450c48e110211dae1159fb114bbcdcfc0
 
 PODFILE CHECKSUM: 47641fd2f7a6fc6169785131e7615d136e56edd8
 
-COCOAPODS: 1.14.3
+COCOAPODS: 1.15.2

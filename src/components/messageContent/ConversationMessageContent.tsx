@@ -1,6 +1,6 @@
 import {
   DecodedMessage,
-  GroupChangeContent,
+  GroupUpdatedContent,
   RemoteAttachmentContent,
 } from '@xmtp/react-native-sdk';
 import {Container} from 'native-base';
@@ -18,7 +18,7 @@ import {TextMessageContent} from './TextMessageContent';
 
 interface ConversationMessageContentProps {
   message: DecodedMessage<SupportedContentTypes>;
-  isMe: boolean;
+  isFromUser: boolean;
   reactions: MessageIdReactionsMapping[string];
 }
 
@@ -32,7 +32,7 @@ export type ReactionItems = ReactionItem[];
 
 export const ConversationMessageContent: FC<
   ConversationMessageContentProps
-> = ({message, isMe, reactions}) => {
+> = ({message, isFromUser, reactions}) => {
   const reacts = useMemo(() => {
     const arr: ReactionItems = [];
     for (const content of reactions.keys()) {
@@ -51,9 +51,9 @@ export const ConversationMessageContent: FC<
     return (
       <MessageOptionsContainer
         reactions={reacts}
-        isMe={isMe}
+        isFromUser={isFromUser}
         messageId={message.id}>
-        <TextMessageContent isMe={isMe} message={message} />
+        <TextMessageContent isFromUser={isFromUser} message={message} />
       </MessageOptionsContainer>
     );
   }
@@ -62,12 +62,12 @@ export const ConversationMessageContent: FC<
     return (
       <MessageOptionsContainer
         reactions={reacts}
-        isMe={isMe}
+        isFromUser={isFromUser}
         messageId={message.id}>
         <Container
           borderRadius={'16px'}
-          borderBottomRightRadius={isMe ? 0 : '16px'}
-          borderTopLeftRadius={isMe ? '16px' : 0}
+          borderBottomRightRadius={isFromUser ? 0 : '16px'}
+          borderTopLeftRadius={isFromUser ? '16px' : 0}
           paddingY={3}>
           <ImageMessage
             content={message.content() as RemoteAttachmentContent}
@@ -77,39 +77,39 @@ export const ConversationMessageContent: FC<
     );
   }
 
-  if (message.contentTypeId === ContentTypes.GroupMembershipChange) {
-    const content = message.content() as GroupChangeContent;
+  if (message.contentTypeId === ContentTypes.GroupUpdated) {
+    const content = message.content() as GroupUpdatedContent;
     let text = '';
     if (content?.membersAdded.length > 0) {
       if (content?.membersAdded.length > 1) {
         text = translate('group_add_plural', {
-          initiatedByAddress: formatAddress(
-            content?.membersAdded[0].initiatedByAddress ?? '',
+          initiatedByInboxId: formatAddress(
+            content?.membersAdded[0].initiatedByInboxId ?? '',
           ),
-          addressCount: String(content?.membersAdded.length),
+          count: String(content?.membersAdded.length),
         });
       } else {
         text = translate('group_add_single', {
-          initiatedByAddress: formatAddress(
-            content?.membersAdded[0].initiatedByAddress,
+          initiatedByInboxId: formatAddress(
+            content?.membersAdded[0].initiatedByInboxId,
           ),
-          address: formatAddress(content?.membersAdded[0].address),
+          inboxId: formatAddress(content?.membersAdded[0].inboxId),
         });
       }
     } else if (content?.membersRemoved.length > 0) {
       if (content?.membersRemoved.length > 1) {
         text = translate('group_remove_plural', {
-          initiatedByAddress: formatAddress(
-            content?.membersRemoved[0].initiatedByAddress,
+          initiatedByInboxId: formatAddress(
+            content?.membersRemoved[0].initiatedByInboxId,
           ),
           addressCount: String(content?.membersRemoved.length),
         });
       } else {
         text = translate('group_remove_single', {
-          initiatedByAddress: formatAddress(
-            content?.membersRemoved[0].initiatedByAddress,
+          initiatedByInboxId: formatAddress(
+            content?.membersRemoved[0].initiatedByInboxId,
           ),
-          address: formatAddress(content?.membersRemoved[0].address),
+          inboxId: formatAddress(content?.membersRemoved[0].inboxId),
         });
       }
     }
@@ -133,9 +133,9 @@ export const ConversationMessageContent: FC<
     return (
       <MessageOptionsContainer
         reactions={reacts}
-        isMe={isMe}
+        isFromUser={isFromUser}
         messageId={message.id}>
-        <ReplyMessageContent message={message} isMe={isMe} />
+        <ReplyMessageContent message={message} isFromUser={isFromUser} />
       </MessageOptionsContainer>
     );
   }

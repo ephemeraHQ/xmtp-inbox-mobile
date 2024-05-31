@@ -10,10 +10,10 @@ import {Button as AppButton} from '../common/Button';
 import {Text} from '../common/Text';
 
 export const TextMessageContent = ({
-  isMe,
+  isFromUser,
   message,
 }: {
-  isMe: boolean;
+  isFromUser: boolean;
   message: DecodedMessage<SupportedContentTypes>;
 }) => {
   const {width} = useWindowDimensions();
@@ -22,16 +22,16 @@ export const TextMessageContent = ({
     return (
       <Container
         backgroundColor={
-          isMe ? colors.actionPrimary : colors.backgroundSecondary
+          isFromUser ? colors.actionPrimary : colors.backgroundSecondary
         }
         borderRadius={'16px'}
-        borderBottomRightRadius={isMe ? 0 : '16px'}
-        borderTopLeftRadius={isMe ? '16px' : 0}
+        borderBottomRightRadius={isFromUser ? 0 : '16px'}
+        borderTopLeftRadius={isFromUser ? '16px' : 0}
         paddingY={3}
         paddingX={5}>
         <Text
           typography="text-base/medium"
-          color={isMe ? colors.actionPrimaryText : colors.textPrimary}>
+          color={isFromUser ? colors.actionPrimaryText : colors.textPrimary}>
           {message.content() as string}
         </Text>
       </Container>
@@ -43,10 +43,10 @@ export const TextMessageContent = ({
 
   return (
     <Box
-      alignSelf={isMe ? 'flex-end' : 'flex-start'}
+      alignSelf={isFromUser ? 'flex-end' : 'flex-start'}
       borderRadius={'16px'}
-      borderBottomRightRadius={isMe ? 0 : '16px'}
-      borderTopLeftRadius={isMe ? '16px' : 0}
+      borderBottomRightRadius={isFromUser ? 0 : '16px'}
+      borderTopLeftRadius={isFromUser ? '16px' : 0}
       paddingY={3}
       paddingX={5}>
       <FastImage
