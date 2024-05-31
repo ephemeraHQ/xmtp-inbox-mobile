@@ -37,7 +37,9 @@ const RequestItem: FC<RequestItemProps> = ({title, request}) => {
     return JSON.stringify(data, (key, value) => {
       if (typeof value === 'object' && value !== null) {
         // Duplicate reference found, discard key
-        if (cache.includes(value)) return;
+        if (cache.includes(value)) {
+          return;
+        }
 
         // Store value in our collection
         cache.push(value);
@@ -73,7 +75,9 @@ const DataItem: FC<DataItemProps> = ({title, data}) => {
     return JSON.stringify(data, (key, value) => {
       if (typeof value === 'object' && value !== null) {
         // Duplicate reference found, discard key
-        if (cache.includes(value)) return;
+        if (cache.includes(value)) {
+          return;
+        }
 
         // Store value in our collection
         cache.push(value);

@@ -8,7 +8,6 @@
   "create_new_wallet": "Create new wallet",
   "you": "You",
   "search": "Search",
-
   "youve_got_no_messages": "You’ve got no messages",
   "start_a_conversation_to_get_going": "Start a conversation to get going!",
   "filter_conversations": "Filter conversations",
@@ -19,34 +18,25 @@
   "no": "No",
   "yes": "Yes",
   "start": "Start",
-
   "recents": "Recents",
   "contacts": "Contacts",
-
   "your_interoperable_web3_inbox": "Your interoperable web3 inbox",
   "youre_just_a_few_steps_away_from_secure_wallet_to_wallet_messaging": "You're just a few steps away from secure, wallet-to-wallet messaging",
   "connect_your_wallet": "Connect your wallet",
   "you_can_connect_or_create": "You can connect or create a wallet via Wallet Connect.",
   "whats_a_wallet": "What's a wallet?",
   "no_private_keys_will_be_shared": "No private keys will be shared",
-
   "step_1_of_2": "Step 1 of 2",
   "create_your_xmtp_identity": "Create your XMTP identity",
   "now_that_your_wallet_is_connected": "Now that your wallet is connected, we’re going to create your XMTP identity on our network with a wallet signature.",
   "create_xmtp_identity": "Create XMTP identity",
   "step_2_of_2": "Step 2 of 2",
-
   "domain_origin": "Domain origin",
-
   "copy_your_code": "Copy your code",
-
   "allow": "Allow",
   "block": "Block",
-
   "yesterday": "Yesterday",
-
   "conversation_image_alt": "Attached Image",
-
   "walletconnect": "WalletConnect",
   "metamask": "Metamask",
   "coinbase_wallet": "Coinbase Wallet",
@@ -54,7 +44,6 @@
   "group_changed": "Group Changed",
   "add_to_group": "Add",
   "group": "Group",
-
   "dev_screen": "Dev Screen",
   "client": "Client",
   "address": "Address",
@@ -66,11 +55,9 @@
   "get_groups": "Get Groups",
   "get_contacts": "Get Contacts",
   "group_name": "Group Name",
-
   "valid_address": "Valid Ethereum Address",
   "message_requests_from_new_addresses": "Message requests from addresses you’ve never interacted with show up here",
   "not_on_xmtp_group": "User can't be added to group because they are not on XMTP Group network",
-
   "wallet_error": "Wallet Error",
   "group_add_single": "%{initiatedByAddress} added %{address}",
   "group_add_plural": "%{initiatedByAddress} added %{addressCount} members",
@@ -79,7 +66,7 @@
   "error_group_remove": "An error occurred removing from group",
   "error_group_adding": "An error occurred adding to group",
   "reply": "Reply",
-
   "conversation_replying_to": "Replying to %{name}",
-  "replied_to": "Replied to an earlier message"
+  "replied_to": "Replied to an earlier message",
+  "group_chats": "Group Chats"
 }

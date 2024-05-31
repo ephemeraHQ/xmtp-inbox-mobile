@@ -1,6 +1,5 @@
-import {useIsFocused} from '@react-navigation/native';
 import {Group} from '@xmtp/react-native-sdk';
-import {Box, Center, Fab, FlatList, HStack, VStack} from 'native-base';
+import {Box, Center, FlatList, HStack, VStack} from 'native-base';
 import React, {useCallback, useMemo, useState} from 'react';
 import {ListRenderItem, Pressable} from 'react-native';
 import {ConversationListHeader} from '../components/ConversationListHeader';
@@ -14,9 +13,7 @@ import {AppConfig} from '../consts/AppConfig';
 import {SupportedContentTypes} from '../consts/ContentTypes';
 import {TestIds} from '../consts/TestIds';
 import {useClient} from '../hooks/useClient';
-import {useTypedNavigation} from '../hooks/useTypedNavigation';
 import {translate} from '../i18n';
-import {ScreenNames} from '../navigation/ScreenNames';
 import {useListQuery} from '../queries/useListQuery';
 import {mmkvStorage} from '../services/mmkvStorage';
 import {colors} from '../theme/colors';
@@ -74,7 +71,6 @@ export const ConversationListScreen = () => {
   );
   const [showPickerModal, setShowPickerModal] = useState(false);
   const [showConsentDrawer, setShowConsentDrawer] = useState(false);
-  const focused = useIsFocused();
   const {
     messages,
     messageRequests,
@@ -83,14 +79,10 @@ export const ConversationListScreen = () => {
     refetch,
     isRefetching,
   } = useData();
-  const {navigate} = useTypedNavigation();
 
   const showPicker = () => {
     setShowPickerModal(true);
   };
-  const handleNewMessagePress = useCallback(() => {
-    navigate(ScreenNames.Search);
-  }, [navigate]);
 
   const handleFilterPress = useCallback(
     (type: 'ALL_MESSAGES' | 'MESSAGE_REQUESTS') => {
@@ -152,26 +144,6 @@ export const ConversationListScreen = () => {
           renderItem={renderItem}
           ListFooterComponent={<Box height={50} />}
         />
-        {!showPickerModal && focused && (
-          <Fab
-            testID={TestIds.CONVERSATION_LIST_NEW_BUTTON}
-            position="absolute"
-            size="sm"
-            right={27}
-            bottom={24}
-            height={'48px'}
-            width={'48px'}
-            backgroundColor={'#4F46E5'}
-            onPress={handleNewMessagePress}
-            icon={
-              <Icon
-                name="plus-thick"
-                size={28}
-                color={colors.actionPrimaryText}
-              />
-            }
-          />
-        )}
       </Screen>
       <Drawer
         title={translate('filter_conversations')}
