@@ -5,10 +5,9 @@ import {Alert, DeviceEventEmitter} from 'react-native';
 import {AppConfig} from '../../consts/AppConfig';
 import {SupportedContentTypes} from '../../consts/ContentTypes';
 import {EventEmitterEvents} from '../../consts/EventEmitters';
-import {useClient} from '../../hooks/useClient';
 import {useContactInfo} from '../../hooks/useContactInfo';
+import {useGroupName} from '../../hooks/useGroupName';
 import {translate} from '../../i18n';
-import {mmkvStorage} from '../../services/mmkvStorage';
 import {colors} from '../../theme/colors';
 import {AvatarWithFallback} from '../AvatarWithFallback';
 import {Button} from '../common/Button';
@@ -85,7 +84,6 @@ export const GroupInfoModal: FC<GroupInfoModalProps> = ({
   group,
   address: currentAddress,
 }) => {
-  const {client} = useClient();
   const [editing, setEditing] = useState(false);
   const [groupName, setGroupName] = useState('');
   const onRemovePress = useCallback(
@@ -103,19 +101,18 @@ export const GroupInfoModal: FC<GroupInfoModalProps> = ({
     },
     [group, hide],
   );
+  const {groupName: currentGroupName, updateGroupName} = useGroupName(
+    group?.topic ?? '',
+  );
 
   const onBlur = useCallback(() => {
     if (!groupName) {
       return;
     }
-    mmkvStorage.saveGroupName(
-      client?.address ?? '',
-      group?.topic ?? '',
-      groupName,
-    );
+    updateGroupName(groupName);
     setEditing(false);
     setGroupName('');
-  }, [client?.address, group?.topic, groupName]);
+  }, [groupName, updateGroupName]);
 
   return (
     <Modal onBackgroundPress={hide} isOpen={shown}>
@@ -140,12 +137,7 @@ export const GroupInfoModal: FC<GroupInfoModalProps> = ({
         ) : (
           <HStack w={'100%'} alignItems={'center'} justifyContent={'center'}>
             <Text typography="text-xl/bold" textAlign={'center'}>
-              {(!!group &&
-                mmkvStorage.getGroupName(
-                  client?.address ?? '',
-                  group?.topic,
-                )) ??
-                translate('group')}
+              {currentGroupName ?? translate('group')}
             </Text>
             <Pressable onPress={() => setEditing(true)} alignSelf={'flex-end'}>
               <Icon

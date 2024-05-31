@@ -23,7 +23,6 @@ enum MMKVKeys {
   IMAGE_CACHE = 'IMAGE_CACHE',
 
   // Groups
-  GROUP_NAME = 'GROUP_NAME',
   GROUP_ID_PUSH_SUBSCRIPTION = 'GROUP_ID_PUSH_SUBSCRIPTION',
   GROUP_PARTICIPANTS = 'GROUP_PARTICIPANTS',
   GROUP_CONSENT = 'GROUP_CONSENT',
@@ -242,26 +241,6 @@ class MMKVStorage {
   };
 
   // #endregion
-
-  // #region Group Name
-
-  private getGroupNameKey = (address: string, topic: string) => {
-    return `${MMKVKeys.GROUP_NAME}_${address}_${topic}`;
-  };
-
-  saveGroupName = (address: string, topic: string, groupName: string) => {
-    return this.storage.set(this.getGroupNameKey(address, topic), groupName);
-  };
-
-  getGroupName = (address: string, topic: string) => {
-    return this.storage.getString(this.getGroupNameKey(address, topic));
-  };
-
-  clearGroupName = (address: string, topic: string) => {
-    return this.storage.delete(this.getGroupNameKey(address, topic));
-  };
-
-  //#endregion Group Name
 
   //#region Group Id Push Subscription
   private getGroupIdPushSubscriptionKey = (topic: string) => {

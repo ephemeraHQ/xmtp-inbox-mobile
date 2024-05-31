@@ -1,17 +1,14 @@
-import {useMemo} from 'react';
-import {mmkvStorage} from '../services/mmkvStorage';
-import {formatAddress} from '../utils/formatAddress';
-import {useClient} from './useClient';
+import {useGroupNameMutation} from '../mutations/useGroupNameMutation';
+import {useGroupNameQuery} from '../queries/useGroupNameQuery';
 
-export const useGroupName = (addresses: string[], groupId: string) => {
-  const {client} = useClient();
-  const data = useMemo(() => {
-    const groupDisplayName = addresses.map(formatAddress).join(', ');
-    return groupDisplayName;
-  }, [addresses]);
-  const savedGroupName = mmkvStorage.getGroupName(
-    client?.address ?? '',
-    groupId,
-  );
-  return savedGroupName ?? data;
+export const useGroupName = (groupTopic: string) => {
+  const {data: groupName} = useGroupNameQuery(groupTopic ?? '');
+  const {mutateAsync} = useGroupNameMutation(groupTopic ?? '');
+
+  return {
+    groupName,
+    updateGroupName: async (newGroupName: string) => {
+      await mutateAsync(newGroupName);
+    },
+  };
 };
