@@ -287,6 +287,7 @@ const renderItem = ({horizontal = false}: {horizontal?: boolean} = {}):
           {translate('add_members_to_group')}
         </Text>
       }
+      includeTopPadding={false}
       left={
         <Pressable onPress={goBack}>
           <Text typography="text-sm/semibold" textAlign={'left'}>
