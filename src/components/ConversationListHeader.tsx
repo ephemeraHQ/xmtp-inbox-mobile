@@ -23,7 +23,7 @@ export const ConversationListHeader: FC<ConversationListHeaderProps> = () => {
   const {avatarUrl} = useContactInfo(address);
 
   const handleNewMessagePress = useCallback(() => {
-    navigate(ScreenNames.Search);
+    navigate(ScreenNames.CreateGroup);
   }, [navigate]);
 
   const handleAccountPress = useCallback(() => {
