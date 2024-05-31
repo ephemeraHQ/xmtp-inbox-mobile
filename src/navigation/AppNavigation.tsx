@@ -5,6 +5,7 @@ import {Platform} from 'react-native';
 import {useClientContext} from '../context/ClientContext';
 import {AccountSettingsScreen} from '../screens/AccountSettingsScreen';
 import {ConversationListScreen} from '../screens/ConversationListScreen';
+import {CreateGroupScreen} from '../screens/CreateGroupScreen';
 import {DevScreen} from '../screens/DevScreen';
 import {GroupScreen} from '../screens/GroupScreen';
 import {LoadingScreen} from '../screens/LoadingScreen';
@@ -12,7 +13,6 @@ import {NewConversationScreen} from '../screens/NewConversationScreen';
 import {OnboardingConnectWalletScreen} from '../screens/OnboardingConnectWalletScreen';
 import {OnboardingEnableIdentityScreen} from '../screens/OnboardingEnableIdentityScreen';
 import {QrCodeScreen} from '../screens/QrCodeScreen';
-import {SearchScreen} from '../screens/SearchScreen';
 import {UserProfilesScreen} from '../screens/UserProfilesScreen';
 import {ScreenNames} from './ScreenNames';
 import {
@@ -87,8 +87,8 @@ export const AppNavigation = () => {
             component={NewConversationScreen}
           />
           <AuthenticatedStack.Screen
-            name={ScreenNames.Search}
-            component={SearchScreen}
+            name={ScreenNames.CreateGroup}
+            component={CreateGroupScreen}
             options={{
               presentation: 'modal',
             }}

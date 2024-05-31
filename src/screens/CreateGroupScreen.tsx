@@ -161,7 +161,7 @@ const ListItem: FC<{
   };
 
 
-export const SearchScreen = () => {
+export const CreateGroupScreen = () => {
   const {goBack, navigate} = useTypedNavigation();
   const {client} = useClient();
   const [errorString, setErrorString] = useState<string | null>(null);
